@@ -34,13 +34,14 @@ namespace Shrink.Maze
         /// <param name="narrowConfig">Configuración de pasillos estrechos para este nivel.</param>
         public static MazeData Generate(int width, int height, int seed = -1,
                                         int doorCount = 0, NarrowConfig narrowConfig = default,
-                                        MazeStyle style = MazeStyle.Dungeon)
+                                        MazeStyle style = MazeStyle.Dungeon,
+                                        TrapConfig trapConfig = default)
         {
             if (seed < 0) seed = Random.Range(0, int.MaxValue);
 
             for (int attempt = 0; attempt < MaxRetries; attempt++)
             {
-                MazeData data = TryGenerate(width, height, seed + attempt, doorCount, narrowConfig, style);
+                MazeData data = TryGenerate(width, height, seed + attempt, doorCount, narrowConfig, style, trapConfig);
                 if (data != null) return data;
             }
 
@@ -53,7 +54,8 @@ namespace Shrink.Maze
         /// </summary>
         public static async Task<MazeData> GenerateAsync(int width, int height, int seed = -1,
                                                           int doorCount = 0, NarrowConfig narrowConfig = default,
-                                                          MazeStyle style = MazeStyle.Dungeon)
+                                                          MazeStyle style = MazeStyle.Dungeon,
+                                                          TrapConfig trapConfig = default)
         {
             if (seed < 0) seed = Random.Range(0, int.MaxValue);
 
@@ -66,14 +68,14 @@ namespace Shrink.Maze
                 {
                     for (int attempt = 0; attempt < MaxRetries; attempt++)
                     {
-                        MazeData data = TryGenerate(width, height, finalSeed + attempt, doorCount, narrowConfig, style);
+                        MazeData data = TryGenerate(width, height, finalSeed + attempt, doorCount, narrowConfig, style, trapConfig);
                         if (data != null) return data;
                     }
                     return null;
                 });
             }
 
-            return Generate(width, height, seed, doorCount, narrowConfig, style);
+            return Generate(width, height, seed, doorCount, narrowConfig, style, trapConfig);
         }
 
         // ──────────────────────────────────────────────────────────────────────────
@@ -81,7 +83,8 @@ namespace Shrink.Maze
         // ──────────────────────────────────────────────────────────────────────────
 
         private static MazeData TryGenerate(int width, int height, int seed,
-                                            int doorCount, NarrowConfig narrowConfig, MazeStyle style)
+                                            int doorCount, NarrowConfig narrowConfig, MazeStyle style,
+                                            TrapConfig trapConfig)
         {
             // Dimensiones impares requeridas por ambos algoritmos
             if (width  % 2 == 0) width++;
@@ -115,6 +118,7 @@ namespace Shrink.Maze
 
             InsertNarrowPassages(grid, width, height, rng, narrowConfig);
             InsertDoors(grid, width, height, rng, doorCount);
+            InsertTraps(grid, width, height, rng, trapConfig);
 
             int pathLength = GetShortestPathLength(grid, width, height, startCell, exitCell);
             if (pathLength < 0) return null; // sin solución
@@ -401,6 +405,47 @@ namespace Shrink.Maze
         }
 
         // ──────────────────────────────────────────────────────────────────────────
+        // Trampas
+        // ──────────────────────────────────────────────────────────────────────────
+
+        private static void InsertTraps(CellType[,] grid, int width, int height,
+                                         System.Random rng, TrapConfig cfg)
+        {
+            if (cfg.OneshotCount == 0 && cfg.DrainCount == 0) return;
+
+            // Candidatas: cualquier celda transitable excepto START, EXIT, DOOR y NARROW
+            var candidates = new List<Vector2Int>();
+            for (int x = 0; x < width;  x++)
+            for (int y = 0; y < height; y++)
+            {
+                CellType ct = grid[x, y];
+                if (ct == CellType.PATH     || ct == CellType.ROOM ||
+                    ct == CellType.CORRIDOR)
+                    candidates.Add(new Vector2Int(x, y));
+            }
+            Shuffle(candidates, rng);
+
+            int placedOneshot = 0;
+            int placedDrain   = 0;
+
+            foreach (var cell in candidates)
+            {
+                if (placedOneshot < cfg.OneshotCount)
+                {
+                    grid[cell.x, cell.y] = CellType.TRAP_ONESHOT;
+                    placedOneshot++;
+                }
+                else if (placedDrain < cfg.DrainCount)
+                {
+                    grid[cell.x, cell.y] = CellType.TRAP_DRAIN;
+                    placedDrain++;
+                }
+
+                if (placedOneshot >= cfg.OneshotCount && placedDrain >= cfg.DrainCount) break;
+            }
+        }
+
+        // ──────────────────────────────────────────────────────────────────────────
         // BFS — validación de solución
         // ──────────────────────────────────────────────────────────────────────────
 
@@ -508,6 +553,24 @@ namespace Shrink.Maze
     /// <summary>
     /// Configuración de pasillos estrechos para un nivel.
     /// </summary>
+    /// <summary>
+    /// Configuración de trampas para un nivel.
+    /// </summary>
+    public struct TrapConfig
+    {
+        /// <summary>Número de trampas TRAP_ONESHOT a insertar.</summary>
+        public int OneshotCount;
+
+        /// <summary>Número de trampas TRAP_DRAIN a insertar.</summary>
+        public int DrainCount;
+
+        public TrapConfig(int oneshotCount, int drainCount)
+        {
+            OneshotCount = oneshotCount;
+            DrainCount   = drainCount;
+        }
+    }
+
     public struct NarrowConfig
     {
         /// <summary>Número de celdas NARROW_06 a insertar.</summary>

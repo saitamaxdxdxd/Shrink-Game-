@@ -61,6 +61,20 @@ namespace Shrink.Maze
         // API pública (llamada desde botón de Inspector via ContextMenu)
         // ──────────────────────────────────────────────────────────────────────
 
+        /// <summary>
+        /// Aplica parámetros externos y regenera el maze. Usado por LevelDataEditor.
+        /// </summary>
+        public void Configure(int w, int h, int s, int doors, NarrowConfig narrow, MazeStyle mazeStyle)
+        {
+            width        = w;
+            height       = h;
+            seed         = s;
+            doorCount    = doors;
+            narrowConfig = narrow;
+            style        = mazeStyle;
+            GenerateMaze();
+        }
+
         [ContextMenu("Generate Maze")]
         public void GenerateMaze()
         {
@@ -100,16 +114,18 @@ namespace Shrink.Maze
 
         private Color GetColor(CellType cell) => cell switch
         {
-            CellType.WALL       => colorWall,
-            CellType.ROOM       => colorRoom,
-            CellType.CORRIDOR   => colorCorridor,
-            CellType.PATH       => colorPath,
-            CellType.DOOR       => colorDoor,
-            CellType.NARROW_06  => colorNarrow06,
-            CellType.NARROW_04  => colorNarrow04,
-            CellType.START      => colorStart,
-            CellType.EXIT       => colorExit,
-            _                   => Color.magenta
+            CellType.WALL         => colorWall,
+            CellType.ROOM         => colorRoom,
+            CellType.CORRIDOR     => colorCorridor,
+            CellType.PATH         => colorPath,
+            CellType.DOOR         => colorDoor,
+            CellType.NARROW_06    => colorNarrow06,
+            CellType.NARROW_04    => colorNarrow04,
+            CellType.START        => colorStart,
+            CellType.EXIT         => colorExit,
+            CellType.TRAP_ONESHOT => new Color(0.95f, 0.50f, 0.10f),
+            CellType.TRAP_DRAIN   => new Color(0.70f, 0.10f, 0.30f),
+            _                     => Color.magenta
         };
     }
 }

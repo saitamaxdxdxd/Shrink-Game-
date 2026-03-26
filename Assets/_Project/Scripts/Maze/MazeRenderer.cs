@@ -25,8 +25,10 @@ namespace Shrink.Maze
         [SerializeField] private Color colorNarrow04   = new Color(0.10f, 0.35f, 0.90f);
         [SerializeField] private Color colorStart      = new Color(0.20f, 0.88f, 0.35f);
         [SerializeField] private Color colorExit       = new Color(0.90f, 0.20f, 0.20f);
-        [SerializeField] private Color colorCrumb      = new Color(1.00f, 0.85f, 0.30f);
-        [SerializeField] private Color colorStar       = new Color(1.00f, 0.92f, 0.20f);
+        [SerializeField] private Color colorCrumb        = new Color(1.00f, 0.85f, 0.30f);
+        [SerializeField] private Color colorStar         = new Color(1.00f, 0.92f, 0.20f);
+        [SerializeField] private Color colorTrapOneshot  = new Color(0.95f, 0.50f, 0.10f);
+        [SerializeField] private Color colorTrapDrain    = new Color(0.70f, 0.10f, 0.30f);
 
         // ──────────────────────────────────────────────────────────────────────
         // Estado
@@ -48,6 +50,10 @@ namespace Shrink.Maze
         private Transform _floorParent;
         private Transform _crumbParent;
         private Transform _starParent;
+        private Transform _trapParent;
+
+        /// <summary>Tiles de trampa activos indexados por celda.</summary>
+        private readonly Dictionary<Vector2Int, GameObject> _trapTiles = new();
 
         // ──────────────────────────────────────────────────────────────────────
         // API pública
@@ -65,6 +71,8 @@ namespace Shrink.Maze
             _floorParent = CreateParent("Floors");
             _crumbParent = CreateParent("Crumbs");
             _starParent  = CreateParent("Stars");
+            _trapParent  = CreateParent("Traps");
+            _trapTiles.Clear();
 
             Sprite square = ShapeFactory.GetSquare();
 
@@ -104,6 +112,22 @@ namespace Shrink.Maze
 
                     case CellType.EXIT:
                         CreateTile($"E{x}_{y}", square, colorExit, _floorParent, pos, cellSize * 0.8f, 1);
+                        break;
+
+                    case CellType.TRAP_DRAIN:
+                        CreateTile($"TD{x}_{y}", square, colorTrapDrain, _floorParent, pos, cellSize * 0.85f, 1);
+                        RegisterTrap(new Vector2Int(x, y),
+                            ShapeFactory.CreateSprite($"TDot_{x}_{y}",
+                                ShapeFactory.GetCircle(), colorTrapDrain * 1.4f, _trapParent, 2),
+                            pos, cellSize * 0.35f);
+                        break;
+
+                    case CellType.TRAP_ONESHOT:
+                        CreateTile($"TO{x}_{y}", square, colorTrapOneshot, _floorParent, pos, cellSize * 0.85f, 1);
+                        RegisterTrap(new Vector2Int(x, y),
+                            ShapeFactory.CreateSprite($"TODia_{x}_{y}",
+                                ShapeFactory.GetSquare(), colorTrapOneshot * 1.4f, _trapParent, 2),
+                            pos, cellSize * 0.30f, rotate45: true);
                         break;
                 }
             }
@@ -267,6 +291,28 @@ namespace Shrink.Maze
         }
 
         /// <summary>
+        /// Activa la trampa ONESHOT en la celda: destruye su visual y la convierte en WALL.
+        /// Llamar desde ShrinkMechanic al pisar una celda TRAP_ONESHOT.
+        /// </summary>
+        public void ActivateTrap(Vector2Int cell)
+        {
+            if (!_trapTiles.TryGetValue(cell, out GameObject tile)) return;
+
+            _trapTiles.Remove(cell);
+            Destroy(tile);
+            Data.Grid[cell.x, cell.y] = CellType.WALL;
+
+            // Destruir también el tile de suelo (overlay naranja)
+            // Buscamos por nombre ya que no lo tenemos indexado por separado
+            var floorTile = _floorParent.Find($"TO{cell.x}_{cell.y}");
+            if (floorTile != null) Destroy(floorTile.gameObject);
+
+            // Crear tile de muro en su lugar
+            CreateTile($"W{cell.x}_{cell.y}_trap", ShapeFactory.GetSquare(),
+                       colorWall, _wallParent, CellToWorld(cell), cellSize, 0);
+        }
+
+        /// <summary>
         /// Convierte coordenadas de celda a posición world.
         /// </summary>
         public Vector3 CellToWorld(Vector2Int cell) =>
@@ -356,8 +402,10 @@ namespace Shrink.Maze
             if (_floorParent != null) Destroy(_floorParent.gameObject);
             if (_crumbParent != null) Destroy(_crumbParent.gameObject);
             if (_starParent  != null) Destroy(_starParent.gameObject);
+            if (_trapParent  != null) Destroy(_trapParent.gameObject);
             Crumbs.Clear();
             Stars.Clear();
+            _trapTiles.Clear();
             CollectedStars = 0;
             TotalStars     = 0;
             Data = null;
@@ -405,6 +453,15 @@ namespace Shrink.Maze
                     ? new Vector3(wallLength, wallThickness, 1f)
                     : new Vector3(wallThickness, wallLength, 1f);
             }
+        }
+
+        private void RegisterTrap(Vector2Int cell, GameObject go, Vector3 pos,
+                                   float size, bool rotate45 = false)
+        {
+            go.transform.position   = pos;
+            go.transform.localScale = Vector3.one * size;
+            if (rotate45) go.transform.rotation = Quaternion.Euler(0f, 0f, 45f);
+            _trapTiles[cell] = go;
         }
 
         private bool IsHorizontalCorridor(int x, int y, MazeData data)

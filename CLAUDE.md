@@ -1,17 +1,21 @@
 # CLAUDE.md — Shrink (Unity 6)
 
 ## Proyecto
+
 Juego móvil puzzle maze 2D top-down para iOS y Android.
 Motor: Unity 6 | Resolución: 1920x1080 landscape | Estilo: minimalista (líneas y círculos, sin assets externos)
 Input System: **New Input System** (Unity package activo — NO usar `UnityEngine.Input` legacy)
 
 ## Ruta raíz de código
+
 ```
 Assets/_Project/
 ```
+
 Todo el código del juego vive aquí. No tocar Assets/Scenes, Assets/Settings ni carpetas generadas por Unity fuera de _Project.
 
 ## Estructura de carpetas
+
 ```
 Scripts/
   Core/          ShapeFactory, GameBootstrap (test), GameManager (pendiente Sistema 5)
@@ -42,17 +46,7 @@ FX/Particles/
 
 ## Sistemas — estado actual
 
-| # | Sistema | Estado | Notas |
-|---|---------|--------|-------|
-| 1 | Generación procedural de maze | ✅ Completo | BSP + Labyrinth + Hybrid |
-| 2 | Esfera y mecánica de desgaste | ✅ Completo | Migajas, puertas, estrellas, calibración auto |
-| 3 | Movimiento por swipe + cámara | ✅ Completo | Smart Slide + WASD para testing |
-| 3.5 | Enemigos | ⬜ Pendiente | Ver sección Enemigos |
-| 4 | Mapa en pausa + HUD | ✅ Completo | HUDController + PauseMapController |
-| 5 | Sistema de niveles y semillas | ⬜ Pendiente | |
-| 6 | Monetización | ⬜ Pendiente | |
-| 7 | Juice y sonido | ⬜ Pendiente | |
-| 8 | UI completa | ⬜ Pendiente | |
+1. #SistemaEstadoNotas1Generación procedural de maze✅ CompletoBSP + Labyrinth + Hybrid2Esfera y mecánica de desgaste✅ CompletoMigajas, puertas, estrellas, calibración auto3Movimiento por swipe + cámara✅ CompletoSmart Slide + WASD para testing4Mapa en pausa + HUD✅ CompletoHUDController + PauseMapController5Sistema de niveles y semillas⬜ Pendiente 6Monetización⬜ Pendiente 7Juice y sonido⬜ Pendiente 8UI completa⬜ Pendiente3.5Enemigos⬜ Pendiente (implementar al final)Ver sección Enemigos
 
 ## Generación de maze — MazeStyle
 
@@ -60,11 +54,7 @@ FX/Particles/
 public enum MazeStyle { Dungeon, Labyrinth, Hybrid }
 ```
 
-| Estilo | Algoritmo | Usar para |
-|--------|-----------|-----------|
-| Dungeon | BSP (cuartos + corredores) | Niveles 1–9 |
-| Labyrinth | Recursive Backtracker DFS | Niveles 10–30 |
-| Hybrid | Backtracker + cuartos tallados | Alternativa con zonas abiertas |
+1. EstiloAlgoritmoUsar paraDungeonBSP (cuartos + corredores)Niveles 1–9LabyrinthRecursive Backtracker DFSNiveles 10–30HybridBacktracker + cuartos talladosAlternativa con zonas abiertas
 
 - **Labyrinth es el modo recomendado** para gameplay real — el Smart Slide funciona mejor con corredores de 1 celda de ancho.
 - BSP genera cuartos grandes donde el Smart Slide se degrada a step-by-step.
@@ -75,6 +65,7 @@ public enum MazeStyle { Dungeon, Labyrinth, Hybrid }
 Modo activo: **SlideToWall con Smart Slide**
 
 Reglas de parada al deslizar:
+
 1. Siguiente celda es WALL o fuera de límites
 2. Pasaje estrecho bloqueado por tamaño actual
 3. Celda actual tiene salidas perpendiculares (intersección)
@@ -88,16 +79,16 @@ Campo `Mode` en Inspector permite cambiar a `StepByStep` para testing con teclad
 sizePerStep = 0.85 × difficultyFactor ÷ shortestPathLength
 ```
 
-| difficultyFactor | Significado |
-|---|---|
-| 0.50 | Tutorial (niveles 1–3) |
-| 0.65 | Aprendizaje (niveles 4–7) |
-| 0.75 | Normal (niveles 8–10) |
-| 0.80 | Exigente (niveles 11–15) |
-| 0.85 | Difícil (niveles 16–20) |
-| 0.90 | Muy difícil (niveles 21–25) |
-| 0.95 | Casi perfecto (niveles 26–30) |
-| 0.95→1.0 | Infinito creciente |
+| difficultyFactor | Significado                    |
+| ---------------- | ------------------------------ |
+| 0.50             | Tutorial (niveles 1–3)        |
+| 0.65             | Aprendizaje (niveles 4–7)     |
+| 0.75             | Normal (niveles 8–10)         |
+| 0.80             | Exigente (niveles 11–15)      |
+| 0.85             | Difícil (niveles 16–20)      |
+| 0.90             | Muy difícil (niveles 21–25)  |
+| 0.95             | Casi perfecto (niveles 26–30) |
+| 0.95→1.0        | Infinito creciente             |
 
 - `autoCalibrate = true` (default): calcula sizePerStep automáticamente según el maze generado.
 - En Sistema 5, `difficultyFactor` vendrá del `LevelData` ScriptableObject de cada nivel.
@@ -114,11 +105,14 @@ sizePerStep = 0.85 × difficultyFactor ÷ shortestPathLength
 - Configuración por nivel: `starCount` y `starSizeBonus` → en Sistema 5 vendrán de `LevelData`
 
 ### Garantías actuales
+
 - ✅ **Conectividad**: BFS con `size=1.0` — nunca detrás de NARROW ni en islas desconectadas
 - ⚠️ **Costeabilidad**: NO garantizada — es riesgo/recompensa intencional
 
 ### Pendiente — garantía de estrellas costeables
+
 Implementar filtro opcional `minAffordableStars: int` para cuando `difficultyFactor ≥ 0.85`:
+
 ```
 presupuesto_desvíos = 0.85 - (sizePerStep × shortestPathLength)
 estrella costeable si: distancia_extra × sizePerStep × 2 ≤ presupuesto_desvíos
@@ -130,13 +124,14 @@ Los enemigos se introducen a partir de niveles intermedios. Tocar un enemigo = m
 
 ### Tipos definidos
 
-| Tipo | Comportamiento | Efecto adicional |
-|------|---------------|-----------------|
-| **PatrolEnemy** | Recorre un segmento fijo de ida y vuelta | Ninguno |
-| **TrailEnemy** | Sigue el rastro de migajas del jugador y las devora | Elimina migajas (el jugador no puede recuperar ese tamaño) |
-| *(futuros)* | Perseguidor directo, emboscador, etc. | TBD |
+| Tipo                  | Comportamiento                                      | Efecto adicional                                            |
+| --------------------- | --------------------------------------------------- | ----------------------------------------------------------- |
+| **PatrolEnemy** | Recorre un segmento fijo de ida y vuelta            | Ninguno                                                     |
+| **TrailEnemy**  | Sigue el rastro de migajas del jugador y las devora | Elimina migajas (el jugador no puede recuperar ese tamaño) |
+| *(futuros)*         | Perseguidor directo, emboscador, etc.               | TBD                                                         |
 
 ### Reglas de diseño
+
 - Los enemigos se mueven por celdas (mismo grid que el jugador)
 - No pueden pasar por NARROW si son "grandes" (definir tamaño por tipo)
 - El TrailEnemy sigue la lista de celdas con migaja ordenada por antigüedad (la más reciente primero)
@@ -147,6 +142,7 @@ Los enemigos se introducen a partir de niveles intermedios. Tocar un enemigo = m
 - Namespace: `Shrink.Enemies`
 
 ### Por definir al implementar
+
 - ¿En qué niveles aparece cada tipo?
 - ¿Cuántos enemigos por nivel?
 - ¿El TrailEnemy respawn de migajas o las elimina permanentemente?
@@ -155,12 +151,14 @@ Los enemigos se introducen a partir de niveles intermedios. Tocar un enemigo = m
 ## HUD + Mapa en pausa — Sistema 4
 
 ### Arquitectura UI
+
 - **Un solo Canvas** en escena con dos paneles: `HUDView` (siempre visible) y `PauseView` (se activa/desactiva).
 - Los scripts `HUDController` y `PauseMapController` viven en el Canvas.
 - `GameBootstrap` referencia ambos via `[SerializeField]` — NO los crea en runtime.
 - Textos usan **TextMeshProUGUI** (`TMP_Text`), no `Text` legacy.
 
 ### HUDController (`Scripts/UI/HUDController.cs`)
+
 - **Barra de tamaño** (bottom): `Image` filled horizontal, verde → amarillo → rojo según ratio `(size - MinSize) / rango`
 - **Label de pasos** (`_sizeLabel`): muestra `~N` pasos restantes = `(size - MinSize) / sizePerStep`
 - **Contador de estrellas** (`_starsLabel`): `"recogidas/total"`
@@ -168,6 +166,7 @@ Los enemigos se introducen a partir de niveles intermedios. Tocar un enemigo = m
 - Recibe `ShrinkMechanic` en `Initialize` para calcular pasos restantes por nivel
 
 ### PauseMapController (`Scripts/UI/PauseMapController.cs`)
+
 - Se activa con botón pausa (HUD) o tecla **Escape**
 - Crea en runtime: cámara ortográfica secundaria → `RenderTexture` → asignada al `RawImage` del Inspector
 - `FitMapImage()`: ajusta `sizeDelta` del `RawImage` en runtime según aspect ratio del maze y tamaño de pantalla (parámetros: `maxScreenFraction=0.82`, `bottomReserve=120`)
@@ -176,6 +175,7 @@ Los enemigos se introducen a partir de niveles intermedios. Tocar un enemigo = m
 - Botón **CONTINUAR** (verde, centrado abajo)
 
 ### Jerarquía de escena
+
 ```
 Canvas (Canvas, CanvasScaler, GraphicRaycaster, HUDController, PauseMapController)
   ├── HUDView
@@ -206,15 +206,50 @@ Canvas (Canvas, CanvasScaler, GraphicRaycaster, HUDController, PauseMapControlle
 - Input: `Keyboard.current` y `Touchscreen.current` (New Input System)
 
 ## Tipos de celda (MazeData)
+
 ```csharp
 public enum CellType
 {
     WALL, PATH, ROOM, CORRIDOR, DOOR,
-    START, EXIT, NARROW_06, NARROW_04
+    START, EXIT, NARROW_06, NARROW_04,
+    TRAP_ONESHOT, TRAP_DRAIN          // ← Sistema de trampas (pendiente)
 }
 ```
 
+## Trampas — diseño
+
+Celdas de suelo especiales que actúan como trampas al ser pisadas. Se insertan en el maze igual que puertas y narrow.
+
+### Tipos implementados (pendiente)
+
+| Tipo | Comportamiento | Efecto |
+|---|---|---|
+| `TRAP_ONESHOT` | Se pisa una vez → se convierte en WALL permanentemente | Cierra el camino de regreso. Penaliza no planear la ruta. Interacción clave con migajas: si pisas la trampa, tu ruta de regreso queda cortada |
+| `TRAP_DRAIN` | Drena tamaño al pisarla. Se puede volver a pisar (cobra cada vez) | Sin migaja depositada. Costo configurable (`trapDrainCost`, default `0.08`). Penaliza rutas que cruzan la zona repetidamente |
+
+### Tipo pendiente para futuro
+
+| Tipo | Comportamiento |
+|---|---|
+| `TRAP_TOGGLE` | Al pisarla levanta una WALL temporal durante N segundos bloqueando el paso hacia atrás. Crea puertas de un solo sentido temporales. Para mundos avanzados |
+
+### Reglas de diseño
+
+- Las trampas son siempre visibles (el jugador puede verlas antes de pisarlas) — el reto es de planning, no de sorpresa
+- **Colores**: `TRAP_ONESHOT` = naranja `(0.95, 0.50, 0.10)` | `TRAP_DRAIN` = rojo oscuro `(0.70, 0.10, 0.30)`
+- `TRAP_ONESHOT` al activarse: cambia a WALL en `MazeData.Grid` y destruye su visual
+- `TRAP_DRAIN` no deposita migaja — la pérdida es permanente igual que las puertas. Costo: `trapDrainCost = 0.08`
+- El BFS de validación se ejecuta con las trampas en estado inicial (todas walkables) → nivel siempre soluble
+- Configuración por nivel: `trapOneshotCount` y `trapDrainCount` en `LevelData`
+- Namespace: `Shrink.Maze` (son tipos de celda, no entidades separadas)
+- Introducción: `TRAP_DRAIN` desde nivel 8, `TRAP_ONESHOT` desde nivel 12
+
+### Mejora futura — trampas cerca de estrellas
+
+Colocar `TRAP_DRAIN` preferentemente en celdas adyacentes a estrellas para que recogerlas tenga un coste real. Actualmente no es posible sin refactorizar porque las trampas se insertan en `MazeGenerator` y las estrellas se colocan después en `MazeRenderer` (no comparten contexto). Implementar cuando se revise el pipeline de generación.
+
 ## Mecánica central — reglas inamovibles
+
 - Tamaño inicial esfera: `1.0`
 - Tamaño mínimo antes de muerte: `0.15`
 - Rango usable: `0.85`
@@ -226,28 +261,42 @@ public enum CellType
 - Tocar un enemigo = muerte instantánea (fire `OnLevelFail`)
 
 ## Niveles
-- Mundo 1 (1–10): 20×12, sin tiempo, sin puertas, sin enemigos. NARROW_06 desde nivel 5. MazeStyle: Dungeon
-- Mundo 2 (11–20): 25×15, sin tiempo, 1–2 puertas, PatrolEnemy desde nivel 12. NARROW_04 desde nivel 15. MazeStyle: Labyrinth
+
+- Mundo 1 (1–10): 20×12, sin tiempo, sin puertas, sin enemigos. NARROW_06 desde nivel 5. TRAP_DRAIN desde nivel 8. MazeStyle: Dungeon
+- Mundo 2 (11–20): 25×15, sin tiempo, 1–2 puertas, PatrolEnemy desde nivel 12. NARROW_04 desde nivel 15. TRAP_ONESHOT desde nivel 12. MazeStyle: Labyrinth
 - Mundo 3 (21–30): 35×20 → 40×24, con timer, 2–4 puertas, TrailEnemy desde nivel 22 (bloqueado tras IAP). MazeStyle: Labyrinth
 - Modo infinito: semillas aleatorias, dificultad creciente, todos los tipos de enemigo. MazeStyle: Labyrinth
 
 ## Monetización
-| Producto | Precio | ID sugerido |
-|----------|--------|-------------|
-| Sin anuncios | $1.99 | `no_ads` |
-| Pack Colores | $0.99 | `color_pack` |
-| Mundo 3 | $1.99 | `world_3` |
-| Modo Infinito Pro | $2.99 | `infinite_pro` |
+
+| Producto          | Precio | ID sugerido      |
+| ----------------- | ------ | ---------------- |
+| Sin anuncios      | $1.99  | `no_ads`       |
+| Pack Colores      | $0.99  | `color_pack`   |
+| Mundo 3           | $1.99  | `world_3`      |
+| Modo Infinito Pro | $2.99  | `infinite_pro` |
 
 - Interstitial AdMob: cada 3 niveles completados, solo en pantalla de nivel completado
 - Rewarded AdMob: game over → continuar con 50% tamaño / +30 segundos. Máximo 1 por nivel.
 
 ## Rendimiento
+
 - Target: 60 fps estable en Android gama media
 - Sin allocations en Update — usar pools para migajas y celdas
 - El maze se genera en un hilo separado si supera 30×18 (via `GenerateAsync`)
 
+## Ideas de diseño visual — pendientes para el final
+
+### Player como puñado de arena (idea pendiente)
+- En lugar de esfera sólida, el jugador sería una masa asimétrica de partículas de arena
+- Al moverse deja granos de arena (migajas) en lugar de círculos
+- El desgaste sería visualmente literal: pierdes granos de arena
+- **Alternativa intermedia**: mantener la forma circular base + partículas de arena decorativas alrededor (legibilidad de tamaño sin perder la estética)
+- **Bloqueante**: legibilidad de tamaño en pantalla pequeña y rendimiento en mobile
+- Revisar cuando todos los sistemas estén completos y el juego sea jugable
+
 ## Lo que NO hacer
+
 - No usar assets externos (sprites, fuentes de terceros, modelos)
 - No joystick visible en pantalla durante gameplay
 - No mostrar el maze completo durante gameplay (solo en pausa)

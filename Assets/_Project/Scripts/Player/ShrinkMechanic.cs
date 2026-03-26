@@ -13,6 +13,7 @@ namespace Shrink.Player
     {
         [SerializeField] private float sizePerStep    = 0.02f;
         [SerializeField] private float doorCost       = 0.10f;
+        [SerializeField] private float trapDrainCost  = 0.08f;
 
         [Header("Calibración automática")]
         [Tooltip("Si true, ignora sizePerStep manual y calcula el valor óptimo según el maze.")]
@@ -80,6 +81,16 @@ namespace Shrink.Player
 
                 case CellType.DOOR:
                     _sphere.ApplyDelta(-doorCost);
+                    return true;
+
+                case CellType.TRAP_DRAIN:
+                    _sphere.ApplyDelta(-trapDrainCost);
+                    Events.GameEvents.RaiseTrapActivated(cell, CellType.TRAP_DRAIN);
+                    return true;
+
+                case CellType.TRAP_ONESHOT:
+                    _renderer.ActivateTrap(cell);
+                    Events.GameEvents.RaiseTrapActivated(cell, CellType.TRAP_ONESHOT);
                     return true;
 
                 case CellType.EXIT:

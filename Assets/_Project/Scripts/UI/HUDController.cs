@@ -26,6 +26,9 @@ namespace Shrink.UI
         [Header("Estrellas")]
         [SerializeField] private TMP_Text _starsLabel;
 
+        [Header("Timer")]
+        [SerializeField] private TMP_Text _timerLabel;
+
         [Header("Pausa")]
         [SerializeField] private Button _pauseButton;
 
@@ -43,7 +46,8 @@ namespace Shrink.UI
         /// <summary>
         /// Llamar desde GameBootstrap después de crear el PauseMapController.
         /// </summary>
-        public void Initialize(PauseMapController pauseMap, int totalStars, ShrinkMechanic shrink)
+        public void Initialize(PauseMapController pauseMap, int totalStars, ShrinkMechanic shrink,
+                               bool hasTimer = false)
         {
             _pauseMap    = pauseMap;
             _sizePerStep = shrink.EffectiveSizePerStep;
@@ -60,17 +64,22 @@ namespace Shrink.UI
                 _sizeBarFill.color      = barColorSafe;
             }
 
-            // Inicializar label con tamaño inicial
+            // Timer label — ∞ si el nivel no tiene timer
+            if (_timerLabel != null)
+                _timerLabel.text = hasTimer ? "" : "∞";
+
             RefreshSizeLabel(SphereController.InitialSize);
 
             GameEvents.OnSizeChanged   += OnSizeChanged;
             GameEvents.OnStarCollected += OnStarCollected;
+            GameEvents.OnTimerTick     += OnTimerTick;
         }
 
         private void OnDestroy()
         {
             GameEvents.OnSizeChanged   -= OnSizeChanged;
             GameEvents.OnStarCollected -= OnStarCollected;
+            GameEvents.OnTimerTick     -= OnTimerTick;
         }
 
         // ──────────────────────────────────────────────────────────────────────
@@ -98,6 +107,14 @@ namespace Shrink.UI
         {
             if (_starsLabel != null)
                 _starsLabel.text = $"{collected}/{total}";
+        }
+
+        private void OnTimerTick(float remaining)
+        {
+            if (_timerLabel == null) return;
+            int mins = Mathf.FloorToInt(remaining / 60f);
+            int secs = Mathf.FloorToInt(remaining % 60f);
+            _timerLabel.text = $"{mins}:{secs:D2}";
         }
 
         // ──────────────────────────────────────────────────────────────────────
