@@ -18,7 +18,7 @@ Todo el código del juego vive aquí. No tocar Assets/Scenes, Assets/Settings ni
 
 ```
 Scripts/
-  Core/          ShapeFactory, GameManager
+  Core/          ShapeFactory, GameManager, SaveManager, GameData
   Events/        GameEvents.cs — eventos globales estáticos
   Maze/          MazeGenerator, MazeData, CellType, MazeRenderer
                  Editor/MazeDebugVisualizerEditor.cs
@@ -29,7 +29,7 @@ Scripts/
   UI/            HUDController, PauseMapController
   Level/         LevelManager, LevelData (ScriptableObject), LevelLoader, LevelTimer
   Monetization/  AdManager, IAPManager
-  Audio/         AudioManager                                              ← pendiente Sistema 7
+  Audio/         AudioManager
 
 ScriptableObjects/
   Levels/        30 LevelData assets (Level_01 … Level_30)
@@ -55,7 +55,8 @@ FX/Particles/
 | 4 | Pausa + HUD | ✅ Completo | HUDController + PauseMapController (sin mapa) |
 | 5 | Sistema de niveles y semillas | ✅ Completo | LevelData, LevelManager, LevelLoader, LevelTimer, Trampas |
 | 6 | Monetización | ✅ Completo | IAPManager (Unity IAP v5) + AdManager (AdMob) |
-| 7 | Juice y sonido | ⬜ Pendiente | AudioManager |
+| 7 | Juice y sonido | ✅ Completo | AudioManager, playlists aleatorias, SFX por eventos |
+| S | SaveManager | ✅ Completo | GameData JSON, LevelRecord, AudioSettings, GameStats |
 | 8 | UI completa | ⬜ Pendiente | Boot + Menu + LevelSelect (panel) + GameOver + LevelComplete |
 | 3.5 | Enemigos | ⬜ Pendiente (al final) | Ver sección Enemigos |
 
@@ -216,7 +217,7 @@ Canvas (Canvas, CanvasScaler, GraphicRaycaster, HUDController, PauseMapControlle
 - Lenguaje: C# exclusivamente
 - Comentarios XML en todos los métodos públicos (`/// <summary>`)
 - Cero magic numbers — todo valor configurable es `[SerializeField]`
-- Singletons: GameManager, AdManager, AudioManager, LevelManager
+- Singletons: GameManager, AdManager, AudioManager, LevelManager, SaveManager, IAPManager
 - Eventos globales estáticos en `Scripts/Events/GameEvents.cs`:
   - `OnLevelComplete`, `OnLevelFail`, `OnDoorOpened`
   - `OnSizeChanged`, `OnMigajaAbsorbed`, `OnNarrowPassageBlocked`

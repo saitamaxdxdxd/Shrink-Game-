@@ -1,3 +1,4 @@
+using Shrink.Core;
 using Shrink.Events;
 using Shrink.Level;
 using UnityEngine;
@@ -48,16 +49,20 @@ namespace Shrink.Core
                 Debug.LogError("[GameManager] Falta LevelLoader en el mismo GameObject.");
         }
 
+        private int _starsCollected;
+
         private void OnEnable()
         {
             GameEvents.OnLevelComplete += HandleLevelComplete;
             GameEvents.OnLevelFail     += HandleLevelFail;
+            GameEvents.OnStarCollected += HandleStarCollected;
         }
 
         private void OnDisable()
         {
             GameEvents.OnLevelComplete -= HandleLevelComplete;
             GameEvents.OnLevelFail     -= HandleLevelFail;
+            GameEvents.OnStarCollected -= HandleStarCollected;
         }
 
         private void Start()
@@ -80,6 +85,7 @@ namespace Shrink.Core
                 Debug.LogWarning("[GameManager] LevelManager no disponible o sin niveles asignados.");
                 return;
             }
+            _starsCollected = 0;
             State = GameState.Playing;
             _loader.LoadLevel(lm.CurrentLevel);
         }
@@ -121,18 +127,19 @@ namespace Shrink.Core
         // Handlers de eventos
         // ──────────────────────────────────────────────────────────────────────
 
+        private void HandleStarCollected(int collected, int _total) => _starsCollected = collected;
+
         private void HandleLevelComplete()
         {
             State = GameState.LevelComplete;
-            Debug.Log("[GameManager] ¡NIVEL COMPLETADO!");
-            // Sistema 8 mostrará la pantalla de victoria — por ahora avance automático.
+            SaveManager.Instance?.CompleteLevel(LevelManager.Instance.CurrentIndex, _starsCollected);
+            Debug.Log($"[GameManager] NIVEL COMPLETADO — estrellas: {_starsCollected}");
         }
 
         private void HandleLevelFail()
         {
             State = GameState.LevelFail;
             Debug.Log("[GameManager] GAME OVER.");
-            // Sistema 8 mostrará la pantalla de derrota — por ahora nada.
         }
 
         // ──────────────────────────────────────────────────────────────────────

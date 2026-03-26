@@ -1,3 +1,4 @@
+using Shrink.Core;
 using UnityEngine;
 
 namespace Shrink.Level
@@ -29,8 +30,6 @@ namespace Shrink.Level
         // Estado
         // ──────────────────────────────────────────────────────────────────────
 
-        private const string PrefKeyUnlocked = "Shrink_MaxUnlocked";
-
         /// <summary>Índice 0-basado del nivel en curso.</summary>
         public int CurrentIndex { get; private set; } = 0;
 
@@ -46,11 +45,17 @@ namespace Shrink.Level
         /// <summary>True si existe un nivel siguiente.</summary>
         public bool HasNext => CurrentIndex < TotalLevels - 1;
 
-        /// <summary>Índice máximo desbloqueado (persistido en PlayerPrefs).</summary>
+        /// <summary>Índice máximo desbloqueado según SaveManager.</summary>
         public int MaxUnlockedIndex
         {
-            get => PlayerPrefs.GetInt(PrefKeyUnlocked, 0);
-            private set { PlayerPrefs.SetInt(PrefKeyUnlocked, value); PlayerPrefs.Save(); }
+            get
+            {
+                if (SaveManager.Instance == null) return 0;
+                var levels = SaveManager.Instance.Data.levels;
+                for (int i = levels.Length - 1; i >= 0; i--)
+                    if (levels[i].unlocked) return i;
+                return 0;
+            }
         }
 
         // ──────────────────────────────────────────────────────────────────────
@@ -85,31 +90,30 @@ namespace Shrink.Level
         {
             if (!HasNext) return;
             CurrentIndex++;
-            if (CurrentIndex > MaxUnlockedIndex)
-                MaxUnlockedIndex = CurrentIndex;
+            SaveManager.Instance?.CompleteLevel(CurrentIndex - 1, 0);
         }
 
-        /// <summary>
-        /// Desbloquea manualmente hasta el índice indicado (para debug o IAP).
-        /// </summary>
+        /// <summary>Desbloquea manualmente hasta el índice indicado (debug o IAP).</summary>
         public void UnlockUpTo(int index)
         {
-            if (index > MaxUnlockedIndex)
-                MaxUnlockedIndex = index;
+            if (SaveManager.Instance == null) return;
+            for (int i = 0; i <= index && i < SaveManager.Instance.Data.levels.Length; i++)
+                SaveManager.Instance.Data.levels[i].unlocked = true;
+            SaveManager.Instance.Save();
         }
 
-        /// <summary>
-        /// Devuelve true si el nivel en el índice dado está desbloqueado.
-        /// </summary>
-        public bool IsUnlocked(int index) => index <= MaxUnlockedIndex;
+        /// <summary>Devuelve true si el nivel en el índice dado está desbloqueado.</summary>
+        public bool IsUnlocked(int index)
+        {
+            if (SaveManager.Instance == null) return index == 0;
+            var lvls = SaveManager.Instance.Data.levels;
+            return index < lvls.Length && lvls[index].unlocked;
+        }
 
-        /// <summary>
-        /// Borra el progreso guardado (útil para testing).
-        /// </summary>
+        /// <summary>Borra el progreso guardado (testing).</summary>
         public void ResetProgress()
         {
-            PlayerPrefs.DeleteKey(PrefKeyUnlocked);
-            PlayerPrefs.Save();
+            SaveManager.Instance?.DeleteSave();
             CurrentIndex = 0;
         }
     }
