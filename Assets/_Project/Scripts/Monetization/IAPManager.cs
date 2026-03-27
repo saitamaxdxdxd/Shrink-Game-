@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Purchasing;
 
@@ -16,10 +17,8 @@ namespace Shrink.Monetization
         // IDs de productos (deben coincidir exactamente con App Store / Google Play)
         // ──────────────────────────────────────────────────────────────────────
 
-        public const string ProductNoAds       = "no_ads";
-        public const string ProductColorPack   = "color_pack";
-        public const string ProductWorld3      = "world_3";
-        public const string ProductInfinitePro = "infinite_pro";
+        public const string ProductNoAds    = "no_ads";
+        public const string ProductFullGame = "full_game";
 
         // ──────────────────────────────────────────────────────────────────────
         // Singleton
@@ -34,6 +33,7 @@ namespace Shrink.Monetization
 
         private StoreController _store;
         private readonly HashSet<string> _ownedProducts = new HashSet<string>();
+        private readonly Dictionary<string, string> _prices = new Dictionary<string, string>();
 
         /// <summary>True cuando la conexión con la tienda está lista.</summary>
         public bool IsInitialized { get; private set; }
@@ -77,7 +77,7 @@ namespace Shrink.Monetization
         // Inicialización
         // ──────────────────────────────────────────────────────────────────────
 
-        private async System.Threading.Tasks.Task InitializeAsync()
+        private async Task InitializeAsync()
         {
             _store = UnityIAPServices.StoreController();
 
@@ -92,10 +92,8 @@ namespace Shrink.Monetization
 
                 var products = new List<ProductDefinition>
                 {
-                    new ProductDefinition(ProductNoAds,       ProductType.NonConsumable),
-                    new ProductDefinition(ProductColorPack,   ProductType.NonConsumable),
-                    new ProductDefinition(ProductWorld3,      ProductType.NonConsumable),
-                    new ProductDefinition(ProductInfinitePro, ProductType.NonConsumable),
+                    new ProductDefinition(ProductNoAds,    ProductType.NonConsumable),
+                    new ProductDefinition(ProductFullGame, ProductType.NonConsumable),
                 };
 
                 _store.FetchProducts(products);
@@ -144,16 +142,14 @@ namespace Shrink.Monetization
         // ──────────────────────────────────────────────────────────────────────
 
         /// <summary>True si el jugador ya compró "Sin anuncios".</summary>
-        public bool HasNoAds       => IsOwned(ProductNoAds);
+        public bool HasNoAds    => IsOwned(ProductNoAds);
 
-        /// <summary>True si el jugador ya compró el Pack de Colores.</summary>
-        public bool HasColorPack   => IsOwned(ProductColorPack);
+        /// <summary>True si el jugador ya compró el juego completo (desbloquea todo).</summary>
+        public bool HasFullGame => IsOwned(ProductFullGame);
 
-        /// <summary>True si el jugador ya compró acceso al Mundo 3.</summary>
-        public bool HasWorld3      => IsOwned(ProductWorld3);
-
-        /// <summary>True si el jugador ya compró el Modo Infinito Pro.</summary>
-        public bool HasInfinitePro => IsOwned(ProductInfinitePro);
+        /// <summary>Devuelve el precio localizado del producto o "—" si no está disponible.</summary>
+        public string GetLocalizedPrice(string productId) =>
+            _prices.TryGetValue(productId, out var price) ? price : "—";
 
         private bool IsOwned(string productId) => _ownedProducts.Contains(productId);
 
@@ -164,6 +160,9 @@ namespace Shrink.Monetization
         private void HandleProductsFetched(List<Product> products)
         {
             IsInitialized = true;
+            foreach (var p in products)
+                _prices[p.definition.id] = p.metadata.localizedPriceString;
+
             Debug.Log($"[IAPManager] Tienda lista. {products.Count} productos disponibles.");
             _store.FetchPurchases();
         }

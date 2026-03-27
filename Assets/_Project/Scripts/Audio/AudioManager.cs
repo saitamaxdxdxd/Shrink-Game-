@@ -161,6 +161,12 @@ namespace Shrink.Audio
         // API pública — Volumen
         // ──────────────────────────────────────────────────────────────────────
 
+        /// <summary>Volumen SFX actual (0–1).</summary>
+        public float SFXVolume   => sfxVolume;
+
+        /// <summary>Volumen de música actual (0–1).</summary>
+        public float MusicVolume => musicVolume;
+
         /// <summary>Ajusta el volumen de SFX (0–1) y persiste en SaveManager.</summary>
         public void SetSFXVolume(float value)
         {

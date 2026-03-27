@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24b0d6ff7b3b344cea940a774f84d651, type: 3}
+  m_Name: Level_08
+  m_EditorClassIdentifier: Assembly-CSharp::Shrink.Level.LevelData
+  levelNumber: 8
+  mazeWidth: 20
+  mazeHeight: 20
+  mazeStyle: 0
+  seed: 8
+  difficultyFactor: 0.8
+  doorCount: 0
+  narrow06Count: 1
+  narrow04Count: 0
+  trapOneshotCount: 1
+  trapDrainCount: 1
+  starCount: 3
+  starSizeBonus: 0.05
+  hasTimer: 1
+  timeLimit: 35
