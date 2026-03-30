@@ -203,6 +203,7 @@ namespace Shrink.UI
             }
             _shrink.Revive();
             _shrink.AddSize(_continueBonus);
+            GameEvents.RaisePlayerRevived();
             Core.GameManager.Instance?.ResumeAfterContinue();
 
             HidePanels();

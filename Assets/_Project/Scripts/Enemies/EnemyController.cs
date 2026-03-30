@@ -48,6 +48,7 @@ namespace Shrink.Enemies
 
             GameEvents.OnLevelFail     += OnGameOver;
             GameEvents.OnLevelComplete += OnGameOver;
+            GameEvents.OnPlayerRevived += OnRevive;
 
             StartCoroutine(MoveLoop());
         }
@@ -56,20 +57,35 @@ namespace Shrink.Enemies
         {
             GameEvents.OnLevelFail     -= OnGameOver;
             GameEvents.OnLevelComplete -= OnGameOver;
+            GameEvents.OnPlayerRevived -= OnRevive;
         }
 
         private void OnGameOver() => _active = false;
 
+        private void OnRevive()
+        {
+            if (_wasKiller)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            _active = true;
+            StartCoroutine(MoveLoop());
+        }
+
         // ──────────────────────────────────────────────────────────────────────
         // Detección de colisión con el jugador
         // ──────────────────────────────────────────────────────────────────────
+
+        private bool _wasKiller = false;
 
         private void Update()
         {
             if (!_active || !_player.IsAlive) return;
             if (CurrentCell == _player.CurrentCell)
             {
-                _active = false;
+                _active    = false;
+                _wasKiller = true;
                 GameEvents.RaiseLevelFail();
             }
         }

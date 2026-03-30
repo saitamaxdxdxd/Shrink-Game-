@@ -14,18 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Shrink.Level.LevelData
   levelNumber: 20
   mazeWidth: 25
-  mazeHeight: 15
-  mazeStyle: 1
-  seed: 0
+  mazeHeight: 18
+  mazeStyle: 2
+  seed: 1
   difficultyFactor: 0.85
   doorCount: 2
   narrow06Count: 3
   narrow04Count: 2
   trapOneshotCount: 3
   trapDrainCount: 3
+  spikeCount: 0
   starCount: 4
   starSizeBonus: 0.05
+  patrolEnemyCount: 0
+  trailEnemyCount: 0
   hasTimer: 0
   timeLimit: 120
   manualOverrides: []
   manualStarCells: []
+  manualEnemySpawns: []

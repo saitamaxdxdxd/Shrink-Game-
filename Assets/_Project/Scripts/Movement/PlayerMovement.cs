@@ -59,15 +59,18 @@ namespace Shrink.Movement
 
             GameEvents.OnLevelFail     += OnGameOver;
             GameEvents.OnLevelComplete += OnGameOver;
+            GameEvents.OnPlayerRevived += OnRevive;
         }
 
         private void OnDestroy()
         {
             GameEvents.OnLevelFail     -= OnGameOver;
             GameEvents.OnLevelComplete -= OnGameOver;
+            GameEvents.OnPlayerRevived -= OnRevive;
         }
 
         private void OnGameOver() => _isMoving = true;
+        private void OnRevive()   => _isMoving = false;
 
         // ──────────────────────────────────────────────────────────────────────
         // Update

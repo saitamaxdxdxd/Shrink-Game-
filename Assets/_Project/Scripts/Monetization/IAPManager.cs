@@ -68,10 +68,11 @@ namespace Shrink.Monetization
         private void OnDestroy()
         {
             if (_store == null) return;
-            _store.OnPurchasePending   -= HandlePurchasePending;
-            _store.OnPurchaseConfirmed -= HandlePurchaseConfirmed;
-            _store.OnPurchaseFailed    -= HandlePurchaseFailed;
-            _store.OnProductsFetched   -= HandleProductsFetched;
+            _store.OnPurchasePending        -= HandlePurchasePending;
+            _store.OnPurchaseConfirmed      -= HandlePurchaseConfirmed;
+            _store.OnPurchaseFailed         -= HandlePurchaseFailed;
+            _store.OnProductsFetched        -= HandleProductsFetched;
+            _store.OnPurchasesFetchFailed   -= HandlePurchasesFetchFailed;
         }
 
         // ──────────────────────────────────────────────────────────────────────
@@ -82,10 +83,11 @@ namespace Shrink.Monetization
         {
             _store = UnityIAPServices.StoreController();
 
-            _store.OnPurchasePending   += HandlePurchasePending;
-            _store.OnPurchaseConfirmed += HandlePurchaseConfirmed;
-            _store.OnPurchaseFailed    += HandlePurchaseFailed;
-            _store.OnProductsFetched   += HandleProductsFetched;
+            _store.OnPurchasePending        += HandlePurchasePending;
+            _store.OnPurchaseConfirmed      += HandlePurchaseConfirmed;
+            _store.OnPurchaseFailed         += HandlePurchaseFailed;
+            _store.OnProductsFetched        += HandleProductsFetched;
+            _store.OnPurchasesFetchFailed   += HandlePurchasesFetchFailed;
 
             try
             {
@@ -183,6 +185,11 @@ namespace Shrink.Monetization
             _ownedProducts.Add(id);
             Debug.Log($"[IAPManager] Compra confirmada: {id}");
             OnPurchaseSuccess?.Invoke(id);
+        }
+
+        private void HandlePurchasesFetchFailed(PurchasesFetchFailureDescription failure)
+        {
+            Debug.LogWarning($"[IAPManager] Error al recuperar compras previas: {failure.failureReason} — {failure.message}");
         }
 
         private void HandlePurchaseFailed(FailedOrder order)

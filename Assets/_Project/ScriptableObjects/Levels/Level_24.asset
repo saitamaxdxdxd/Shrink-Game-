@@ -15,17 +15,21 @@ MonoBehaviour:
   levelNumber: 24
   mazeWidth: 35
   mazeHeight: 20
-  mazeStyle: 1
-  seed: 0
+  mazeStyle: 2
+  seed: 13
   difficultyFactor: 0.9
   doorCount: 3
   narrow06Count: 3
   narrow04Count: 2
   trapOneshotCount: 3
   trapDrainCount: 4
+  spikeCount: 0
   starCount: 5
   starSizeBonus: 0.05
+  patrolEnemyCount: 0
+  trailEnemyCount: 0
   hasTimer: 1
   timeLimit: 150
   manualOverrides: []
   manualStarCells: []
+  manualEnemySpawns: []

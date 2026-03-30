@@ -158,6 +158,13 @@ Todo enemigo devora la migaja de la celda al llegar (comportamiento en base clas
 - `ChooseNextCell()` abstract — cada subclase define su comportamiento
 - `OnArrivedAtCell(cell)` virtual — base devora migaja; override para efectos extra
 
+### Revive tras muerte por enemigo
+- Al morir, `OnGameOver()` pone `_active = false` en todos los enemigos y `_isMoving = true` en `PlayerMovement`
+- Si el jugador ve un anuncio para revivir, `GameEvents.RaisePlayerRevived()` se lanza desde `GameResultController.ApplyReward()`
+- El enemigo que causó la muerte tiene `_wasKiller = true` → se destruye al revivir (evita re-muerte inmediata en misma celda)
+- Los demás enemigos escuchan `OnPlayerRevived` y reanudan su `MoveLoop()`
+- `PlayerMovement` escucha `OnPlayerRevived` y resetea `_isMoving = false`
+
 ### Introducción por nivel
 - PatrolEnemy: desde nivel 12 (Mundo 2)
 - TrailEnemy: desde nivel 22 (Mundo 3, bloqueado tras IAP `world_3`)
@@ -340,6 +347,20 @@ List<EnemySpawn>    manualEnemySpawns  // { cell, type, patrolDir }
 
 Estas mecánicas están diseñadas y aprobadas para implementar después de los 30 niveles base. Se documentan aquí para que el siguiente sprint las tenga como referencia sin tener que rediscutirlas.
 
+### Visual del jugador — Blob cluster (lava lamp)
+
+El código existe en `Assets/_Project/Scripts/Player/BlobClusterVisual.cs` (inactivo).
+
+**Concepto:** reemplazar el círculo único del jugador con un blob central grande + satélites pequeños animados con spring physics viscosa.
+
+- **Blob central**: respira con pulso de escala senoidal (`breatheSpeed`, `breatheAmount`)
+- **Satélites**: orbitan usando spring physics — cada uno persigue un target orbital con `vel += toTarget * springK * dt` y amortiguación `vel *= (1 - damping * dt)`. Con springK≈9 y damping≈5.5 el sistema es críticamente amortiguado: se desprenden y pegan sin rebotar.
+- **Squish**: cuando un satélite está lejos del target se aplana en esa dirección (tensión superficial visual). Se logra rotando el child y usando `localScale = (scaleAlong, scalePerp)`.
+- **Masa → blobs activos**: a masa máxima hay 5 satélites + centro. Conforme baja la masa los satélites desaparecen uno a uno. Color fijo (no cambia con la masa — para eso está la barra de vida).
+- **Migajas**: también respiran con pulso senoidal de escala, phase offset aleatorio por migaja para que no estén sincronizadas.
+
+**Para activar**: en `SphereController.Initialize`, sustituir el bloque de `SpriteRenderer` por `BlobClusterVisual.Setup(cellSize)` y delegar `RefreshVisual` a `BlobClusterVisual.Refresh(currentSize, cellSize)`.
+
 ### Nuevos tipos de enemigo
 
 | Tipo | Comportamiento | Efecto especial | Introducción sugerida |
@@ -348,11 +369,13 @@ Estas mecánicas están diseñadas y aprobadas para implementar después de los 
 | **AmbushEnemy** | Estático hasta que el jugador entra en radio N. Persigue brevemente, vuelve a su post. | Obliga a planificar rutas cerca del ambush. Se distingue visualmente del suelo | Nivel 20 |
 | **GhostEnemy** | Atraviesa paredes (ignora WALL al moverse). Solo el jugador puede bloquearlo usando NARROW. | Obliga a buscar pasajes estrechos como refugio | Nivel 25 |
 | **MirrorEnemy** | Se mueve en dirección opuesta al jugador (player va →, mirror va ←). Mismo grid. | Crea rutas forzadas simétricas — si vas a un callejón, él también va | Modo Infinito |
+| **WanderEnemy** | Movimiento aleatorio celda a celda con sesgo suave hacia el jugador (70% random, 30% BFS hacia player). Solo habita y permanece en celdas `ROOM`. | Impredecible — el jugador debe mantener distancia en lugar de memorizar un patrón. El confinamiento a rooms evita bloqueos en corredores. | Infinito mazes 13–14 (Hybrid/Dungeon donde hay rooms) |
 
 **Reglas base (heredadas de EnemyController):**
 - Todos devoran migajas al pasar
 - Todos matan al contacto
 - GhostEnemy necesita `CanEnterGhost()` que ignora WALL
+- WanderEnemy: `CanEnter()` solo permite celdas `ROOM` — si el siguiente paso no es ROOM, elige otra dirección aleatoria. Spawn exclusivo en celdas ROOM.
 
 ### Nuevos tipos de trampa
 
@@ -431,6 +454,7 @@ LocalizationManager.CurrentLanguageName;  // "FRANÇAIS", etc.
   - `OnStarCollected(int collected, int total)`
   - `OnTimerTick(float remaining)`, `OnTrapActivated(Vector2Int cell, CellType type)`
   - `OnLanguageChanged`
+  - `OnPlayerRevived`
 - Namespaces: `Shrink.Core`, `Shrink.Maze`, `Shrink.Player`, `Shrink.Enemies`, `Shrink.Level`, `Shrink.UI`, etc.
 - Un archivo = una clase
 - Input: `Keyboard.current` y `Touchscreen.current` (New Input System)

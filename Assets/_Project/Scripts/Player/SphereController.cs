@@ -21,7 +21,7 @@ namespace Shrink.Player
         // Config
         // ──────────────────────────────────────────────────────────────────────
 
-        [SerializeField] private Color colorAlive = Color.blue;
+        [SerializeField] private Color colorAlive  = Color.blue;
         [SerializeField] private Color colorDanger = new Color(1f, 0.35f, 0.2f);
 
         // ──────────────────────────────────────────────────────────────────────
@@ -35,8 +35,8 @@ namespace Shrink.Player
         /// <summary>Color base de la esfera (sin tinte de peligro). Usado por las migajas.</summary>
         public Color BaseColor => colorAlive;
 
-        private SpriteRenderer  _sr;
-        private MazeRenderer    _mazeRenderer;
+        private SpriteRenderer _sr;
+        private MazeRenderer   _mazeRenderer;
 
         // ──────────────────────────────────────────────────────────────────────
         // Inicialización
@@ -48,7 +48,7 @@ namespace Shrink.Player
             _sr = GetComponent<SpriteRenderer>();
             if (_sr == null) _sr = gameObject.AddComponent<SpriteRenderer>();
 
-            _sr.sprite = Core.ShapeFactory.GetCircle();
+            _sr.sprite       = Core.ShapeFactory.GetCircle();
             _sr.sortingOrder = 5;
 
             CurrentCell = startCell;
@@ -62,15 +62,10 @@ namespace Shrink.Player
         // API pública
         // ──────────────────────────────────────────────────────────────────────
 
-        /// <summary>
-        /// Actualiza la celda actual después de que PlayerMovement completa el movimiento.
-        /// </summary>
+        /// <summary>Actualiza la celda actual después de que PlayerMovement completa el movimiento.</summary>
         public void SetCell(Vector2Int cell) => CurrentCell = cell;
 
-        /// <summary>
-        /// Revive al jugador tras ver un anuncio de recompensa.
-        /// Restaura IsAlive y refresca el visual con el tamaño actual.
-        /// </summary>
+        /// <summary>Revive al jugador tras ver un anuncio de recompensa.</summary>
         public void Revive()
         {
             IsAlive = true;
@@ -78,9 +73,7 @@ namespace Shrink.Player
             RefreshVisual();
         }
 
-        /// <summary>
-        /// Aplica un delta de tamaño (positivo = crecer, negativo = encoger).
-        /// </summary>
+        /// <summary>Aplica un delta de tamaño (positivo = crecer, negativo = encoger).</summary>
         public void ApplyDelta(float delta)
         {
             CurrentSize = Mathf.Clamp(CurrentSize + delta, MinSize, InitialSize);
@@ -100,7 +93,6 @@ namespace Shrink.Player
             float worldSize = CurrentSize * _mazeRenderer.CellSize * 0.85f;
             transform.localScale = Vector3.one * worldSize;
 
-            // Tinte de peligro cuando el tamaño es crítico
             float danger = Mathf.InverseLerp(0.4f, MinSize, CurrentSize);
             _sr.color = Color.Lerp(colorAlive, colorDanger, danger);
         }

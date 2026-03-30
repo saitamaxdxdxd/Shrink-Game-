@@ -1,5 +1,6 @@
 using Shrink.Audio;
 using Shrink.Core;
+using Shrink.Events;
 using Shrink.Monetization;
 using TMPro;
 using UnityEngine;
@@ -34,6 +35,9 @@ namespace Shrink.UI
         [SerializeField] private TMP_Text   _infiniteLockedDescText;
         [SerializeField] private TMP_Text   _infiniteLockedBuyText;
 
+        [Header("Dev")]
+        [SerializeField] private bool _bypassInfiniteLock = false;
+
         // ──────────────────────────────────────────────────────────────────────
         // Ciclo de vida
         // ──────────────────────────────────────────────────────────────────────
@@ -43,7 +47,27 @@ namespace Shrink.UI
             ShowPanel(_mainPanel);
             _infiniteLockedPanel.SetActive(false);
             AudioManager.Instance?.PlayMenuMusic();
+
+            IAPManager.OnPurchaseSuccess     += OnIAPSuccess;
+            IAPManager.OnPurchaseFailedEvent += OnIAPFailed;
         }
+
+        private void OnDestroy()
+        {
+            IAPManager.OnPurchaseSuccess     -= OnIAPSuccess;
+            IAPManager.OnPurchaseFailedEvent -= OnIAPFailed;
+        }
+
+        private void OnIAPSuccess(string productId)
+        {
+            if (productId == IAPManager.ProductInfinitePro || productId == IAPManager.ProductFullGame)
+            {
+                CloseInfiniteLockedModal();
+                StartInfiniteMode();
+            }
+        }
+
+        private static void OnIAPFailed(string productId, string _) { }
 
         // ──────────────────────────────────────────────────────────────────────
         // Botones del MainPanel — conectar en Inspector
@@ -77,7 +101,7 @@ namespace Shrink.UI
         public void OnBackPressed()
         {
             AudioManager.Instance?.PlayButtonTap();
-            _infiniteLockedPanel.SetActive(false);
+            CloseInfiniteLockedModal();
             ShowPanel(_mainPanel);
         }
 
@@ -102,13 +126,38 @@ namespace Shrink.UI
         public void OnInfiniteLockedBuyPressed()
         {
             AudioManager.Instance?.PlayButtonTap();
-            IAPManager.Instance?.BuyProduct(IAPManager.ProductInfinitePro);
+
+            var iap = IAPManager.Instance;
+            if (iap != null && iap.IsInitialized)
+            {
+                iap.BuyProduct(IAPManager.ProductInfinitePro);
+            }
+            else
+            {
+                // IAP no disponible en editor — abre la tienda como fallback
+                _infiniteLockedPanel.SetActive(false);
+                _store.Refresh();
+                ShowPanel(_storePanel);
+            }
         }
 
         /// <summary>Cierra el modal de bloqueado.</summary>
         public void OnInfiniteLockedClose()
         {
             AudioManager.Instance?.PlayButtonTap();
+            CloseInfiniteLockedModal();
+        }
+
+        private void CloseInfiniteLockedModal()
+        {
+            GameEvents.OnLanguageChanged -= RefreshInfiniteLockedDesc;
+
+            if (_infiniteLockedDescText != null)
+            {
+                var localizedComp = _infiniteLockedDescText.GetComponent<LocalizedText>();
+                if (localizedComp != null) localizedComp.enabled = true;
+            }
+
             _infiniteLockedPanel.SetActive(false);
         }
 
@@ -122,6 +171,8 @@ namespace Shrink.UI
         /// </summary>
         private bool IsInfiniteUnlocked()
         {
+            if (_bypassInfiniteLock) return true;
+
             var iap = IAPManager.Instance;
             if (iap != null && (iap.HasInfinitePro || iap.HasFullGame)) return true;
 
@@ -135,19 +186,45 @@ namespace Shrink.UI
             return completed >= InfiniteGateLevel;
         }
 
+        private static int GetCompletedLevels()
+        {
+            var data = SaveManager.Instance?.Data;
+            if (data == null) return 0;
+            int completed = 0;
+            for (int i = 0; i < data.levels.Length; i++)
+                if (data.levels[i] != null && data.levels[i].completed) completed++;
+            return completed;
+        }
+
         private void ShowInfiniteLockedModal()
         {
+            // Desactivar el LocalizedText del desc antes de activar el panel.
+            // Si está activo cuando SetActive(true) corre, su Start()/OnEnable sobrescribe
+            // el texto con el raw string que tiene {0}/{1} sin reemplazar.
+            if (_infiniteLockedDescText != null)
+            {
+                var localizedComp = _infiniteLockedDescText.GetComponent<LocalizedText>();
+                if (localizedComp != null) localizedComp.enabled = false;
+            }
+
+            _infiniteLockedPanel.SetActive(true);
+
+            RefreshInfiniteLockedDesc();
+
             if (_infiniteLockedTitleText != null)
                 _infiniteLockedTitleText.text = LocalizationManager.Get("infinite_locked");
-
-            if (_infiniteLockedDescText != null)
-                _infiniteLockedDescText.text = string.Format(
-                    LocalizationManager.Get("infinite_locked_desc"), InfiniteGateLevel);
-
             if (_infiniteLockedBuyText != null)
                 _infiniteLockedBuyText.text = LocalizationManager.Get("infinite_locked_buy");
 
-            _infiniteLockedPanel.SetActive(true);
+            GameEvents.OnLanguageChanged += RefreshInfiniteLockedDesc;
+        }
+
+        private void RefreshInfiniteLockedDesc()
+        {
+            if (_infiniteLockedDescText == null) return;
+            int completed = GetCompletedLevels();
+            _infiniteLockedDescText.text = string.Format(
+                LocalizationManager.Get("infinite_locked_desc"), completed, InfiniteGateLevel);
         }
 
         private void StartInfiniteMode()

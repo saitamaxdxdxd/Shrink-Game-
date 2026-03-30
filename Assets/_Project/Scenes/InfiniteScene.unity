@@ -1028,7 +1028,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Shrink.Level.InfiniteGameManager
   _loader: {fileID: 491683103}
-  _infiniteHud: {fileID: 0}
+  _infiniteHud: {fileID: 2047391914}
   _mazeMassBonus: 0.04
 --- !u!114 &491683103
 MonoBehaviour:

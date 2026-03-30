@@ -31,6 +31,9 @@ namespace Shrink.Events
         public static void RaiseTimerTick(float remaining)                                              => OnTimerTick?.Invoke(remaining);
         public static void RaiseTrapActivated(UnityEngine.Vector2Int cell, CellType type)               => OnTrapActivated?.Invoke(cell, type);
 
+        public static event Action OnPlayerRevived;
+        public static void RaisePlayerRevived() => OnPlayerRevived?.Invoke();
+
         public static event Action OnLanguageChanged;
         public static void RaiseLanguageChanged() => OnLanguageChanged?.Invoke();
     }

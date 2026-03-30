@@ -40,12 +40,14 @@ namespace Shrink.UI
                 _restoreButton.gameObject.SetActive(false);
 #endif
             }
-            IAPManager.OnPurchaseSuccess += OnPurchaseSuccess;
+            IAPManager.OnPurchaseSuccess      += OnPurchaseSuccess;
+            IAPManager.OnPurchaseFailedEvent  += OnPurchaseFailed;
         }
 
         private void OnDestroy()
         {
-            IAPManager.OnPurchaseSuccess -= OnPurchaseSuccess;
+            IAPManager.OnPurchaseSuccess      -= OnPurchaseSuccess;
+            IAPManager.OnPurchaseFailedEvent  -= OnPurchaseFailed;
         }
 
         // ──────────────────────────────────────────────────────────────────────
@@ -84,6 +86,7 @@ namespace Shrink.UI
         private void OnEnable() => Refresh();
 
         private void OnPurchaseSuccess(string productId) => Refresh();
+        private void OnPurchaseFailed(string productId, string reason) => Refresh();
 
         // ──────────────────────────────────────────────────────────────────────
         // Helper
