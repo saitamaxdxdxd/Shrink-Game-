@@ -1046,9 +1046,11 @@ MonoBehaviour:
   _hud: {fileID: 2047391916}
   _pauseMap: {fileID: 2047391915}
   _gameResult: {fileID: 0}
+  _dpad: {fileID: 0}
   moveTimeSlow: 0.22
   moveTimeFast: 0.08
   joystickDeadzone: 20
+  cameraViewCells: 3.5
 --- !u!4 &491683104
 Transform:
   m_ObjectHideFlags: 0
@@ -4726,6 +4728,9 @@ MonoBehaviour:
   _resumeButton: {fileID: 1242347183}
   _retryButton: {fileID: 1746651596}
   _menuButton: {fileID: 308989202}
+  _controlsButton: {fileID: 0}
+  _controlsPanel: {fileID: 0}
+  _dpad: {fileID: 0}
   _addSizeButton: {fileID: 1998681284}
   _addTimeButton: {fileID: 310535967}
   rewardedSizeBonus: 0.15

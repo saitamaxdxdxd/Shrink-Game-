@@ -24,14 +24,18 @@ namespace Shrink.Level
         [SerializeField] private GameObject _playerPrefab;
 
         [Header("UI")]
-        [SerializeField] private HUDController      _hud;
+        [SerializeField] private HUDController       _hud;
         [SerializeField] private PauseMapController  _pauseMap;
         [SerializeField] private GameResultController _gameResult;
+        [SerializeField] private DPadController      _dpad;
 
         [Header("Movimiento")]
-        [SerializeField] private float moveTimeSlow     = 0.22f;
-        [SerializeField] private float moveTimeFast     = 0.08f;
-        [SerializeField] private float joystickDeadzone = 20f;
+        [SerializeField] private float moveTimeSlow = 0.22f;
+        [SerializeField] private float moveTimeFast = 0.08f;
+
+        [Header("Cámara")]
+        [Tooltip("Celdas visibles desde el jugador hasta el borde. 0 = mostrar maze completo.")]
+        [SerializeField] private float cameraViewCells  = 6f;
 
         // ──────────────────────────────────────────────────────────────────────
         // Referencias runtime
@@ -143,6 +147,13 @@ namespace Shrink.Level
                         trail.Initialize(_renderer, _sphere, spawn.cell);
                         _enemies.Add(trail);
                     }
+                    else if (spawn.type == EnemyType.Chaser)
+                    {
+                        var go     = new GameObject($"ChaserEnemy_{i}");
+                        var chaser = go.AddComponent<ChaserEnemy>();
+                        chaser.Initialize(_renderer, _sphere, spawn.cell);
+                        _enemies.Add(chaser);
+                    }
                     else
                     {
                         Vector2Int dir = spawn.patrolDir == Vector2Int.zero ? Vector2Int.right : spawn.patrolDir;
@@ -156,7 +167,7 @@ namespace Shrink.Level
             }
 
             // ── Spawns aleatorios basados en contadores ────────────────────────
-            if (levelData.PatrolEnemyCount == 0 && levelData.TrailEnemyCount == 0) return;
+            if (levelData.PatrolEnemyCount == 0 && levelData.TrailEnemyCount == 0 && levelData.ChaserEnemyCount == 0) return;
 
             // Recolectar celdas walkables lejos del START (distancia Manhattan >= 5)
             var candidates = new List<Vector2Int>();
@@ -223,6 +234,18 @@ namespace Shrink.Level
                 var trail = go.AddComponent<TrailEnemy>();
                 trail.Initialize(_renderer, _sphere, cell);
                 _enemies.Add(trail);
+            }
+
+            // ── ChaserEnemies ─────────────────────────────────────────────────
+            for (int i = 0; i < levelData.ChaserEnemyCount && candidates.Count > 0; i++)
+            {
+                Vector2Int cell = PickUnused(candidates, used, rng);
+                used.Add(cell);
+
+                var go     = new GameObject($"ChaserEnemy_{i}");
+                var chaser = go.AddComponent<ChaserEnemy>();
+                chaser.Initialize(_renderer, _sphere, cell);
+                _enemies.Add(chaser);
             }
         }
 
@@ -321,11 +344,13 @@ namespace Shrink.Level
 
             _sphere.Initialize(_renderer, mazeData.StartCell);
             _shrink.Initialize(_renderer, levelData.DifficultyFactor);
-            _movement.Initialize(_renderer, moveTimeSlow, moveTimeFast, joystickDeadzone);
+            _movement.Initialize(_renderer, moveTimeSlow, moveTimeFast);
+            _dpad?.SetMovement(_movement);
 
             // ── Cámara ────────────────────────────────────────────────────────
-            float ortho = Mathf.Max(levelData.MazeWidth, levelData.MazeHeight)
-                          * _renderer.CellSize * 0.35f;
+            float ortho = cameraViewCells > 0f
+                ? cameraViewCells * _renderer.CellSize
+                : Mathf.Max(levelData.MazeWidth, levelData.MazeHeight) * _renderer.CellSize * 0.35f;
             _cameraFollow.Initialize(playerGo.transform, ortho);
 
             // ── Timer ─────────────────────────────────────────────────────────

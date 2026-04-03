@@ -24,6 +24,11 @@ namespace Shrink.UI
         [SerializeField] private Button     _resumeButton;
         [SerializeField] private Button     _retryButton;
         [SerializeField] private Button     _menuButton;
+        [SerializeField] private Button     _controlsButton;
+
+        [Header("Panel de controles")]
+        [SerializeField] private GameObject  _controlsPanel;
+        [SerializeField] private DPadController _dpad;
 
         [Header("Botones de recompensa")]
         [SerializeField] private Button _addSizeButton;
@@ -73,6 +78,12 @@ namespace Shrink.UI
             if (_menuButton != null)
                 _menuButton.onClick.AddListener(OnMenuPressed);
 
+            if (_controlsButton != null)
+                _controlsButton.onClick.AddListener(OnControlsPressed);
+
+            if (_controlsPanel != null)
+                _controlsPanel.SetActive(false);
+
             if (_addSizeButton != null)
                 _addSizeButton.onClick.AddListener(OnAddSizePressed);
 
@@ -108,6 +119,23 @@ namespace Shrink.UI
         // API pública
         // ──────────────────────────────────────────────────────────────────────
 
+        private void OnControlsPressed()
+        {
+            _mapPanel?.SetActive(false);
+            _controlsPanel?.SetActive(true);
+            _dpad?.gameObject.SetActive(true);  // mostrar DPad para editarlo
+            _dpad?.SetEditMode(true);
+        }
+
+        public void OnControlsDone()
+        {
+            _dpad?.SetEditMode(false);
+            _dpad?.SaveSettings();
+            _dpad?.gameObject.SetActive(false); // vuelve a ocultarse hasta reanudar
+            _controlsPanel?.SetActive(false);
+            _mapPanel?.SetActive(true);
+        }
+
         private void OnRetryPressed()
         {
             Time.timeScale = 1f;
@@ -131,6 +159,10 @@ namespace Shrink.UI
 
             if (_mapPanel != null)
                 _mapPanel.SetActive(paused);
+
+            // DPad visible solo en gameplay (no en pausa ni otros paneles)
+            if (_dpad != null)
+                _dpad.gameObject.SetActive(!paused);
 
             // Actualizar disponibilidad de botones de recompensa al abrir
             if (paused) RefreshRewardButtons();

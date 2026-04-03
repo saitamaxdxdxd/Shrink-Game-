@@ -3,7 +3,7 @@
 ## Proyecto
 
 Juego móvil puzzle maze 2D top-down para iOS y Android.
-Motor: Unity 6 | Resolución: 1920x1080 landscape | Estilo: minimalista (líneas y círculos, sin assets externos)
+Motor: Unity 6 | Resolución: 1080x1920 portrait | Estilo: minimalista (líneas y círculos, sin assets externos)
 Input System: **New Input System** (Unity package activo — NO usar `UnityEngine.Input` legacy)
 
 ## Ruta raíz de código
@@ -23,10 +23,11 @@ Scripts/
   Maze/          MazeGenerator, MazeData, CellType, MazeRenderer
                  Editor/MazeLevelEditor.cs, Editor/MazeDebugVisualizerEditor.cs
   Player/        SphereController, ShrinkMechanic, Crumb, Star
-  Enemies/       EnemyController, PatrolEnemy, TrailEnemy
+  Enemies/       EnemyController, PatrolEnemy, TrailEnemy, ChaserEnemy
   Movement/      PlayerMovement
   Camera/        CameraFollow
-  UI/            HUDController, PauseMapController, GameResultController, LocalizedText
+  UI/            HUDController, PauseMapController, GameResultController, LocalizedText,
+                 LevelSelectController, DPadController, DPadButton
   Level/         LevelManager, LevelData (ScriptableObject), LevelLoader, LevelTimer,
                  CellOverride, EnemySpawn
   Monetization/  AdManager, IAPManager
@@ -53,14 +54,15 @@ FX/Particles/
 | 1 | Generación procedural de maze | ✅ Completo | BSP + Labyrinth + Hybrid |
 | 2 | Esfera y mecánica de desgaste | ✅ Completo | Migajas, puertas, estrellas, calibración auto |
 | 3 | Movimiento — joystick flotante | ✅ Completo | Floating joystick invisible, re-anclaje dinámico, velocidad inversamente proporcional al tamaño |
-| 3.5 | Enemigos / Mobs | ✅ Completo | PatrolEnemy, TrailEnemy, spawns manuales en editor |
-| 4 | Pausa + HUD | ✅ Completo | HUDController + PauseMapController (Continuar, Retry, Menú, recompensas) |
+| 3.5 | Enemigos / Mobs | ✅ Completo | PatrolEnemy, TrailEnemy, ChaserEnemy — spawns manuales en editor |
+| 4 | Pausa + HUD | ✅ Completo | HUDController + PauseMapController (Continuar, Retry, Menú, recompensas, Controles D-pad) |
 | 5 | Sistema de niveles y semillas | ✅ Completo | LevelData, LevelManager, LevelLoader, LevelTimer, Trampas, Picos |
 | 6 | Monetización | ✅ Completo | IAPManager (Unity IAP v5) + AdManager (AdMob) |
 | 7 | Juice y sonido | ✅ Completo | AudioManager, playlists aleatorias, SFX por eventos |
 | S | SaveManager | ✅ Completo | GameData JSON, LevelRecord, AudioSettings, GameStats |
 | L | Localización | ✅ Completo | EN, ES, PT, FR, DE — auto-detect + guardado en SaveManager |
-| 8 | UI completa | ✅ Completo | Boot + Menu + LevelSelect + GameResult + Localización |
+| 8 | UI completa | ✅ Completo | Boot + Menu + LevelSelect (por mundos) + GameResult + Localización |
+| D | D-pad táctil | ✅ Completo | DPadController + DPadButton — customizable desde pausa (posición, tamaño, alpha). Input por zona: deslizar sin levantar el dedo cambia dirección. |
 | E | Editor visual de niveles | ✅ Completo | Ver sección Editor Visual |
 | 9 | Modo Infinito | ✅ Completo | InfiniteGameManager + InfiniteHUDController + InfiniteScene — ver sección Modo Infinito |
 | F | Mecánicas futuras | ⬜ Backlog | Enemigos adicionales, trampas avanzadas, celdas especiales — ver sección Backlog |
@@ -100,8 +102,13 @@ Un solo modo: **joystick flotante invisible**. No hay modos seleccionables.
 - `Move Time Slow` — velocidad con tamaño máximo (default `0.22`)
 - `Move Time Fast` — velocidad con tamaño mínimo (default `0.08`)
 - `Joystick Deadzone` — píxeles mínimos para registrar dirección (default `20`)
+- `Camera View Cells` — radio de celdas visibles desde el jugador (`3–3.5` recomendado, `0` = todo el maze)
 
-**Teclado (testing):** mantener W/A/S/D o flechas = movimiento continuo.
+**Teclado (testing):** mantener W/A/S/D o flechas = movimiento continuo. Espacio no detiene — el jugador para al soltar la tecla.
+
+**D-pad táctil (alternativa):** `DPadController` envía `SetDPadDirection(Vector2Int)` a `PlayerMovement`. Tiene prioridad sobre joystick si `_dpadDir != zero`. Se muestra/oculta automáticamente según el estado de pausa.
+- Input por zona: todo el input lo gestiona `DPadController`, no los botones hijos. La dirección se calcula por la posición del dedo relativa al centro del D-pad (eje dominante gana). `IPointerMoveHandler` permite deslizar entre direcciones sin levantar el dedo.
+- `DPadButton` es solo un marcador visual — el campo `direction` es referencia; no tiene event handlers.
 
 **Player Prefab**: `Assets/_Project/Prefabs/Player.prefab`
 - Contiene: `SphereController`, `ShrinkMechanic`, `PlayerMovement`
@@ -146,10 +153,16 @@ Todo enemigo devora la migaja de la celda al llegar (comportamiento en base clas
 |------|---------------|-------|
 | **PatrolEnemy** | Recorre un segmento fijo de ida y vuelta, rebota en paredes | Naranja `(1, 0.30, 0.10)` |
 | **TrailEnemy** | BFS hacia la migaja más reciente (`CrumbOrder.Last`), la devora al llegar | Naranja (mismo base) |
+| **ChaserEnemy** | BFS directo hacia la posición actual del jugador. Persigue desde el inicio del nivel. Funciona mejor en Dungeon (rooms). Ideal para nivel 21+. | Azul `(0.10, 0.45, 0.90)` |
+
+### EnemyType enum
+```csharp
+public enum EnemyType { Patrol, Trail, Chaser }
+```
 
 ### Spawning
 - **Manual (editor visual)**: `LevelData.manualEnemySpawns` — lista de `EnemySpawn { cell, type, patrolDir }`. Si hay entradas, ignora los contadores.
-- **Automático**: `patrolEnemyCount` y `trailEnemyCount` en `LevelData`. Posiciones aleatorias con seed reproducible, distancia Manhattan ≥ 5 del START.
+- **Automático**: `patrolEnemyCount`, `trailEnemyCount` y `chaserEnemyCount` en `LevelData`. Posiciones aleatorias con seed reproducible, distancia Manhattan ≥ 5 del START.
 - Todos los enemigos se destruyen en `LevelLoader.UnloadCurrent()`.
 
 ### Implementación base
@@ -169,6 +182,7 @@ Todo enemigo devora la migaja de la celda al llegar (comportamiento en base clas
 ### Introducción por nivel
 - PatrolEnemy: desde nivel 12 (Mundo 1, últimos niveles)
 - TrailEnemy: nivel 19 solo (tutorial del enemigo, sin PatrolEnemy ese nivel), nivel 20 combinado con PatrolEnemy, escala en Mundo 2 desde nivel ~25
+- ChaserEnemy: desde nivel 21 (Mundo 2). Colocarlo lejos del START en rooms grandes de Dungeon.
 
 ## Trampas — diseño
 
@@ -289,6 +303,7 @@ Canvas
 - Botón **MENÚ** (`_menuButton`) — va a MenuScene
 - Botón **AÑADIR MASA** (`_addSizeButton`) — rewarded ad → `+rewardedSizeBonus` (default `0.15`)
 - Botón **AÑADIR TIEMPO** (`_addTimeButton`) — solo visible si el nivel tiene timer → `+rewardedTimeBonus` (default `30s`)
+- Botón **CONTROLES** (`_controlsButton`) — abre ControlsView para ajustar el D-pad
 - Los botones de recompensa se desactivan si ya se usó el rewarded en este nivel
 
 ### Jerarquía de escena
@@ -302,13 +317,32 @@ Canvas
   │   └── SizeBarContainer
   │       ├── LifeBar        (Image filled — _sizeBarFill)
   │       └── LifeText       (TMP — _sizeLabel)
-  └── PauseView              (GameObject — _mapPanel, desactivado por defecto)
-      ├── ResumeButton       (Button — _resumeButton)
-      ├── RetryButton        (Button — _retryButton)
-      ├── MenuButton         (Button — _menuButton)
-      ├── AddSizeButton      (Button — _addSizeButton)
-      └── AddTimeButton      (Button — _addTimeButton, oculto si sin timer)
+  ├── PauseView              (GameObject — _mapPanel, desactivado por defecto)
+  │   ├── ResumeButton       (Button — _resumeButton)
+  │   ├── RetryButton        (Button — _retryButton)
+  │   ├── MenuButton         (Button — _menuButton)
+  │   ├── ControlsButton     (Button — _controlsButton)
+  │   ├── AddSizeButton      (Button — _addSizeButton)
+  │   └── AddTimeButton      (Button — _addTimeButton, oculto si sin timer)
+  ├── ControlsView           (GameObject — _controlsPanel, desactivado por defecto)
+  │   ├── Label              ("Drag to reposition · Sliders to resize and adjust opacity")
+  │   └── DoneButton         → llama PauseMapController.OnControlsDone()
+  └── DPad                   (DPadController — al fondo del Canvas para renderizar sobre todo)
+      ├── ButtonsGroup       (CanvasGroup — controla alpha solo de los 4 botones)
+      │   ├── UpButton       (DPadButton, direction=(0,1))
+      │   ├── DownButton     (DPadButton, direction=(0,-1))
+      │   ├── LeftButton     (DPadButton, direction=(-1,0))
+      │   └── RightButton    (DPadButton, direction=(1,0))
+      └── EditOverlay        (desactivado por defecto — contiene ScaleSlider, AlphaSlider, ResetButton)
 ```
+
+**Notas del D-pad:**
+- `DPadController` se asigna a `LevelLoader._dpad` y a `PauseMapController._dpad`
+- `SetPaused(true)` oculta el DPad; `SetPaused(false)` lo muestra
+- `OnControlsPressed()` oculta PauseView, muestra ControlsView y llama `SetEditMode(true)`
+- `OnControlsDone()` llama `SetEditMode(false)`, `SaveSettings()` y restaura PauseView
+- Posición/escala/alpha se guardan en `SaveManager.Data.dpad` (`DPadSettings`)
+- `DPadSettings.initialized = false` en primer arranque → se usa la posición del editor como default. Se marca `true` al primer `SaveSettings()`. Así la posición colocada en el editor es el default real sin hardcodear coordenadas.
 
 ## GameResultController — Sistema 8
 
@@ -341,7 +375,7 @@ Ventana: **Window → Shrink → Level Editor**
 - **Puertas**: `DOOR`
 - **NARROW**: `NARROW_06`, `NARROW_04`
 - **Estructura**: abrir muros (WALL→PATH) o cerrar celdas (PATH→WALL)
-- **Enemigos**: `→ Patrulla H`, `↑ Patrulla V`, `◎ Rastreador`
+- **Enemigos**: `→ Patrulla H`, `↑ Patrulla V`, `◎ Rastreador`, `⬤ Perseguidor (ChaserEnemy)`
 - **Dificultad**: slider `difficultyFactor` con sizePerStep y margen en vivo
 - **Masa por estrella**: slider `starSizeBonus` con balance total en vivo
 - **Camino óptimo**: toggle overlay azul del BFS START→EXIT (se recalcula al editar estructura)
@@ -377,8 +411,7 @@ El código existe en `Assets/_Project/Scripts/Player/BlobClusterVisual.cs` (inac
 
 | Tipo | Comportamiento | Efecto especial | Introducción sugerida |
 |------|---------------|-----------------|----------------------|
-| **ChaserEnemy** | BFS directo hacia el jugador. Rápido, predecible. | Ninguno — la amenaza es la persecución pura | Nivel 18 |
-| **AmbushEnemy** | Estático hasta que el jugador entra en radio N. Persigue brevemente, vuelve a su post. | Obliga a planificar rutas cerca del ambush. Se distingue visualmente del suelo | Nivel 20 |
+| **AmbushEnemy** | Estático hasta que el jugador entra en radio N. Persigue brevemente, vuelve a su post. | Obliga a planificar rutas cerca del ambush. Se distingue visualmente del suelo | Nivel 22 |
 | **GhostEnemy** | Atraviesa paredes (ignora WALL al moverse). Solo el jugador puede bloquearlo usando NARROW. | Obliga a buscar pasajes estrechos como refugio | Nivel 25 |
 | **MirrorEnemy** | Se mueve en dirección opuesta al jugador (player va →, mirror va ←). Mismo grid. | Crea rutas forzadas simétricas — si vas a un callejón, él también va | Modo Infinito |
 | **WanderEnemy** | Movimiento aleatorio celda a celda con sesgo suave hacia el jugador (70% random, 30% BFS hacia player). Solo habita y permanece en celdas `ROOM`. | Impredecible — el jugador debe mantener distancia en lugar de memorizar un patrón. El confinamiento a rooms evita bloqueos en corredores. | Infinito mazes 13–14 (Hybrid/Dungeon donde hay rooms) |
@@ -453,6 +486,10 @@ LocalizationManager.CurrentLanguageName;  // "FRANÇAIS", etc.
 | `buy`, `owned`, `restore` | Acciones tienda |
 | `gameover`, `victory`, `retry`, `watch_ad`, `menu`, `next`, `cont_btn` | Pantallas resultado |
 | `resume`, `add_size`, `add_time` | Pausa |
+| `controls`, `adjust_dpad`, `done` | Panel de controles D-pad |
+| `world_name`, `world_locked` | Level Select — mundos (usan `string.Format` con `{0}` = número de mundo) |
+| `infinite`, `infinite_locked`, `infinite_locked_desc`, `infinite_locked_buy` | Modo Infinito bloqueado |
+| `infinite_hud_maze`, `run_over`, `run_mazes`, `run_score`, `run_best`, `play_again` | Modo Infinito HUD y Run Over |
 
 ## Convenciones de código
 
@@ -460,6 +497,7 @@ LocalizationManager.CurrentLanguageName;  // "FRANÇAIS", etc.
 - Comentarios XML en todos los métodos públicos (`/// <summary>`)
 - Cero magic numbers — todo valor configurable es `[SerializeField]`
 - Singletons: GameManager, AdManager, AudioManager, LevelManager, SaveManager, IAPManager
+- `GameData` incluye `DPadSettings dpad` — persiste posición, escala, alpha e `initialized` del D-pad táctil
 - Eventos globales estáticos en `Scripts/Events/GameEvents.cs`:
   - `OnLevelComplete`, `OnLevelFail`, `OnDoorOpened`
   - `OnSizeChanged`, `OnMigajaAbsorbed`, `OnNarrowPassageBlocked`
@@ -491,64 +529,6 @@ LocalizationManager.CurrentLanguageName;  // "FRANÇAIS", etc.
 - Sin allocations en Update — usar pools para migajas y celdas
 - Mazes >30×18 se generan en hilo separado via `GenerateAsync`
 
-## Diseño visual — tema definitivo: LLAMA DE FUEGO
-
-**Decisión tomada.** El personaje es una llama/bola de fuego. Todo el theming gira alrededor de fuego vs. agua/viento. Implementar cuando los 30 niveles estén curados y el gameplay sea sólido.
-
-### Personaje — Llama
-- Círculo naranja/amarillo con glow (segundo círculo concéntrico más grande, color más tenue)
-- Al perder masa: color vira hacia rojo oscuro (agonizante). Al mínimo: casi extinguiéndose.
-
-### Migajas — Brasas
-- Puntos pequeños naranja/rojo tenue — brasas que quedó la llama al pasar
-- Al reabsorberse: flash breve de color cálido
-
-### EXIT — Hoguera / Fogata
-- Círculo grande amarillo/naranja con líneas irradiando — la llama busca unirse a algo más grande
-
-### Paredes — Carbón / Piedra oscura
-- Fondo negro `(0.05, 0.05, 0.07)`, paredes gris carbón `(0.15, 0.14, 0.13)`
-- Contraste alto con la llama naranja — muy legible en pantalla pequeña
-
-### SPIKE — Charco de agua
-- Círculo azul con ondas concéntricas (alpha bajo) — el agua apaga la llama
-- Muerte instantánea: la llama se apaga
-
-### Recolectables — Reemplazar estrellas
-- Las estrellas no tienen sentido temático con fuego
-- **Candidatos**: chispas grandes (estrella de fuego), leños/troncos (combustible), velas pequeñas
-- **Decisión pendiente**: elegir entre chispa, leño o vela
-
-### Enemigos — Agua y viento
-- **PatrolEnemy**: gota de agua o nube de lluvia — azul, patrulla fija
-- **TrailEnemy**: corriente de viento — blanco/celeste, persigue brasas
-- **ChaserEnemy** (futuro): chorro de agua directo — azul intenso
-
-### Trampas recontextualizadas
-- `TRAP_DRAIN`: charco permanente — la llama se moja cada vez que pasa
-- `TRAP_ONESHOT`: placa de hielo — se derrite al pisar pero deja hueco (WALL)
-- `TRAP_SLOW` (futuro): barro mojado
-- `TRAP_INVERT` (futuro): torbellino de viento
-
-### Paleta base
-| Elemento | Color |
-|----------|-------|
-| Fondo | `(0.05, 0.05, 0.07)` |
-| Paredes | `(0.15, 0.14, 0.13)` |
-| Llama llena | `(1.0, 0.55, 0.05)` |
-| Llama mínima | `(0.7, 0.10, 0.05)` |
-| Brasas | `(0.9, 0.35, 0.05)` |
-| Hoguera EXIT | `(1.0, 0.85, 0.20)` |
-| Agua/SPIKE | `(0.10, 0.45, 0.90)` |
-| Chispa recolectable | `(1.0, 0.95, 0.60)` |
-
-### Notas de implementación
-- Todo con `ShapeFactory` — círculos y cuadrados, sin sprites externos
-- Glow de la llama: segundo `SpriteRenderer` color más claro, `sortingOrder` menor, escala 1.3×
-- Ondas del charco: dos círculos concéntricos con alpha bajo
-
----
-
 ## Sistemas futuros — post Mundo 2
 
 Implementar en este orden, después de que Mundo 2 (niveles 16–30) esté completo y curado.
@@ -566,7 +546,7 @@ Implementar en este orden, después de que Mundo 2 (niveles 16–30) esté compl
 ## Lo que NO hacer
 
 - No usar assets externos (sprites, fuentes de terceros, modelos)
-- No joystick visible en pantalla durante gameplay
+- No joystick visible en pantalla — el joystick es siempre invisible/flotante. El D-pad táctil SÍ es visible e intencional; no confundir con el joystick flotante
 - No mostrar el maze completo durante gameplay (solo en pausa)
 - No añadir sistemas fuera del orden listado sin confirmación
 - No resumir ni explicar el código entregado — solo código completo y funcional

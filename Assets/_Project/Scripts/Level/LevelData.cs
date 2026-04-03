@@ -45,6 +45,7 @@ namespace Shrink.Level
         [Header("Enemigos")]
         [SerializeField] private int patrolEnemyCount = 0;
         [SerializeField] private int trailEnemyCount  = 0;
+        [SerializeField] private int chaserEnemyCount = 0;
 
         [Header("Timer")]
         [SerializeField] private bool  hasTimer  = false;
@@ -97,6 +98,9 @@ namespace Shrink.Level
 
         /// <summary>Número de TrailEnemy a instanciar.</summary>
         public int        TrailEnemyCount  => trailEnemyCount;
+
+        /// <summary>Número de ChaserEnemy a instanciar.</summary>
+        public int        ChaserEnemyCount => chaserEnemyCount;
 
         /// <summary>True si el nivel tiene límite de tiempo.</summary>
         public bool       HasTimer         => hasTimer;

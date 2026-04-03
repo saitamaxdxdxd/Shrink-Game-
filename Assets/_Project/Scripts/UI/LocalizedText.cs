@@ -38,6 +38,13 @@ namespace Shrink.UI
             GameEvents.OnLanguageChanged -= Refresh;
         }
 
+        /// <summary>Cambia la clave de traducción en runtime y refresca el texto.</summary>
+        public void SetKey(string key)
+        {
+            _key = key;
+            Refresh();
+        }
+
         private void Refresh()
         {
             if (_text != null && !string.IsNullOrEmpty(_key))

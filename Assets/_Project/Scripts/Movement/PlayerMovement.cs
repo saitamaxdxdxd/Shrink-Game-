@@ -7,9 +7,8 @@ using UnityEngine.InputSystem;
 namespace Shrink.Movement
 {
     /// <summary>
-    /// Mueve la esfera por el maze mediante un joystick flotante invisible.
-    /// Mientras el dedo está arrastrado (delta >= joystickDeadzone) la esfera avanza.
-    /// Al soltar el dedo, la esfera para al terminar la celda actual.
+    /// Mueve la esfera por el maze celda a celda.
+    /// Input: D-pad táctil (DPadController) y teclado (testing en editor).
     /// </summary>
     [RequireComponent(typeof(Player.SphereController))]
     [RequireComponent(typeof(Player.ShrinkMechanic))]
@@ -19,9 +18,8 @@ namespace Shrink.Movement
         // Config
         // ──────────────────────────────────────────────────────────────────────
 
-        private float moveTimeSlow   = 0.22f;  // tamaño máximo (1.0) — más lento
-        private float moveTimeFast   = 0.08f;  // tamaño mínimo (0.15) — más rápido
-        private float joystickDeadzone = 20f;
+        private float moveTimeSlow = 0.22f;  // tamaño máximo (1.0) — más lento
+        private float moveTimeFast = 0.08f;  // tamaño mínimo (0.15) — más rápido
 
         // ──────────────────────────────────────────────────────────────────────
         // Referencias
@@ -36,10 +34,9 @@ namespace Shrink.Movement
         // ──────────────────────────────────────────────────────────────────────
 
         private bool       _isMoving;
-        private bool       _joystickActive;
-        private Vector2    _joystickOrigin;
-        private Vector2Int _joystickDir;
         private Vector2Int _currentDir;
+        private Vector2Int _dpadDir;
+        private Vector2Int _bumpedDir; // dirección que causó el último wall bump — evita repetir haptic
 
         // ──────────────────────────────────────────────────────────────────────
         // Inicialización
@@ -48,14 +45,13 @@ namespace Shrink.Movement
         /// <summary>
         /// Llamar desde LevelLoader al construir el nivel.
         /// </summary>
-        public void Initialize(MazeRenderer mazeRenderer, float slowTime, float fastTime, float deadzone)
+        public void Initialize(MazeRenderer mazeRenderer, float slowTime, float fastTime)
         {
-            _sphere          = GetComponent<Player.SphereController>();
-            _shrink          = GetComponent<Player.ShrinkMechanic>();
-            _renderer        = mazeRenderer;
-            moveTimeSlow     = slowTime;
-            moveTimeFast     = fastTime;
-            joystickDeadzone = deadzone;
+            _sphere      = GetComponent<Player.SphereController>();
+            _shrink      = GetComponent<Player.ShrinkMechanic>();
+            _renderer    = mazeRenderer;
+            moveTimeSlow = slowTime;
+            moveTimeFast = fastTime;
 
             GameEvents.OnLevelFail     += OnGameOver;
             GameEvents.OnLevelComplete += OnGameOver;
@@ -76,12 +72,15 @@ namespace Shrink.Movement
         // Update
         // ──────────────────────────────────────────────────────────────────────
 
+        /// <summary>Llamar desde DPadController al presionar/soltar un botón.</summary>
+        public void SetDPadDirection(Vector2Int dir) => _dpadDir = dir;
+
         private void Update()
         {
             if (!_sphere.IsAlive) return;
 
             Vector2Int dir = ReadKeyboardInput();
-            if (dir == Vector2Int.zero) dir = ReadJoystickInput();
+            if (dir == Vector2Int.zero) dir = _dpadDir;
 
             if (_isMoving)
             {
@@ -89,7 +88,11 @@ namespace Shrink.Movement
                 return;
             }
 
-            if (dir == Vector2Int.zero) return;
+            if (dir == Vector2Int.zero)
+            {
+                _bumpedDir = Vector2Int.zero; // soltar botón resetea el bump
+                return;
+            }
 
             _currentDir = dir;
             StartCoroutine(SlideCoroutine());
@@ -115,9 +118,20 @@ namespace Shrink.Movement
 
                 if (!CanEnter(next, out bool narrowBlocked))
                 {
-                    if (narrowBlocked) GameEvents.RaiseNarrowPassageBlocked(next);
+                    if (narrowBlocked)
+                    {
+                        GameEvents.RaiseNarrowPassageBlocked(next);
+                        _bumpedDir = Vector2Int.zero;
+                    }
+                    else if (_currentDir != _bumpedDir)
+                    {
+                        _bumpedDir = _currentDir;
+                        GameEvents.RaiseWallBump();
+                    }
                     break;
                 }
+
+                _bumpedDir = Vector2Int.zero; // movimiento exitoso — resetea bump
 
                 yield return StartCoroutine(LerpToCell(next));
                 _sphere.SetCell(next);
@@ -148,61 +162,6 @@ namespace Shrink.Movement
             if (kb.aKey.isPressed || kb.leftArrowKey.isPressed)  return Vector2Int.left;
             if (kb.dKey.isPressed || kb.rightArrowKey.isPressed) return Vector2Int.right;
             return Vector2Int.zero;
-        }
-
-        // ──────────────────────────────────────────────────────────────────────
-        // Input — joystick flotante invisible
-        // ──────────────────────────────────────────────────────────────────────
-
-        /// <summary>
-        /// Floating joystick invisible: toca en cualquier punto y arrastra.
-        /// La dirección se registra en cuanto el delta supera <see cref="joystickDeadzone"/> px,
-        /// sin esperar a levantar el dedo. El origen se re-ancla al registrar cada nueva
-        /// dirección, así cambiar de dirección siempre cuesta solo el deadzone desde donde
-        /// está el dedo en ese momento.
-        /// </summary>
-        private Vector2Int ReadJoystickInput()
-        {
-            var ts = Touchscreen.current;
-            if (ts == null) return Vector2Int.zero;
-
-            var touch = ts.primaryTouch;
-            var phase = touch.phase.ReadValue();
-
-            if (phase == UnityEngine.InputSystem.TouchPhase.Began)
-            {
-                _joystickOrigin = touch.position.ReadValue();
-                _joystickActive = true;
-                _joystickDir    = Vector2Int.zero;
-            }
-
-            if (!_joystickActive) return Vector2Int.zero;
-
-            if (phase == UnityEngine.InputSystem.TouchPhase.Ended ||
-                phase == UnityEngine.InputSystem.TouchPhase.Canceled)
-            {
-                _joystickActive = false;
-                _joystickDir    = Vector2Int.zero;
-                return Vector2Int.zero;
-            }
-
-            Vector2 currentPos = touch.position.ReadValue();
-            Vector2 delta      = currentPos - _joystickOrigin;
-
-            if (delta.magnitude >= joystickDeadzone)
-            {
-                Vector2Int newDir = Mathf.Abs(delta.x) > Mathf.Abs(delta.y)
-                    ? (delta.x > 0 ? Vector2Int.right : Vector2Int.left)
-                    : (delta.y > 0 ? Vector2Int.up    : Vector2Int.down);
-
-                if (newDir != _joystickDir)
-                {
-                    _joystickDir    = newDir;
-                    _joystickOrigin = currentPos - new Vector2(newDir.x, newDir.y) * (joystickDeadzone * 0.5f);
-                }
-            }
-
-            return _joystickDir;
         }
 
         // ──────────────────────────────────────────────────────────────────────

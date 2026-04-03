@@ -30,7 +30,7 @@ namespace Shrink.Maze.Editor
         private bool                _showPath = true;
         private readonly HashSet<Vector2Int> _pathSet = new();
 
-        private enum PaintMode { Star, TrapDrain, TrapOneshot, Spike, Door, Narrow06, Narrow04, OpenPath, CloseWall, PatrolH, PatrolV, TrailEnemy, Erase }
+        private enum PaintMode { Star, TrapDrain, TrapOneshot, Spike, Door, Narrow06, Narrow04, OpenPath, CloseWall, PatrolH, PatrolV, TrailEnemy, ChaserEnemy, Erase }
 
         // ──────────────────────────────────────────────────────────────────────
         // Colores (coinciden con MazeRenderer)
@@ -38,6 +38,7 @@ namespace Shrink.Maze.Editor
 
         private static readonly Color ColPatrol      = new Color(1.00f, 0.30f, 0.10f);
         private static readonly Color ColTrail       = new Color(0.80f, 0.10f, 0.80f);
+        private static readonly Color ColChaser      = new Color(0.10f, 0.45f, 0.90f);
         private static readonly Color ColPath        = new Color(0.40f, 0.80f, 1.00f, 0.35f);
         private static readonly Color ColSpike       = new Color(0.90f, 0.05f, 0.05f);
         private static readonly Color ColOpenPath    = new Color(0.50f, 1.00f, 0.50f);
@@ -135,6 +136,7 @@ namespace Shrink.Maze.Editor
             PaintButton(PaintMode.PatrolH,     "→ Patrulla H",   ColPatrol);
             PaintButton(PaintMode.PatrolV,     "↑ Patrulla V",   ColPatrol * 0.75f);
             PaintButton(PaintMode.TrailEnemy,  "◎ Rastreador",   ColTrail);
+            PaintButton(PaintMode.ChaserEnemy, "⬤ Perseguidor",  ColChaser);
             PaintButton(PaintMode.Erase,       "✕ Borrar",       new Color(0.5f, 0.5f, 0.5f));
             EditorGUILayout.EndHorizontal();
 
@@ -270,7 +272,8 @@ namespace Shrink.Maze.Editor
                     if (enemySpawns.TryGetValue(cell, out EnemyType et))
                     {
                         float m  = _cellPx * 0.20f;
-                        Color ec = et == EnemyType.Trail ? ColTrail : ColPatrol;
+                        Color ec = et == EnemyType.Trail  ? ColTrail  :
+                                   et == EnemyType.Chaser ? ColChaser : ColPatrol;
                         EditorGUI.DrawRect(new Rect(px + m, py + m, _cellPx - m * 2 - 1, _cellPx - m * 2 - 1), ec * 0.85f);
                     }
 
@@ -314,9 +317,10 @@ namespace Shrink.Maze.Editor
             if (effectiveCt == CellType.START || effectiveCt == CellType.EXIT) return;
 
             // Modos de enemigo: solo sobre celdas walkables (no WALL)
-            bool isEnemyMode = _paintMode == PaintMode.PatrolH ||
-                               _paintMode == PaintMode.PatrolV  ||
-                               _paintMode == PaintMode.TrailEnemy;
+            bool isEnemyMode = _paintMode == PaintMode.PatrolH    ||
+                               _paintMode == PaintMode.PatrolV    ||
+                               _paintMode == PaintMode.TrailEnemy ||
+                               _paintMode == PaintMode.ChaserEnemy;
 
             // OpenPath solo aplica sobre WALLs efectivas; el resto solo sobre celdas no-WALL efectivas
             if (_paintMode == PaintMode.OpenPath  && effectiveCt != CellType.WALL) return;
@@ -344,6 +348,9 @@ namespace Shrink.Maze.Editor
                     break;
                 case PaintMode.TrailEnemy:
                     SetEnemySpawn(cell, EnemyType.Trail, Vector2Int.zero);
+                    break;
+                case PaintMode.ChaserEnemy:
+                    SetEnemySpawn(cell, EnemyType.Chaser, Vector2Int.zero);
                     break;
                 default:
                     SetCellOverride(cell, PaintModeToCellType(_paintMode));

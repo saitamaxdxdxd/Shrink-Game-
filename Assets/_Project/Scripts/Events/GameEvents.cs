@@ -34,6 +34,10 @@ namespace Shrink.Events
         public static event Action OnPlayerRevived;
         public static void RaisePlayerRevived() => OnPlayerRevived?.Invoke();
 
+        /// <summary>Emitido cuando el jugador intenta moverse hacia una pared infranqueable.</summary>
+        public static event Action OnWallBump;
+        public static void RaiseWallBump() => OnWallBump?.Invoke();
+
         public static event Action OnLanguageChanged;
         public static void RaiseLanguageChanged() => OnLanguageChanged?.Invoke();
     }

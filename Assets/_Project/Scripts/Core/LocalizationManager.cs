@@ -113,6 +113,7 @@ namespace Shrink.Core
             "music"         => "MUSIC",
             "movement"      => "MOVEMENT",
             "language"      => "LANGUAGE",
+            "vibration"     => "VIBRATION",
             "move_slide"    => "◀  SLIDE  ▶",
             "move_cont"     => "◀  CONTINUOUS  ▶",
             "move_step"     => "◀  STEP BY STEP  ▶",
@@ -148,6 +149,14 @@ namespace Shrink.Core
             "run_score"              => "SCORE",
             "run_best"               => "BEST",
             "play_again"             => "PLAY AGAIN",
+            // Level Select — mundos bloqueados
+            "world_name"             => "WORLD {0}",
+            "world_locked"           => "UNLOCK WORLD {0}",
+            "controls"               => "CONTROLS",
+            "adjust_dpad"            => "Drag to reposition · Sliders to resize and adjust opacity",
+            "done"                   => "DONE",
+            "vibration_on"           => "VIBRATION  ON",
+            "vibration_off"          => "VIBRATION  OFF",
             _               => key,
         };
 
@@ -165,6 +174,7 @@ namespace Shrink.Core
             "music"         => "MÚSICA",
             "movement"      => "MOVIMIENTO",
             "language"      => "IDIOMA",
+            "vibration"     => "VIBRACIÓN",
             "move_slide"    => "◀  DESLIZAR  ▶",
             "move_cont"     => "◀  CONTINUO  ▶",
             "move_step"     => "◀  PASO A PASO  ▶",
@@ -195,6 +205,13 @@ namespace Shrink.Core
             "run_score"              => "PUNTUACIÓN",
             "run_best"               => "RÉCORD",
             "play_again"             => "JUGAR DE NUEVO",
+            "world_name"             => "MUNDO {0}",
+            "world_locked"           => "DESBLOQUEAR MUNDO {0}",
+            "controls"               => "CONTROLES",
+            "adjust_dpad"            => "Arrastra para mover · Sliders para tamaño y opacidad",
+            "done"                   => "LISTO",
+            "vibration_on"           => "VIBRACIÓN  ON",
+            "vibration_off"          => "VIBRACIÓN  OFF",
             _               => EN(key),
         };
 
@@ -242,6 +259,8 @@ namespace Shrink.Core
             "run_score"              => "PONTUAÇÃO",
             "run_best"               => "RECORDE",
             "play_again"             => "JOGAR DE NOVO",
+            "world_name"             => "MUNDO {0}",
+            "world_locked"           => "DESBLOQUEAR MUNDO {0}",
             _               => EN(key),
         };
 
@@ -289,6 +308,8 @@ namespace Shrink.Core
             "run_score"              => "PUNKTE",
             "run_best"               => "BESTLEISTUNG",
             "play_again"             => "NOCHMAL SPIELEN",
+            "world_name"             => "WELT {0}",
+            "world_locked"           => "WELT {0} FREISCHALTEN",
             _               => EN(key),
         };
 
@@ -336,6 +357,8 @@ namespace Shrink.Core
             "run_score"              => "SCORE",
             "run_best"               => "RECORD",
             "play_again"             => "REJOUER",
+            "world_name"             => "MONDE {0}",
+            "world_locked"           => "DÉBLOQUER MONDE {0}",
             _               => EN(key),
         };
     }

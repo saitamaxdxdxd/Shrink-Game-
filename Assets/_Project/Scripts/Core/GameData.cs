@@ -9,10 +9,11 @@ namespace Shrink.Core
     [Serializable]
     public class GameData
     {
-        public LevelRecord[] levels  = new LevelRecord[30];
-        public AudioSettings audio   = new AudioSettings();
-        public GameStats     stats   = new GameStats();
+        public LevelRecord[] levels   = new LevelRecord[30];
+        public AudioSettings audio    = new AudioSettings();
+        public GameStats     stats    = new GameStats();
         public GameSettings  settings = new GameSettings();
+        public DPadSettings  dpad     = new DPadSettings();
 
         /// <summary>Inicializa todos los registros de nivel.</summary>
         public void Init()
@@ -65,5 +66,27 @@ namespace Shrink.Core
 
         /// <summary>Código de idioma ("en", "es", "pt", "fr"). Vacío = auto-detectar.</summary>
         public string language = "";
+
+        /// <summary>Vibración háptica activada.</summary>
+        public bool vibrationEnabled = true;
+    }
+
+    /// <summary>Posición, tamaño y transparencia del D-pad en pantalla.</summary>
+    [Serializable]
+    public class DPadSettings
+    {
+        /// <summary>False en el primer arranque: DPadController usará la posición del editor en lugar de estos valores.</summary>
+        public bool initialized = false;
+        /// <summary>AnchoredPosition X del D-pad (espacio Canvas).</summary>
+        public float positionX;
+        /// <summary>AnchoredPosition Y del D-pad (espacio Canvas).</summary>
+        public float positionY;
+        /// <summary>Escala uniforme del D-pad (0.5 – 1.5).</summary>
+        public float scale = 1f;
+        /// <summary>Alpha en gameplay (0.1 – 1.0).</summary>
+        public float alpha = 0.45f;
+        /// <summary>Tamaño del canvas cuando se guardó la posición. Si cambia, la posición guardada se descarta.</summary>
+        public float savedCanvasWidth;
+        public float savedCanvasHeight;
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Shrink.Level
 {
     /// <summary>Tipo de enemigo a instanciar en un spawn point manual.</summary>
-    public enum EnemyType { Patrol, Trail }
+    public enum EnemyType { Patrol, Trail, Chaser }
 
     /// <summary>
     /// Punto de spawn manual de un enemigo, guardado en LevelData.
