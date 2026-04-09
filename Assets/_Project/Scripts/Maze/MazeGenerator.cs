@@ -118,7 +118,7 @@ namespace Shrink.Maze
 
             InsertNarrowPassages(grid, width, height, rng, narrowConfig);
             InsertDoors(grid, width, height, rng, doorCount);
-            InsertTraps(grid, width, height, rng, trapConfig);
+            InsertTraps(grid, width, height, rng, trapConfig, startCell, exitCell);
 
             int pathLength = GetShortestPathLength(grid, width, height, startCell, exitCell);
             if (pathLength < 0) return null; // sin solución
@@ -409,7 +409,8 @@ namespace Shrink.Maze
         // ──────────────────────────────────────────────────────────────────────────
 
         private static void InsertTraps(CellType[,] grid, int width, int height,
-                                         System.Random rng, TrapConfig cfg)
+                                         System.Random rng, TrapConfig cfg,
+                                         Vector2Int startCell, Vector2Int exitCell)
         {
             if (cfg.OneshotCount == 0 && cfg.DrainCount == 0 && cfg.SpikeCount == 0) return;
 
@@ -433,16 +434,21 @@ namespace Shrink.Maze
             {
                 if (placedOneshot < cfg.OneshotCount)
                 {
+                    // ONESHOT se convierte en WALL al pisarse — no puede ser el único camino
+                    if (IsCriticalCell(grid, width, height, cell, startCell, exitCell)) continue;
                     grid[cell.x, cell.y] = CellType.TRAP_ONESHOT;
                     placedOneshot++;
                 }
                 else if (placedDrain < cfg.DrainCount)
                 {
+                    // DRAIN no bloquea el paso, solo drena masa — cualquier celda sirve
                     grid[cell.x, cell.y] = CellType.TRAP_DRAIN;
                     placedDrain++;
                 }
                 else if (placedSpike < cfg.SpikeCount)
                 {
+                    // SPIKE mata al contacto — no puede ser la única salida de una zona
+                    if (IsCriticalCell(grid, width, height, cell, startCell, exitCell)) continue;
                     grid[cell.x, cell.y] = CellType.SPIKE;
                     placedSpike++;
                 }
@@ -451,6 +457,20 @@ namespace Shrink.Maze
                     placedDrain   >= cfg.DrainCount   &&
                     placedSpike   >= cfg.SpikeCount) break;
             }
+        }
+
+        /// <summary>
+        /// Devuelve true si la celda es el único camino entre START y EXIT
+        /// (tratarla como WALL desconecta el maze).
+        /// </summary>
+        private static bool IsCriticalCell(CellType[,] grid, int width, int height,
+                                            Vector2Int cell, Vector2Int start, Vector2Int exit)
+        {
+            var saved = grid[cell.x, cell.y];
+            grid[cell.x, cell.y] = CellType.WALL;
+            bool disconnects = GetShortestPathLength(grid, width, height, start, exit) < 0;
+            grid[cell.x, cell.y] = saved;
+            return disconnects;
         }
 
         // ──────────────────────────────────────────────────────────────────────────

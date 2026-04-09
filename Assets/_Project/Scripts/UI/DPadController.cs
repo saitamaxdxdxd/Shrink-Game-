@@ -98,7 +98,9 @@ namespace Shrink.UI
         private void Start()
         {
             _defaultPosition = _rect.anchoredPosition;
-            _defaultScale    = transform.localScale.x;
+            _defaultScale    = _buttonsGroup != null
+                ? _buttonsGroup.transform.localScale.x
+                : transform.localScale.x;
             _defaultAlpha    = _normalAlpha;
 
             ApplySavedSettings();
@@ -135,8 +137,8 @@ namespace Shrink.UI
         private void ResetToDefault()
         {
             _rect.anchoredPosition = _defaultPosition;
-            transform.localScale   = Vector3.one * _defaultScale;
-            _normalAlpha           = _defaultAlpha;
+            SetButtonsScale(_defaultScale);
+            _normalAlpha = _defaultAlpha;
 
             if (_scaleSlider != null)
                 _scaleSlider.SetValueWithoutNotify(_defaultScale);
@@ -154,8 +156,11 @@ namespace Shrink.UI
             if (on)
             {
                 _movement?.SetDPadDirection(Vector2Int.zero);
+                float currentScale = _buttonsGroup != null
+                    ? _buttonsGroup.transform.localScale.x
+                    : transform.localScale.x;
                 if (_scaleSlider != null)
-                    _scaleSlider.SetValueWithoutNotify(transform.localScale.x);
+                    _scaleSlider.SetValueWithoutNotify(currentScale);
                 if (_alphaSlider != null)
                     _alphaSlider.SetValueWithoutNotify(_normalAlpha);
             }
@@ -205,7 +210,8 @@ namespace Shrink.UI
         {
             if (_rect.parent is not RectTransform parentRect) return pos;
 
-            Vector2 dpadSize = _rect.rect.size * transform.localScale.x;
+            float   buttonsScale = _buttonsGroup != null ? _buttonsGroup.transform.localScale.x : 1f;
+            Vector2 dpadSize     = _rect.rect.size * buttonsScale;
             Vector2 pivot    = _rect.pivot;
 
             // anchoredPosition es relativo al anchor reference point, no al origen del parent.
@@ -226,7 +232,13 @@ namespace Shrink.UI
             return new Vector2(Mathf.Clamp(pos.x, minX, maxX), Mathf.Clamp(pos.y, minY, maxY));
         }
 
-        private void OnScaleChanged(float value) => transform.localScale = Vector3.one * value;
+        private void OnScaleChanged(float value) => SetButtonsScale(value);
+
+        private void SetButtonsScale(float value)
+        {
+            if (_buttonsGroup != null)
+                _buttonsGroup.transform.localScale = Vector3.one * value;
+        }
 
         private void OnAlphaChanged(float value)
         {
@@ -243,8 +255,8 @@ namespace Shrink.UI
             if (SaveManager.Instance == null) return;
             var s = SaveManager.Instance.Data.dpad;
 
-            transform.localScale = Vector3.one * s.scale;
-            _normalAlpha         = s.alpha;
+            SetButtonsScale(s.scale);
+            _normalAlpha = s.alpha;
 
             if (_scaleSlider != null)
                 _scaleSlider.SetValueWithoutNotify(s.scale);
@@ -287,7 +299,7 @@ namespace Shrink.UI
             s.initialized = true;
             s.positionX   = _rect.anchoredPosition.x;
             s.positionY   = _rect.anchoredPosition.y;
-            s.scale       = transform.localScale.x;
+            s.scale       = _buttonsGroup != null ? _buttonsGroup.transform.localScale.x : 1f;
             s.alpha       = _normalAlpha;
 
             if (_rect.parent is RectTransform parentRect)

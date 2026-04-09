@@ -16,8 +16,9 @@ namespace Shrink.UI
     {
         /// <summary>Niveles completados necesarios para desbloquear el Modo Infinito (sin IAP).</summary>
         private const int    InfiniteGateLevel = 15;
-        private const string InfiniteSceneName = "InfiniteScene";
-        private const string DailySceneName    = "DailyScene";
+        private const string InfiniteSceneName    = "InfiniteScene";
+        private const string DailySceneName       = "DailyScene";
+        private const string MultiplayerSceneName = "MultiplayerScene";
 
         [Header("Paneles")]
         [SerializeField] private GameObject _mainPanel;
@@ -247,6 +248,11 @@ namespace Shrink.UI
         private void StartInfiniteMode()
         {
             SceneLoader.Load(InfiniteSceneName);
+        }
+
+        public void GoToMultiplayer()
+        {
+            SceneLoader.Load(MultiplayerSceneName);
         }
 
         private void ShowPanel(GameObject target)

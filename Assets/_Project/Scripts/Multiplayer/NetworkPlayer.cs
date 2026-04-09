@@ -119,12 +119,12 @@ namespace Shrink.Multiplayer
 
             // Colocar migaja en la celda anterior (si no tiene ya una)
             if (!mazeState.IsCrumbAlive(PrevCell.x, PrevCell.y))
-                mazeState.Rpc_PlaceCrumb(PrevCell.x, PrevCell.y);
+                mazeState.PlaceCrumb(PrevCell.x, PrevCell.y);
 
             // Absorber migaja en la nueva celda (si existe de otro jugador)
             if (mazeState.IsCrumbAlive(Cell.x, Cell.y))
             {
-                mazeState.Rpc_ConsumeCrumb(Cell.x, Cell.y);
+                mazeState.ConsumeCrumb(Cell.x, Cell.y);
                 Size = Mathf.Clamp(Size + mazeState.SizePerStep, SphereController.MinSize, SphereController.InitialSize);
             }
             else
@@ -137,7 +137,38 @@ namespace Shrink.Multiplayer
             _moveCooldown = Mathf.Lerp(0.08f, 0.22f,
                 Mathf.InverseLerp(SphereController.MinSize, SphereController.InitialSize, Size));
 
-            // Verificar muerte
+            // Colisión player vs player: el más grande roba masa al más pequeño
+            foreach (var other in FindObjectsByType<NetworkPlayer>(FindObjectsSortMode.None))
+            {
+                if (other == this || !other.IsAlive || other.HasFinished) continue;
+                if (other.Cell != Cell) continue;
+
+                if (Size > other.Size)
+                {
+                    float steal = mazeState.SizePerStep * 5f;
+                    Size = Mathf.Clamp(Size + steal, SphereController.MinSize, SphereController.InitialSize);
+                }
+                else if (Size < other.Size)
+                {
+                    float lose = mazeState.SizePerStep * 5f;
+                    Size = Mathf.Clamp(Size - lose, SphereController.MinSize, SphereController.InitialSize);
+                }
+                // Si son iguales, no pasa nada
+            }
+
+            // Verificar colisión con enemigos de patrulla
+            foreach (var enemy in FindObjectsByType<NetworkPatrolEnemy>(FindObjectsSortMode.None))
+            {
+                if (enemy.Cell == Cell)
+                {
+                    IsAlive = false;
+                    Score   = ComputeScore();
+                    Rank    = ++mazeState.FinishedCount;
+                    return;
+                }
+            }
+
+            // Verificar muerte por masa
             if (Size <= SphereController.MinSize)
             {
                 IsAlive = false;
@@ -150,7 +181,7 @@ namespace Shrink.Multiplayer
             if (Cell == mazeState.MazeData.ExitCell)
             {
                 HasFinished = true;
-                Score       = ComputeScore();
+                Score       = ComputeScore() + 50;   // bonus por llegar al EXIT
                 Rank        = ++mazeState.FinishedCount;
 
                 // Si todos terminaron → GameOver
@@ -166,11 +197,19 @@ namespace Shrink.Multiplayer
             var mazeState = NetworkMazeState.Instance;
             if (mazeState?.Renderer == null) return;
 
+            // Muerto o salido: invisible
+            if (!IsAlive || HasFinished)
+            {
+                if (_sr != null) _sr.enabled = false;
+                return;
+            }
+
             var target = mazeState.Renderer.CellToWorld(Cell);
             _visualPos = Vector3.Lerp(_visualPos, target, Time.deltaTime * 14f);
             transform.position = _visualPos;
 
             if (_sr == null) return;
+            _sr.enabled = true;
 
             float worldSize = Size * mazeState.Renderer.CellSize * 0.85f;
             transform.localScale = Vector3.one * worldSize;

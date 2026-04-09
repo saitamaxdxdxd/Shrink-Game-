@@ -480,12 +480,12 @@ MonoBehaviour:
     image: {fileID: 662298863}
     animationFrames: []
     frameInterval: 0.1
-    displayTime: 2
+    displayTime: 1.5
   - canvasGroup: {fileID: 1375250407}
     image: {fileID: 1375250408}
     animationFrames: []
     frameInterval: 0.1
-    displayTime: 2
+    displayTime: 1.5
   fadeInTime: 0.4
   fadeOutTime: 0.4
   saveManager: {fileID: 671382500}

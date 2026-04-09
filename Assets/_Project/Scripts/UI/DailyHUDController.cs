@@ -104,7 +104,7 @@ namespace Shrink.UI
             // Retry visible solo si no completó hoy (pueden reintentar hasta el primer éxito)
             if (_retryButton != null)
                 _retryButton.gameObject.SetActive(
-                    !won || !(DailyChallengeManager.Instance?.AlreadyCompletedThisWeek ?? false));
+                    !won || !(DailyChallengeManager.Instance?.AlreadyCompletedToday ?? false));
 
             _resultPanel?.SetActive(true);
 
@@ -144,14 +144,14 @@ namespace Shrink.UI
             {
                 bool   isMe = playerEntry != null && entry.PlayerId == playerEntry.PlayerId;
                 string name = entry.PlayerName?.Split('#')[0] ?? "???";
-                string mark = isMe ? "  ◀" : "";
+                string mark = isMe ? "  <<" : "";
                 sb.AppendLine($"{entry.Rank + 1}.  {name}  {(int)entry.Score}{mark}");
             }
 
             if (playerEntry != null && playerEntry.Rank >= top.Count)
             {
                 string name = playerEntry.PlayerName?.Split('#')[0] ?? "???";
-                sb.AppendLine($"#{playerEntry.Rank + 1}  {name}  {(int)playerEntry.Score}  ◀");
+                sb.AppendLine($"#{playerEntry.Rank + 1}  {name}  {(int)playerEntry.Score}  <<");
             }
 
             _leaderboardText.text = sb.ToString().TrimEnd();

@@ -1,4 +1,5 @@
 using System.Collections;
+using Fusion;
 using Shrink.Core;
 using Shrink.UI;
 using UnityEngine;
@@ -17,7 +18,9 @@ namespace Shrink.Multiplayer
         // ── Inspector ─────────────────────────────────────────────────────────
         [SerializeField] private MultiplayerHUDController _hud;
         [SerializeField] private DPadController           _dpad;
-        [SerializeField] private float                    _maxWaitSeconds = 15f;
+        [SerializeField] private NetworkBotPlayer         _botPrefab;
+        [SerializeField] private float                    _maxWaitSeconds = 20f;
+        [SerializeField] private int                      _maxPlayers     = 4;
 
         public DPadController Dpad => _dpad;
 
@@ -70,18 +73,19 @@ namespace Shrink.Multiplayer
             // Esperar a que NetworkMazeState exista y esté listo
             yield return new WaitUntil(() => NetworkMazeState.Instance?.Renderer != null);
 
-            _hud?.ShowWaiting(MultiplayerManager.Instance.Runner.SessionInfo.PlayerCount);
+            _hud?.ShowWaiting();
 
             // Esperar jugadores o timeout
             while (elapsed < _maxWaitSeconds)
             {
                 elapsed += Time.deltaTime;
-                int connected = MultiplayerManager.Instance.Runner.SessionInfo.PlayerCount;
-                int ready     = NetworkMazeState.Instance?.PlayersReady ?? 0;
+                int connected    = MultiplayerManager.Instance.Runner.SessionInfo.PlayerCount;
+                int ready        = NetworkMazeState.Instance?.PlayersReady ?? 0;
+                int secsLeft     = Mathf.CeilToInt(_maxWaitSeconds - elapsed);
 
-                _hud?.UpdateWaiting(ready, connected);
+                _hud?.UpdateWaiting(connected, _maxPlayers, secsLeft);
 
-                if (ready >= connected && connected > 0)
+                if (ready >= connected && connected >= _maxPlayers)
                     break;
 
                 yield return null;
@@ -90,7 +94,10 @@ namespace Shrink.Multiplayer
             // Arrancar countdown (solo master client)
             var runner = MultiplayerManager.Instance.Runner;
             if (runner != null && runner.IsSharedModeMasterClient)
+            {
+                SpawnBots(runner);
                 NetworkMazeState.Instance?.Rpc_StartCountdown();
+            }
         }
 
         // ── Callbacks del sistema ────────────────────────────────────────────
@@ -119,7 +126,8 @@ namespace Shrink.Multiplayer
 
             if (cam != null && NetworkMazeState.Instance?.Renderer != null)
             {
-                float ortho = 6f * NetworkMazeState.Instance.Renderer.CellSize;
+                // Muestra ~10 celdas verticalmente — suficiente contexto para competitivo
+                float ortho = 5f * NetworkMazeState.Instance.Renderer.CellSize;
                 cam.Initialize(_localPlayer.transform, ortho);
             }
         }
@@ -159,18 +167,37 @@ namespace Shrink.Multiplayer
             for (int i = 0; i < players.Length; i++)
             {
                 var np = players[i];
+                // Solo puntúan los que llegaron al EXIT — los demás quedan en 0
                 results[i] = new PlayerResult
                 {
-                    Name   = np.PlayerName.ToString(),
-                    Score  = np.HasFinished || !np.IsAlive ? np.Score
-                                : Mathf.RoundToInt(np.Size * 600f) + np.Stars * 10,
-                    Rank   = np.Rank,
+                    Name    = np.PlayerName.ToString(),
+                    Score   = np.HasFinished ? np.Score : 0,
+                    Rank    = np.Rank,
                     IsLocal = np.HasStateAuthority,
+                    Finished = np.HasFinished,
                 };
             }
             System.Array.Sort(results, (a, b) =>
                 b.Score.CompareTo(a.Score));
             return results;
+        }
+
+        // ── Bots ─────────────────────────────────────────────────────────────
+
+        private void SpawnBots(NetworkRunner runner)
+        {
+            if (_botPrefab == null) return;
+
+            int humans     = runner.SessionInfo.PlayerCount;
+            int botsNeeded = Mathf.Max(0, _maxPlayers - humans);
+
+            for (int i = 0; i < botsNeeded; i++)
+            {
+                var no = runner.Spawn(_botPrefab, Vector3.zero, Quaternion.identity);
+                if (no == null) continue;
+                var bot = no.GetComponent<NetworkBotPlayer>();
+                if (bot != null) bot.BotSlot = humans + i;
+            }
         }
 
         private void OnDisconnected()
@@ -183,5 +210,6 @@ namespace Shrink.Multiplayer
         public int    Score;
         public int    Rank;
         public bool   IsLocal;
+        public bool   Finished;
     }
 }

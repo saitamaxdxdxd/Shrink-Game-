@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Project/Scenes/DailyScene.unity
     guid: 6e22840ea70d941a6b9e275068258990
+  - enabled: 1
+    path: Assets/_Project/Scenes/MultiplayerScene.unity
+    guid: a1bd384646a724b77885e8e2d27ac372
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

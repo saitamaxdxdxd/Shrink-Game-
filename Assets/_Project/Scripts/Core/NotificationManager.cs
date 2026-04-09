@@ -97,8 +97,8 @@ namespace Shrink.Core
         // ── Reto Diario ───────────────────────────────────────────────────────
 
         /// <summary>
-        /// Programa la notificación semanal para el próximo lunes a las <see cref="DailyNotifHour"/>h.
-        /// En iOS usa un trigger de calendario repetible (lunes); en Android reprograma cada arranque.
+        /// Programa la notificación diaria para mañana a las <see cref="DailyNotifHour"/>h.
+        /// Se reprograma en cada arranque y al volver de pausa.
         /// </summary>
         private void ScheduleDailyReminder()
         {
@@ -106,15 +106,15 @@ namespace Shrink.Core
 
 #if UNITY_ANDROID
             CancelAndroid(PlayerPrefs.GetInt(DailyIdKey, -1));
-            var notification = BuildAndroid("Shrink", body, NextMondayOccurrence(DailyNotifHour));
+            var notification = BuildAndroid("Shrink", body, NextOccurrence(DailyNotifHour));
             int id = AndroidNotificationCenter.SendNotification(notification, AndroidChannelId);
             PlayerPrefs.SetInt(DailyIdKey, id);
             PlayerPrefs.Save();
 #endif
 #if UNITY_IOS
             iOSNotificationCenter.RemoveScheduledNotification(IOSDailyId);
-            var nextMonday   = NextMondayOccurrence(DailyNotifHour);
-            var intervalSecs = (nextMonday - DateTime.Now).TotalSeconds;
+            var nextDay      = NextOccurrence(DailyNotifHour);
+            var intervalSecs = (nextDay - DateTime.Now).TotalSeconds;
             var trigger = new iOSNotificationTimeIntervalTrigger
             {
                 TimeInterval = TimeSpan.FromSeconds(intervalSecs),
@@ -164,6 +164,15 @@ namespace Shrink.Core
 
         // ── Builders ──────────────────────────────────────────────────────────
 
+        /// <summary>Próxima ocurrencia de las <paramref name="hour"/>h locales (hoy o mañana).</summary>
+        private static DateTime NextOccurrence(int hour)
+        {
+            var now  = DateTime.Now;
+            var next = now.Date.AddHours(hour);
+            if (next <= now) next = next.AddDays(1);
+            return next;
+        }
+
 #if UNITY_ANDROID
         private static void RegisterAndroidChannel()
         {
@@ -176,24 +185,7 @@ namespace Shrink.Core
             };
             AndroidNotificationCenter.RegisterNotificationChannel(channel);
         }
-
-        private static DateTime NextOccurrence(int hour)
-        {
-            var now  = DateTime.Now;
-            var next = now.Date.AddHours(hour);
-            if (next <= now) next = next.AddDays(1);
-            return next;
-        }
-
 #endif
-
-        private static DateTime NextMondayOccurrence(int hour)
-        {
-            var now = DateTime.Now;
-            int daysUntilMonday = ((int)DayOfWeek.Monday - (int)now.DayOfWeek + 7) % 7;
-            if (daysUntilMonday == 0) daysUntilMonday = 7;
-            return now.Date.AddDays(daysUntilMonday).AddHours(hour);
-        }
 
 #if UNITY_ANDROID
 

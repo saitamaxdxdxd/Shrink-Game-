@@ -40,6 +40,7 @@ namespace Shrink.UI
         [SerializeField] private TextMeshProUGUI _timerLabel;
         [SerializeField] private TextMeshProUGUI _scoresLabel;
         [SerializeField] private Image           _localSizeBar;
+        [SerializeField] private TextMeshProUGUI _localSizeText;
 
         [Header("Resultados")]
         [SerializeField] private TextMeshProUGUI _resultsLabel;
@@ -82,16 +83,28 @@ namespace Shrink.UI
             if (_matchmakingLabel != null) _matchmakingLabel.text = "Buscando partida…";
         }
 
-        public void ShowWaiting(int total)
+        public void ShowWaiting()
         {
             HideAll();
             _waitingPanel?.SetActive(true);
+            if (_waitingLabel != null)
+                _waitingLabel.text = "Buscando jugadores...";
         }
 
-        public void UpdateWaiting(int ready, int total)
+        public void UpdateWaiting(int connected, int maxPlayers, int secsLeft)
         {
-            if (_waitingLabel != null)
-                _waitingLabel.text = $"Jugadores listos: {ready}/{total}";
+            if (_waitingLabel == null) return;
+
+            string players = connected == 1
+                ? "1 jugador conectado"
+                : $"{connected} jugadores conectados";
+
+            string dots = (Time.time % 1f) < 0.33f ? "." :
+                          (Time.time % 1f) < 0.66f ? ".." : "...";
+
+            _waitingLabel.text = secsLeft > 5
+                ? $"Buscando jugadores{dots}\n\n{players}  •  {maxPlayers} máx"
+                : $"Buscando jugadores{dots}\n\n{players}  •  {maxPlayers} máx\n\n<size=70%><color=#FF8844>Iniciando en {secsLeft}s...</color></size>";
         }
 
         public void ShowError(string message)
@@ -125,10 +138,18 @@ namespace Shrink.UI
 
             for (int i = 0; i < results.Length; i++)
             {
-                var r   = results[i];
-                string medal = i switch { 0 => "🥇", 1 => "🥈", 2 => "🥉", _ => $"{i + 1}." };
-                string you  = r.IsLocal ? " <color=#FFD700>(Tú)</color>" : "";
-                sb.AppendLine($"{medal} {r.Name}{you}  —  {r.Score} pts");
+                var r = results[i];
+                string you = r.IsLocal ? " <color=#FFD700>(Tú)</color>" : "";
+
+                if (!r.Finished)
+                {
+                    sb.AppendLine($"<color=#888888>DNF  {r.Name}{you}  —  no llegó al EXIT</color>");
+                }
+                else
+                {
+                    string medal = i switch { 0 => "🥇", 1 => "🥈", 2 => "🥉", _ => $"{i + 1}." };
+                    sb.AppendLine($"{medal} {r.Name}{you}  —  {r.Score} pts");
+                }
             }
 
             _resultsLabel.text = sb.ToString();
@@ -158,19 +179,19 @@ namespace Shrink.UI
                 _scoresLabel.text = sb.ToString();
             }
 
-            // Barra de masa del jugador local
-            if (_localSizeBar != null)
+            // Barra y texto de masa del jugador local
+            var allPlayers = FindObjectsByType<NetworkPlayer>(FindObjectsSortMode.None);
+            foreach (var np in allPlayers)
             {
-                var players = FindObjectsByType<NetworkPlayer>(FindObjectsSortMode.None);
-                foreach (var np in players)
-                {
-                    if (!np.HasStateAuthority) continue;
+                if (!np.HasStateAuthority) continue;
+                if (_localSizeBar != null)
                     _localSizeBar.fillAmount = Mathf.InverseLerp(
                         Shrink.Player.SphereController.MinSize,
                         Shrink.Player.SphereController.InitialSize,
                         np.Size);
-                    break;
-                }
+                if (_localSizeText != null)
+                    _localSizeText.text = $"{np.Size * 100f:0}%";
+                break;
             }
         }
 

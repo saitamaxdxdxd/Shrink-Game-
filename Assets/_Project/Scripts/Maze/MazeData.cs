@@ -29,7 +29,7 @@ namespace Shrink.Maze
         public Vector2Int StartCell { get; }
 
         /// <summary>Posición de la celda de salida (EXIT).</summary>
-        public Vector2Int ExitCell { get; }
+        public Vector2Int ExitCell { get; internal set; }
 
         // ──────────────────────────────────────────────────────────────────────
         // Análisis de jugabilidad (calculado al generar)

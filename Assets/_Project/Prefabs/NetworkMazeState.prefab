@@ -64,10 +64,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c9e64ba6b812484d8da8efb756ab629, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Shrink.Multiplayer.NetworkMazeState
-  MazeWidth: 25
-  MazeHeight: 15
+  MazeWidth: 35
+  MazeHeight: 25
   GameDuration: 180
   CountdownDuration: 5
+  _doorCount: 0
+  _narrow06Count: 0
+  _narrow04Count: 0
+  _drainCount: 5
+  _oneshotCount: 2
+  _spikeCount: 3
+  _enemyPrefab: {fileID: 7714128186173774211, guid: 6f4e8ff15f0204f0797be9b3a6e4806b, type: 3}
+  _patrolEnemyCount: 5
   _Seed: 0
   _Phase: 0
   _TimeRemaining: 0

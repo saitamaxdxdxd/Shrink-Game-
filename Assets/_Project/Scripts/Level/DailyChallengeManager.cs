@@ -11,8 +11,9 @@ namespace Shrink.Level
     /// <summary>
     /// Gestiona el Reto Diario: genera el maze del día (semilla = fecha UTC),
     /// calcula el score al completar y actualiza la racha del jugador.
+    /// Un nuevo maze cada día a las 00:00 UTC.
     ///
-    /// Score = masaNormalizada × 500 + max(0, 300 − segundosTardados)  [máx 800]
+    /// Score = masaNormalizada × 600 + max(0, 240 − segundosTardados)  [máx 840]
     ///
     /// Adjuntar al mismo GameObject que LevelLoader en DailyScene.
     /// </summary>
@@ -56,7 +57,7 @@ namespace Shrink.Level
         // API pública
         // ──────────────────────────────────────────────────────────────────────
 
-        /// <summary>Carga (o recarga) el maze de la semana actual.</summary>
+        /// <summary>Carga (o recarga) el maze del día actual.</summary>
         public void BeginChallenge()
         {
             _levelActive    = true;
@@ -64,18 +65,18 @@ namespace Shrink.Level
             _loader.LoadLevel(BuildLevelData());
 
             var save = SaveManager.Instance?.Data.daily;
-            _dailyHud?.UpdateStats(GetThisWeekString(), save?.streak ?? 0);
+            _dailyHud?.UpdateStats(GetTodayString(), save?.streak ?? 0);
         }
 
-        /// <summary>True si el jugador ya completó el reto esta semana (streak contabilizado).</summary>
-        public bool AlreadyCompletedThisWeek
-            => SaveManager.Instance?.Data.daily.lastPlayedDate == GetThisWeekString();
+        /// <summary>True si el jugador ya completó el reto hoy (streak contabilizado).</summary>
+        public bool AlreadyCompletedToday
+            => SaveManager.Instance?.Data.daily.lastPlayedDate == GetTodayString();
 
         // ──────────────────────────────────────────────────────────────────────
         // Handlers
         // ──────────────────────────────────────────────────────────────────────
 
-        private void HandleComplete()
+        private async void HandleComplete()
         {
             if (!_levelActive) return;
             _levelActive = false;
@@ -86,14 +87,17 @@ namespace Shrink.Level
 
             UpdateRecord(score);
 
+            // Submit primero — el leaderboard se fetcha justo después en ShowResult
+            if (UGSManager.Instance != null)
+                await UGSManager.Instance.SubmitDailyScoreAsync(score);
+
+            _ = UGSManager.Instance?.PushToCloudAsync();
+
             int bestScore = SaveManager.Instance?.Data.daily.bestScore ?? 0;
             int streak    = SaveManager.Instance?.Data.daily.streak    ?? 0;
 
             _dailyHud?.ShowResult(won: true, score: score,
                 bestScore: bestScore, streak: streak, elapsed: elapsed);
-
-            _ = UGSManager.Instance?.SubmitDailyScoreAsync(score);
-            _ = UGSManager.Instance?.PushToCloudAsync();
         }
 
         private void HandleFail()
@@ -117,13 +121,13 @@ namespace Shrink.Level
             var save = SaveManager.Instance;
             if (save == null) return;
 
-            var record       = save.Data.daily;
-            string thisWeek  = GetThisWeekString();
-            string lastWeek  = GetWeekString(DateTime.UtcNow.Date.AddDays(-7));
+            var record     = save.Data.daily;
+            string today     = GetTodayString();
+            string yesterday = GetDateString(DateTime.UtcNow.Date.AddDays(-1));
 
-            if (record.lastPlayedDate == thisWeek)
+            if (record.lastPlayedDate == today)
             {
-                // Ya jugó esta semana — actualizar best si mejoró, sin tocar el streak
+                // Ya jugó hoy — actualizar best si mejoró, sin tocar el streak
                 if (score > record.bestScore)
                 {
                     record.bestScore = score;
@@ -132,8 +136,8 @@ namespace Shrink.Level
                 return;
             }
 
-            record.streak = (record.lastPlayedDate == lastWeek) ? record.streak + 1 : 1;
-            record.lastPlayedDate = thisWeek;
+            record.streak = (record.lastPlayedDate == yesterday) ? record.streak + 1 : 1;
+            record.lastPlayedDate = today;
             if (score > record.bestScore) record.bestScore = score;
 
             save.SaveDailyRecord(record);
@@ -145,21 +149,21 @@ namespace Shrink.Level
 
         private static LevelData BuildLevelData()
         {
-            int seed = GetWeeklySeed();
-            var rng  = new System.Random(seed); // determinístico por semana
+            int seed = GetDailySeed();
+            var rng  = new System.Random(seed); // determinístico por día
 
             // ── Estilo ────────────────────────────────────────────────────────
             MazeStyle[] styles = { MazeStyle.Labyrinth, MazeStyle.Dungeon, MazeStyle.Hybrid };
             var style = styles[rng.Next(styles.Length)];
 
-            // ── Tamaño — varía por semana ─────────────────────────────────────
+            // ── Tamaño — varía por día ───────────────────────────────────────
             (int w, int h)[] sizes =
             {
                 (35, 20), (38, 22), (40, 24), (42, 26), (45, 28)
             };
             var (width, height) = sizes[rng.Next(sizes.Length)];
 
-            // ── Obstáculos — varía por semana ─────────────────────────────────
+            // ── Obstáculos — varía por día ───────────────────────────────────
             // Sin narrow: pueden quedar en el camino crítico y bloquear al jugador
             int narrow06    = 0;
             int trapDrain   = rng.Next(2, 6);   // 2–5 trampas drain
@@ -202,24 +206,18 @@ namespace Shrink.Level
             return massScore + timeBonus;
         }
 
-        /// <summary>Semilla de la semana ISO actual (UTC).</summary>
-        public static int GetWeeklySeed()
+        /// <summary>Semilla del día actual UTC (yyyyMMdd). Igual para todos los jugadores del mundo.</summary>
+        public static int GetDailySeed()
         {
             var date = DateTime.UtcNow.Date;
-            int week = System.Globalization.ISOWeek.GetWeekOfYear(date);
-            int year = System.Globalization.ISOWeek.GetYear(date);
-            return year * 100 + week;
+            return date.Year * 10000 + date.Month * 100 + date.Day;
         }
 
-        /// <summary>Identificador de la semana ISO actual, ej. "2026-W14".</summary>
-        public static string GetThisWeekString()
-            => GetWeekString(DateTime.UtcNow.Date);
+        /// <summary>Identificador del día actual UTC, ej. "2026-04-08".</summary>
+        public static string GetTodayString()
+            => GetDateString(DateTime.UtcNow.Date);
 
-        private static string GetWeekString(DateTime date)
-        {
-            int week = System.Globalization.ISOWeek.GetWeekOfYear(date);
-            int year = System.Globalization.ISOWeek.GetYear(date);
-            return $"{year}-W{week:D2}";
-        }
+        private static string GetDateString(DateTime date)
+            => date.ToString("yyyy-MM-dd");
     }
 }

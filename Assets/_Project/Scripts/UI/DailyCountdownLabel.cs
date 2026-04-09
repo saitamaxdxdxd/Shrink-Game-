@@ -5,13 +5,16 @@ using UnityEngine;
 namespace Shrink.UI
 {
     /// <summary>
-    /// Muestra la cuenta regresiva hasta el próximo Reto Semanal (lunes 00:00 UTC).
+    /// Muestra la fecha UTC del maze actual mientras no haya cambiado,
+    /// o "Nuevo maze en Xh" cuando falta poco (menos de 3h) para el reset UTC.
     /// Adjuntar directamente al TMP_Text deseado — no requiere asignaciones en Inspector.
-    /// Formato: "6d 23:59:59" o "23:59:59" cuando queda menos de un día.
     /// </summary>
     [RequireComponent(typeof(TMP_Text))]
     public class DailyCountdownLabel : MonoBehaviour
     {
+        /// Umbral en horas para mostrar countdown en lugar de la fecha
+        private const double CountdownThresholdHours = 3.0;
+
         private TMP_Text _label;
         private float    _tick;
 
@@ -35,17 +38,22 @@ namespace Shrink.UI
 
         private void Refresh()
         {
-            var now = DateTime.UtcNow;
+            var now       = DateTime.UtcNow;
+            var tomorrow  = now.Date.AddDays(1); // medianoche UTC
+            var remaining = tomorrow - now;
 
-            // Próximo lunes a medianoche UTC
-            int daysUntilMonday = ((int)DayOfWeek.Monday - (int)now.DayOfWeek + 7) % 7;
-            if (daysUntilMonday == 0) daysUntilMonday = 7; // hoy es lunes → próximo lunes
-            var nextMonday = now.Date.AddDays(daysUntilMonday);
-            var remaining  = nextMonday - now;
-
-            _label.text = remaining.Days > 0
-                ? $"{remaining.Days}d {remaining.Hours:D2}:{remaining.Minutes:D2}:{remaining.Seconds:D2}"
-                : $"{remaining.Hours:D2}:{remaining.Minutes:D2}:{remaining.Seconds:D2}";
+            if (remaining.TotalHours <= CountdownThresholdHours)
+            {
+                // Cerca del reset: mostrar "Nuevo en Xh Xm"
+                _label.text = remaining.Hours > 0
+                    ? $"Nuevo en {remaining.Hours}h {remaining.Minutes:D2}m"
+                    : $"Nuevo en {remaining.Minutes}m";
+            }
+            else
+            {
+                // Durante el día: mostrar la fecha del maze actual (fecha UTC)
+                _label.text = now.ToString("MMM d").ToUpper();  // "APR 8"
+            }
         }
     }
 }
