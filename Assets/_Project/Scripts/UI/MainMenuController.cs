@@ -1,7 +1,6 @@
 using Shrink.Audio;
 using Shrink.Core;
 using Shrink.Events;
-using Shrink.Monetization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,8 +13,10 @@ namespace Shrink.UI
     /// </summary>
     public class MainMenuController : MonoBehaviour
     {
-        /// <summary>Niveles completados necesarios para desbloquear el Modo Infinito (sin IAP).</summary>
-        private const int    InfiniteGateLevel = 15;
+        /// <summary>Niveles completados necesarios para desbloquear el Modo Infinito.</summary>
+        private const int InfiniteGateLevel = 15;
+        /// <summary>Estrellas mínimas en Mundo 1 (30 posibles) para desbloquear el Modo Infinito.</summary>
+        private const int InfiniteGateStars = 20;
         private const string InfiniteSceneName    = "InfiniteScene";
         private const string DailySceneName       = "DailyScene";
         private const string MultiplayerSceneName = "MultiplayerScene";
@@ -36,7 +37,11 @@ namespace Shrink.UI
         [SerializeField] private GameObject _infiniteLockedPanel;
         [SerializeField] private TMP_Text   _infiniteLockedTitleText;
         [SerializeField] private TMP_Text   _infiniteLockedDescText;
-        [SerializeField] private TMP_Text   _infiniteLockedBuyText;
+
+        [Header("Multijugador — modal próximamente")]
+        [SerializeField] private GameObject _multiplayerSoonPanel;
+        [SerializeField] private TMP_Text   _multiplayerSoonTitleText;
+        [SerializeField] private TMP_Text   _multiplayerSoonDescText;
 
         [Header("Dev")]
         [SerializeField] private bool _bypassInfiniteLock = false;
@@ -49,28 +54,9 @@ namespace Shrink.UI
         {
             ShowPanel(_mainPanel);
             _infiniteLockedPanel.SetActive(false);
+            _multiplayerSoonPanel.SetActive(false);
             AudioManager.Instance?.PlayMenuMusic();
-
-            IAPManager.OnPurchaseSuccess     += OnIAPSuccess;
-            IAPManager.OnPurchaseFailedEvent += OnIAPFailed;
         }
-
-        private void OnDestroy()
-        {
-            IAPManager.OnPurchaseSuccess     -= OnIAPSuccess;
-            IAPManager.OnPurchaseFailedEvent -= OnIAPFailed;
-        }
-
-        private void OnIAPSuccess(string productId)
-        {
-            if (productId == IAPManager.ProductInfinitePro || productId == IAPManager.ProductFullGame)
-            {
-                CloseInfiniteLockedModal();
-                StartInfiniteMode();
-            }
-        }
-
-        private static void OnIAPFailed(string productId, string _) { }
 
         // ──────────────────────────────────────────────────────────────────────
         // Botones del MainPanel — conectar en Inspector
@@ -119,6 +105,7 @@ namespace Shrink.UI
         {
             AudioManager.Instance?.PlayButtonTap();
             CloseInfiniteLockedModal();
+            CloseMultiplayerSoonModal();
             _leaderboard?.Close();
             ShowPanel(_mainPanel);
         }
@@ -140,25 +127,6 @@ namespace Shrink.UI
                 ShowInfiniteLockedModal();
         }
 
-        /// <summary>Llamado por el botón de compra dentro del modal de bloqueado.</summary>
-        public void OnInfiniteLockedBuyPressed()
-        {
-            AudioManager.Instance?.PlayButtonTap();
-
-            var iap = IAPManager.Instance;
-            if (iap != null && iap.IsInitialized)
-            {
-                iap.BuyProduct(IAPManager.ProductInfinitePro);
-            }
-            else
-            {
-                // IAP no disponible en editor — abre la tienda como fallback
-                _infiniteLockedPanel.SetActive(false);
-                _store.Refresh();
-                ShowPanel(_storePanel);
-            }
-        }
-
         /// <summary>Cierra el modal de bloqueado.</summary>
         public void OnInfiniteLockedClose()
         {
@@ -169,13 +137,8 @@ namespace Shrink.UI
         private void CloseInfiniteLockedModal()
         {
             GameEvents.OnLanguageChanged -= RefreshInfiniteLockedDesc;
-
-            if (_infiniteLockedDescText != null)
-            {
-                var localizedComp = _infiniteLockedDescText.GetComponent<LocalizedText>();
-                if (localizedComp != null) localizedComp.enabled = true;
-            }
-
+            EnableLocalizedText(_infiniteLockedTitleText);
+            EnableLocalizedText(_infiniteLockedDescText);
             _infiniteLockedPanel.SetActive(false);
         }
 
@@ -185,64 +148,57 @@ namespace Shrink.UI
 
         /// <summary>
         /// Devuelve true si el jugador puede acceder al Modo Infinito:
-        /// completó <see cref="InfiniteGateLevel"/> niveles, o tiene infinite_pro / full_game.
+        /// completó <see cref="InfiniteGateLevel"/> niveles y acumuló
+        /// al menos <see cref="InfiniteGateStars"/> estrellas en el Mundo 1.
         /// </summary>
         private bool IsInfiniteUnlocked()
         {
             if (_bypassInfiniteLock) return true;
 
-            var iap = IAPManager.Instance;
-            if (iap != null && (iap.HasInfinitePro || iap.HasFullGame)) return true;
-
-            var data = SaveManager.Instance?.Data;
-            if (data == null) return false;
-
-            int completed = 0;
-            for (int i = 0; i < data.levels.Length; i++)
-                if (data.levels[i] != null && data.levels[i].completed) completed++;
-
-            return completed >= InfiniteGateLevel;
+            return GetCompletedLevels() >= InfiniteGateLevel
+                && GetStarsInWorld1()   >= InfiniteGateStars;
         }
 
         private static int GetCompletedLevels()
         {
             var data = SaveManager.Instance?.Data;
             if (data == null) return 0;
-            int completed = 0;
-            for (int i = 0; i < data.levels.Length; i++)
-                if (data.levels[i] != null && data.levels[i].completed) completed++;
-            return completed;
+            int count = 0;
+            int limit = Mathf.Min(InfiniteGateLevel, data.levels.Length);
+            for (int i = 0; i < limit; i++)
+                if (data.levels[i] != null && data.levels[i].completed) count++;
+            return count;
+        }
+
+        private static int GetStarsInWorld1()
+        {
+            var data = SaveManager.Instance?.Data;
+            if (data == null) return 0;
+            int stars = 0;
+            int limit = Mathf.Min(InfiniteGateLevel, data.levels.Length);
+            for (int i = 0; i < limit; i++)
+                if (data.levels[i] != null) stars += data.levels[i].stars;
+            return stars;
         }
 
         private void ShowInfiniteLockedModal()
         {
-            // Desactivar el LocalizedText del desc antes de activar el panel.
-            // Si está activo cuando SetActive(true) corre, su Start()/OnEnable sobrescribe
-            // el texto con el raw string que tiene {0}/{1} sin reemplazar.
-            if (_infiniteLockedDescText != null)
-            {
-                var localizedComp = _infiniteLockedDescText.GetComponent<LocalizedText>();
-                if (localizedComp != null) localizedComp.enabled = false;
-            }
-
+            DisableLocalizedText(_infiniteLockedTitleText);
+            DisableLocalizedText(_infiniteLockedDescText);
             _infiniteLockedPanel.SetActive(true);
-
             RefreshInfiniteLockedDesc();
-
-            if (_infiniteLockedTitleText != null)
-                _infiniteLockedTitleText.text = LocalizationManager.Get("infinite_locked");
-            if (_infiniteLockedBuyText != null)
-                _infiniteLockedBuyText.text = LocalizationManager.Get("infinite_locked_buy");
-
             GameEvents.OnLanguageChanged += RefreshInfiniteLockedDesc;
         }
 
         private void RefreshInfiniteLockedDesc()
         {
+            if (_infiniteLockedTitleText != null)
+                _infiniteLockedTitleText.text = LocalizationManager.Get("infinite_locked");
             if (_infiniteLockedDescText == null) return;
-            int completed = GetCompletedLevels();
             _infiniteLockedDescText.text = string.Format(
-                LocalizationManager.Get("infinite_locked_desc"), completed, InfiniteGateLevel);
+                LocalizationManager.Get("infinite_locked_desc"),
+                GetCompletedLevels(), InfiniteGateLevel,
+                GetStarsInWorld1(),   InfiniteGateStars);
         }
 
         private void StartInfiniteMode()
@@ -250,9 +206,59 @@ namespace Shrink.UI
             SceneLoader.Load(InfiniteSceneName);
         }
 
-        public void GoToMultiplayer()
+        // ──────────────────────────────────────────────────────────────────────
+        // Multijugador — conectar en Inspector
+        // ──────────────────────────────────────────────────────────────────────
+
+        /// <summary>Llamado por el botón MULTIJUGADOR. Muestra el panel de próximamente.</summary>
+        public void OnMultiplayerPressed()
         {
-            SceneLoader.Load(MultiplayerSceneName);
+            AudioManager.Instance?.PlayButtonTap();
+            ShowMultiplayerSoonModal();
+        }
+
+        /// <summary>Cierra el modal de próximamente.</summary>
+        public void OnMultiplayerSoonClose()
+        {
+            AudioManager.Instance?.PlayButtonTap();
+            CloseMultiplayerSoonModal();
+        }
+
+        private void ShowMultiplayerSoonModal()
+        {
+            DisableLocalizedText(_multiplayerSoonTitleText);
+            DisableLocalizedText(_multiplayerSoonDescText);
+            _multiplayerSoonPanel.SetActive(true);
+            RefreshMultiplayerSoonTexts();
+            GameEvents.OnLanguageChanged += RefreshMultiplayerSoonTexts;
+        }
+
+        private void CloseMultiplayerSoonModal()
+        {
+            GameEvents.OnLanguageChanged -= RefreshMultiplayerSoonTexts;
+            EnableLocalizedText(_multiplayerSoonTitleText);
+            EnableLocalizedText(_multiplayerSoonDescText);
+            _multiplayerSoonPanel.SetActive(false);
+        }
+
+        private void RefreshMultiplayerSoonTexts()
+        {
+            if (_multiplayerSoonTitleText != null)
+                _multiplayerSoonTitleText.text = LocalizationManager.Get("multiplayer_soon");
+            if (_multiplayerSoonDescText != null)
+                _multiplayerSoonDescText.text  = LocalizationManager.Get("multiplayer_soon_desc");
+        }
+
+        private static void DisableLocalizedText(TMP_Text label)
+        {
+            var c = label?.GetComponent<LocalizedText>();
+            if (c != null) c.enabled = false;
+        }
+
+        private static void EnableLocalizedText(TMP_Text label)
+        {
+            var c = label?.GetComponent<LocalizedText>();
+            if (c != null) c.enabled = true;
         }
 
         private void ShowPanel(GameObject target)

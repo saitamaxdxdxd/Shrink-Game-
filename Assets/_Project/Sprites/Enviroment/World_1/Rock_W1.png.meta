@@ -1,0 +1,1140 @@
+fileFormatVersion: 2
+guid: 6ad013c6a1735471c9d263274dcf0fd6
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4641908928036974374
+    second: Rock_W1_0
+  - first:
+      213: 349926674679890498
+    second: Rock_W1_1
+  - first:
+      213: 1109280894038385182
+    second: Rock_W1_2
+  - first:
+      213: 4034896219999632657
+    second: Rock_W1_3
+  - first:
+      213: 6450254360079076083
+    second: Rock_W1_4
+  - first:
+      213: 3538633362598465158
+    second: Rock_W1_5
+  - first:
+      213: -3734820990187642434
+    second: Rock_W1_6
+  - first:
+      213: 5659368403883481287
+    second: Rock_W1_7
+  - first:
+      213: -5287117932957989568
+    second: Rock_W1_8
+  - first:
+      213: 7101481894309525338
+    second: Rock_W1_9
+  - first:
+      213: -950205699785018497
+    second: Rock_W1_10
+  - first:
+      213: 4802597091922478748
+    second: Rock_W1_11
+  - first:
+      213: -1291305289863998932
+    second: Rock_W1_12
+  - first:
+      213: -6595720935503582620
+    second: Rock_W1_13
+  - first:
+      213: -8116753718286434723
+    second: Rock_W1_14
+  - first:
+      213: 2603976375109437092
+    second: Rock_W1_15
+  - first:
+      213: 5775696804571115965
+    second: Rock_W1_16
+  - first:
+      213: -2573542620661959682
+    second: Rock_W1_17
+  - first:
+      213: -6167417450025721245
+    second: Rock_W1_18
+  - first:
+      213: 7311563142925535215
+    second: Rock_W1_19
+  - first:
+      213: 3984549820549098265
+    second: Rock_W1_20
+  - first:
+      213: 7832576023334388727
+    second: Rock_W1_21
+  - first:
+      213: -7102412399359376340
+    second: Rock_W1_22
+  - first:
+      213: -1301611851013788776
+    second: Rock_W1_23
+  - first:
+      213: 8748178591656251918
+    second: Rock_W1_24
+  - first:
+      213: -2632945911691246121
+    second: Rock_W1_25
+  - first:
+      213: -7255225924179189493
+    second: Rock_W1_26
+  - first:
+      213: 62208140373901909
+    second: Rock_W1_27
+  - first:
+      213: -5336040129100142517
+    second: Rock_W1_28
+  - first:
+      213: 7454626558959757562
+    second: Rock_W1_29
+  - first:
+      213: -6670536946635965873
+    second: Rock_W1_30
+  - first:
+      213: -3771709394252634596
+    second: Rock_W1_31
+  - first:
+      213: 1987455460515251446
+    second: Rock_W1_32
+  - first:
+      213: 3414751427679390386
+    second: Rock_W1_33
+  - first:
+      213: 7461474648842970577
+    second: Rock_W1_34
+  - first:
+      213: -8042837999616116757
+    second: Rock_W1_35
+  - first:
+      213: -4064987865991610487
+    second: Rock_W1_36
+  - first:
+      213: 1624957275385318623
+    second: Rock_W1_37
+  - first:
+      213: -2492754472245811822
+    second: Rock_W1_38
+  - first:
+      213: 2150061588876834066
+    second: Rock_W1_39
+  - first:
+      213: -821879913818139519
+    second: Rock_W1_40
+  - first:
+      213: -766830482844887832
+    second: Rock_W1_41
+  - first:
+      213: -5390876514676904293
+    second: Rock_W1_42
+  - first:
+      213: -2942623583793614340
+    second: Rock_W1_43
+  - first:
+      213: 2213732483027948531
+    second: Rock_W1_44
+  - first:
+      213: 7113989379996955291
+    second: Rock_W1_45
+  - first:
+      213: -4190209668331296189
+    second: Rock_W1_46
+  - first:
+      213: -9076644969687096248
+    second: Rock_W1_47
+  - first:
+      213: -471712148900304918
+    second: Rock_W1_48
+  - first:
+      213: -6421033813292133892
+    second: Rock_W1_49
+  - first:
+      213: -6566993264077819300
+    second: Rock_W1_50
+  - first:
+      213: -6951171544688228434
+    second: Rock_W1_51
+  - first:
+      213: -1626279312550568873
+    second: Rock_W1_52
+  - first:
+      213: 4044695634145059511
+    second: Rock_W1_53
+  - first:
+      213: -8083862508629770670
+    second: Rock_W1_54
+  - first:
+      213: -5601203686087792591
+    second: Rock_W1_55
+  - first:
+      213: 6457938961906433553
+    second: Rock_W1_56
+  - first:
+      213: 6118734477386409176
+    second: Rock_W1_57
+  - first:
+      213: -1870291400728867648
+    second: Rock_W1_58
+  - first:
+      213: -5616988422564839003
+    second: Rock_W1_59
+  - first:
+      213: -554388496999923105
+    second: Rock_W1_60
+  - first:
+      213: -697015268944094608
+    second: Rock_W1_61
+  - first:
+      213: 2373625369949743925
+    second: Rock_W1_62
+  - first:
+      213: 7228936442649585463
+    second: Rock_W1_63
+  - first:
+      213: 7948508402873075250
+    second: Rock_W1_64
+  - first:
+      213: -2871888974054514240
+    second: Rock_W1_65
+  - first:
+      213: -8325704236099217221
+    second: Rock_W1_66
+  - first:
+      213: -8263026749787753731
+    second: Rock_W1_67
+  - first:
+      213: -3839358778772175567
+    second: Rock_W1_68
+  - first:
+      213: -7567820449085420647
+    second: Rock_W1_69
+  - first:
+      213: 2118164683064852376
+    second: Rock_W1_70
+  - first:
+      213: -1904648036095251829
+    second: Rock_W1_71
+  - first:
+      213: -2790556508507469637
+    second: Rock_W1_72
+  - first:
+      213: 367829061194559332
+    second: Rock_W1_73
+  - first:
+      213: -6128905728153124305
+    second: Rock_W1_74
+  - first:
+      213: -6999194227166133637
+    second: Rock_W1_75
+  - first:
+      213: 5610609594035309532
+    second: Rock_W1_76
+  - first:
+      213: 8835086442554522524
+    second: Rock_W1_77
+  - first:
+      213: -1555847656799182134
+    second: Rock_W1_78
+  - first:
+      213: -207952809976703171
+    second: Rock_W1_79
+  - first:
+      213: -7458006836507010018
+    second: Rock_W1_80
+  - first:
+      213: 1860814718353237027
+    second: Rock_W1_81
+  - first:
+      213: 8734337841655885668
+    second: Rock_W1_82
+  - first:
+      213: 5049730667456927223
+    second: Rock_W1_83
+  - first:
+      213: -7242001702084136627
+    second: Rock_W1_84
+  - first:
+      213: 2214293917262759633
+    second: Rock_W1_85
+  - first:
+      213: 2162734835304291517
+    second: Rock_W1_86
+  - first:
+      213: 3891616079183687859
+    second: Rock_W1_87
+  - first:
+      213: -4530642999933679852
+    second: Rock_W1_88
+  - first:
+      213: 5667053026107073699
+    second: Rock_W1_89
+  - first:
+      213: 7524185107104857950
+    second: Rock_W1_90
+  - first:
+      213: -5118367544140072176
+    second: Rock_W1_91
+  - first:
+      213: 4059396646918300153
+    second: Rock_W1_92
+  - first:
+      213: 2358634968918072284
+    second: Rock_W1_93
+  - first:
+      213: 6643381498117055539
+    second: Rock_W1_94
+  - first:
+      213: 5550843359607010357
+    second: Rock_W1_95
+  - first:
+      213: 3540239963537952996
+    second: Rock_W1_96
+  - first:
+      213: 8639194022423458000
+    second: Rock_W1_97
+  - first:
+      213: -4971046702453298219
+    second: Rock_W1_98
+  - first:
+      213: -6024993678407609832
+    second: Rock_W1_99
+  - first:
+      213: 7202664440309196011
+    second: Rock_W1_100
+  - first:
+      213: 1352436867102253016
+    second: Rock_W1_101
+  - first:
+      213: 7972075330297145345
+    second: Rock_W1_102
+  - first:
+      213: -4345559000523749080
+    second: Rock_W1_103
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: VisionOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: tvOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Rock_W1_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1020
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62fab5f739f5b6040800000000000000
+      internalID: 4641908928036974374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_1
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 1020
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2428ab5e4703bd400800000000000000
+      internalID: 349926674679890498
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_2
+      rect:
+        serializedVersion: 2
+        x: 680
+        y: 1020
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e12294d8815f46f00800000000000000
+      internalID: 1109280894038385182
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_3
+      rect:
+        serializedVersion: 2
+        x: 1020
+        y: 1020
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11df4aafbb4def730800000000000000
+      internalID: 4034896219999632657
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_4
+      rect:
+        serializedVersion: 2
+        x: 1360
+        y: 1020
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fa8d636a28e38950800000000000000
+      internalID: 6450254360079076083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_5
+      rect:
+        serializedVersion: 2
+        x: 1700
+        y: 1020
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68e07087b40cb1130800000000000000
+      internalID: 3538633362598465158
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_6
+      rect:
+        serializedVersion: 2
+        x: 2040
+        y: 1020
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb1613ce8104b2cc0800000000000000
+      internalID: -3734820990187642434
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_7
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 680
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c85b86249d1a8e40800000000000000
+      internalID: 5659368403883481287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_8
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 680
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0450178904260a6b0800000000000000
+      internalID: -5287117932957989568
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_9
+      rect:
+        serializedVersion: 2
+        x: 680
+        y: 680
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a57ff2958288d8260800000000000000
+      internalID: 7101481894309525338
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_10
+      rect:
+        serializedVersion: 2
+        x: 1020
+        y: 680
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7333c053f030d2f0800000000000000
+      internalID: -950205699785018497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_11
+      rect:
+        serializedVersion: 2
+        x: 1360
+        y: 680
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c960d5f1c9046a240800000000000000
+      internalID: 4802597091922478748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_12
+      rect:
+        serializedVersion: 2
+        x: 1700
+        y: 680
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c22d2153eac541ee0800000000000000
+      internalID: -1291305289863998932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_13
+      rect:
+        serializedVersion: 2
+        x: 2040
+        y: 680
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46aa3b931ca4774a0800000000000000
+      internalID: -6595720935503582620
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_14
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 340
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5eb4346f7f7b5f80800000000000000
+      internalID: -8116753718286434723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_15
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 340
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a648e977be232420800000000000000
+      internalID: 2603976375109437092
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_16
+      rect:
+        serializedVersion: 2
+        x: 680
+        y: 340
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db1f1de84a5672050800000000000000
+      internalID: 5775696804571115965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_17
+      rect:
+        serializedVersion: 2
+        x: 1020
+        y: 340
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef3bd192f90f84cd0800000000000000
+      internalID: -2573542620661959682
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_18
+      rect:
+        serializedVersion: 2
+        x: 1360
+        y: 340
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 362ebad618ee86aa0800000000000000
+      internalID: -6167417450025721245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_19
+      rect:
+        serializedVersion: 2
+        x: 1700
+        y: 340
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe74aeea0f3e77560800000000000000
+      internalID: 7311563142925535215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_20
+      rect:
+        serializedVersion: 2
+        x: 2040
+        y: 340
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91beca363f6fb4730800000000000000
+      internalID: 3984549820549098265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_21
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f3861bf466e2bc60800000000000000
+      internalID: 7832576023334388727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_22
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 0
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c24cadf8d892f6d90800000000000000
+      internalID: -7102412399359376340
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_23
+      rect:
+        serializedVersion: 2
+        x: 680
+        y: 0
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89b62e0faeebfede0800000000000000
+      internalID: -1301611851013788776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_24
+      rect:
+        serializedVersion: 2
+        x: 1020
+        y: 0
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e02195b4416c76970800000000000000
+      internalID: 8748178591656251918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_25
+      rect:
+        serializedVersion: 2
+        x: 1360
+        y: 0
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d583dca4a5e57bd0800000000000000
+      internalID: -2632945911691246121
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_26
+      rect:
+        serializedVersion: 2
+        x: 1700
+        y: 0
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0128183672405b90800000000000000
+      internalID: -7255225924179189493
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rock_W1_27
+      rect:
+        serializedVersion: 2
+        x: 2040
+        y: 0
+        width: 340
+        height: 340
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 552cf1d59f10dd000800000000000000
+      internalID: 62208140373901909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 4bab4c3063d464e51baf41e46580068f
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":7.0,"y":4.0},"gridSpriteSize":{"x":340.0,"y":340.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Rock_W1_0: 4641908928036974374
+      Rock_W1_1: 349926674679890498
+      Rock_W1_10: -950205699785018497
+      Rock_W1_11: 4802597091922478748
+      Rock_W1_12: -1291305289863998932
+      Rock_W1_13: -6595720935503582620
+      Rock_W1_14: -8116753718286434723
+      Rock_W1_15: 2603976375109437092
+      Rock_W1_16: 5775696804571115965
+      Rock_W1_17: -2573542620661959682
+      Rock_W1_18: -6167417450025721245
+      Rock_W1_19: 7311563142925535215
+      Rock_W1_2: 1109280894038385182
+      Rock_W1_20: 3984549820549098265
+      Rock_W1_21: 7832576023334388727
+      Rock_W1_22: -7102412399359376340
+      Rock_W1_23: -1301611851013788776
+      Rock_W1_24: 8748178591656251918
+      Rock_W1_25: -2632945911691246121
+      Rock_W1_26: -7255225924179189493
+      Rock_W1_27: 62208140373901909
+      Rock_W1_3: 4034896219999632657
+      Rock_W1_4: 6450254360079076083
+      Rock_W1_5: 3538633362598465158
+      Rock_W1_6: -3734820990187642434
+      Rock_W1_7: 5659368403883481287
+      Rock_W1_8: -5287117932957989568
+      Rock_W1_9: 7101481894309525338
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

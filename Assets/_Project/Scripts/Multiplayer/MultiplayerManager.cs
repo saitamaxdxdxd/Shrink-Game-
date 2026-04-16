@@ -51,7 +51,7 @@ namespace Shrink.Multiplayer
         {
             if (Runner != null)
             {
-                Runner.Shutdown();
+                await Runner.Shutdown();
                 Destroy(Runner);
             }
 

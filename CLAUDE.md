@@ -3,7 +3,7 @@
 ## Proyecto
 
 Juego móvil puzzle maze 2D top-down para iOS y Android.
-Motor: Unity 6 | Resolución: 1080x1920 portrait | Estilo: minimalista (líneas y círculos, sin assets externos)
+Motor: Unity 6 | Resolución: 1080x1920 portrait | Estilo: pixel art con assets propios
 Input System: **New Input System** — NO usar `UnityEngine.Input` legacy.
 
 ## Ruta raíz de código
@@ -20,21 +20,24 @@ Scripts/
   Events/        GameEvents.cs — eventos globales estáticos
   Maze/          MazeGenerator, MazeData, CellType, MazeRenderer
                  Editor/MazeLevelEditor.cs, Editor/MazeDebugVisualizerEditor.cs
-  Player/        SphereController, ShrinkMechanic, Crumb, Star
+  Player/        SphereController, ShrinkMechanic, Crumb, Star, PlayerSkin (ScriptableObject)
   Enemies/       EnemyController, PatrolEnemy, TrailEnemy, ChaserEnemy
   Movement/      PlayerMovement
   Camera/        CameraFollow
   UI/            HUDController, PauseMapController, GameResultController, LocalizedText,
-                 LevelSelectController, DPadController, DPadButton
+                 LevelSelectController, DPadController, DPadButton,
+                 ScrollingCheckerboard, GameSceneBackground
   Level/         LevelManager, LevelData (ScriptableObject), LevelLoader, LevelTimer,
-                 CellOverride, EnemySpawn
+                 CellOverride, EnemySpawn, MazeTheme (ScriptableObject)
   Monetization/  AdManager, IAPManager
   Audio/         AudioManager
   Multiplayer/   MultiplayerManager, MultiplayerGameManager, NetworkMazeState,
                  NetworkPlayer, NetworkBotPlayer, NetworkPatrolEnemy
 
-ScriptableObjects/Levels/  LevelData assets (Level_01…Level_N)
-Prefabs/Player.prefab      (SphereController + ShrinkMechanic + PlayerMovement)
+ScriptableObjects/Levels/   LevelData assets (Level_01…Level_N)
+ScriptableObjects/Themes/   MazeTheme assets (Theme_World1…)
+ScriptableObjects/Skins/    PlayerSkin assets (Skin_0, Skin_1…)
+Prefabs/Player.prefab       (SphereController + ShrinkMechanic + PlayerMovement)
 ```
 
 ## Sistemas — estado actual
@@ -56,6 +59,7 @@ Prefabs/Player.prefab      (SphereController + ShrinkMechanic + PlayerMovement)
 | E   | Editor visual de niveles       | ✅ Completo    | Window → Shrink → Level Editor                                  |
 | 9   | Modo Infinito                  | ✅ Completo    | InfiniteGameManager + InfiniteHUDController + InfiniteScene     |
 | UGS | Auth + CloudSave + Leaderboard | ✅ Completo    | UGS anónimo, sync GameData, tabla `infinite_leaderboard`        |
+| V   | Sistema Visual                 | 🔧 En progreso | MazeTheme autotile completo (inner corners, border edge), TrapOneshotVisual, sorting orders definidos |
 | M   | Modo Multijugador              | 🔧 En progreso | Photon Fusion 2 Shared Mode — ver sección Multijugador          |
 | F   | Mecánicas futuras              | ⬜ Backlog     | Enemigos adicionales, trampas avanzadas, celdas especiales      |
 
@@ -161,7 +165,7 @@ Siempre visibles — reto de planning, no de sorpresa.
 ## Modo Infinito — Sistema 9
 
 Escena: `InfiniteScene`. Scripts: `InfiniteGameManager` + `InfiniteHUDController`.
-Se desbloquea completando Mundo 1 o comprando `infinite_pro` ($2.99).
+Se desbloquea completando Mundo 1 (nivel 15). No requiere compra.
 
 - Masa **no se reinicia** entre mazes — bonus `+0.04` por maze completado
 - Score = `mazes × 100 + estrellas × 10`
@@ -230,12 +234,10 @@ Idiomas: EN, ES, PT, FR, DE. Event: `GameEvents.OnLanguageChanged`.
 
 ## Monetización
 
-| Producto          | Precio    | ID             | Desbloquea                                  |
-| ----------------- | --------- | -------------- | ------------------------------------------- |
-| Juego Completo    | **$2.99** | `full_game`    | Mundo 2, 3 y mundos futuros                 |
-| Sin anuncios      | $1.99     | `no_ads`       | Elimina interstitials para siempre          |
-| Pack Colores      | $0.99     | `color_pack`   | Paletas de color adicionales                |
-| Modo Infinito Pro | $2.99     | `infinite_pro` | Modo Infinito sin completar Mundo 1         |
+| Producto       | Precio    | ID          | Desbloquea                                          |
+| -------------- | --------- | ----------- | --------------------------------------------------- |
+| Sin anuncios   | $1.99     | `no_ads`    | Elimina interstitials para siempre                  |
+| Juego Completo | **$2.99** | `full_game` | Todos los mundos + sin anuncios (bundle)            |
 
 - Interstitial: cada 3 niveles completados (sin `full_game` ni `no_ads`)
 - Rewarded: desde pausa, máximo 1 por nivel
@@ -252,6 +254,80 @@ Idiomas: EN, ES, PT, FR, DE. Event: `GameEvents.OnLanguageChanged`.
 - **Auth anónima**: `AuthenticationService.Instance.SignInAnonymouslyAsync()` en `GameBootstrap`
 - **Cloud Save**: `GameData` JSON asociado al UUID. Sync en nivel completado y cierre de app. Gana el más reciente por `GameStats.levelsPlayed`
 - **Leaderboards**: tabla `infinite_leaderboard` — `mazes × (masa normalizada 0–100)`. Top 100 + posición propia en `RunOverPanel`
+
+---
+
+## Sistema Visual — Sistema V 🔧
+
+### MazeTheme (ScriptableObject)
+Agrupa todos los assets visuales de un mundo. Crear en Assets → Shrink → MazeTheme.
+
+**Suelo:** `floorA` / `floorB` — alternan en patrón ajedrez por `(x+y) % 2`.
+
+**Paredes internas — autotile 4-bit** (N=8 E=4 S=2 W=1, bit=1 si ese vecino cardinal es suelo):
+- Sprites: `wallInterior`(0), `wallEdgeN/E/S/W`, `wallCornerNE/NW/SE/SW` (convexas), `wallStraightNS/EW`, `wallTjoistN/E/S/W`, `wallCross`(15)
+- **Esquinas cóncavas** (inner corners): `wallInnerCornerNE/NW/SE/SW` — se usan cuando `mask==0` y el diagonal correspondiente es suelo (típico: esquinas de cuartos)
+
+**Paredes — borde del mapa:** `wallMapBorderBottom`, `wallMapBorderTop`, `wallMapBorderTopEdge` (borde superior cuyo vecino sur es suelo — cara visible al jugador), `wallMapBorderLeft`, `wallMapBorderRight`, `wallMapCornerBL/BR/TL/TR`
+
+**Trampa ONESHOT:** `trapOneshotIdle` (AnimClip loop), `trapOneshotOccasional[]` (OccasionalAnim[]), `trapOneshotTrigger` (AnimClip one-shot al pisarla — se queda en el último frame; el floor base queda visible debajo), `trapOneshotMotion` (MotionPreset), `trapOneshotScale`, `trapOneshotSortingOrder`
+
+**Spike:** `spikeIdle` (AnimClip), `spikeOccasional[]`, `spikeTrigger` (AnimClip), `spikeMotion`, `spikeScale`, `spikeSortingOrder`
+
+**Estrella:** `starIdle` (AnimClip), `starCollect` (AnimClip), `starMotion`, `starScale`, `starSortingOrder`
+
+**Decoraciones:** `decorPrefabs[]`, `decorDensity` (0–0.4), `decorScale` (default 0.75)
+
+**Fondo:** `backgroundColorA/B`, `backgroundSpeed`
+
+**LevelData** referencia un `MazeTheme` via campo `theme`.
+**MazeRenderer**: `SetTheme(theme)` antes de `Render()`. Sprites se escalan automáticamente a `cellSize` via `sprite.bounds.size.x`.
+
+**Sorting orders en MazeRenderer:**
+| Order | Elementos |
+|---|---|
+| `0` | Floor base |
+| `1` | Overlays de floor: door, narrow, start, exit, trap drain base |
+| `2` | Walls |
+| `2` | Trap drain dot, crumbs |
+| SO configurable | Trap oneshot, spike, estrella (default 1 / 1 / 6) |
+| `5` | Player |
+
+**Componentes visuales de celda:** `SpikeVisual`, `TrapOneshotVisual` — mismo patrón: `Initialize(cell, ...)` + `StartAnimation(theme)`. `TrapOneshotVisual` recibe un `Action onTriggerComplete` que MazeRenderer usa para limpiar el floor base al completar el trigger. El GO del visual queda en escena mostrando el último frame.
+
+### PlayerSkin (ScriptableObject)
+Assets visuales del jugador. Crear en Assets → Shrink → PlayerSkin.
+
+| Campo | Descripción |
+|---|---|
+| `idle` / `critical` / `death` / `revive` | `AnimClip` — animación de sprites por estado |
+| `occasionalAnimations[]` | `OccasionalAnim[]` — clips que interrumpen idle a intervalos irregulares |
+| `crumbSprites[]` | Sprites de migajas, se elige por hash de celda (reproducible) |
+| `crumbIdle` / `crumbAbsorb` | `AnimClip` — loop idle y animación al ser absorbida |
+| `crumbOccasional[]` | `OccasionalAnim[]` — ocasionales para las migajas |
+| `playerMotion` | `MotionPreset` — movimiento procedural del jugador |
+| `crumbMotion` | `MotionPreset` — movimiento procedural de las migajas |
+
+**MotionEffect** (`None`, `Breathe`, `Levitate`, `Vibrate`):
+- `Breathe`: pulso de escala → `localScale = base * (1 + sin(t) * amplitude)`
+- `Levitate`: bobbing vertical → offset Y via `LateUpdate` (no interfiere con `PlayerMovement`)
+- `Vibrate`: jitter Perlin XY → suave temblor aleatorio
+
+**SphereController**: `ApplySkin(skin)` — anima frames + motion en coroutines paralelas. `_baseScale` se actualiza en `RefreshVisual`. Motion se pausa en death/revive y se reinicia con idle.
+**Crumb**: `StartAnimation(skin)` captura `_baseScale`/`_baseLocalPos` al ser instanciada, aplica `crumbMotion` con phase offset aleatorio (evita sync entre crumbs vecinas).
+**LevelLoader**: campo `_playerSkin` → `SphereController.Initialize` + `MazeRenderer.SetPlayerSkin`.
+
+### GameSceneBackground
+Fondo scrolling en World Space, detrás del maze. Componente autónomo: agrega a cualquier GO en la escena, conecta al campo `_background` de LevelLoader.
+
+- Crea Canvas World Space con sortingOrder = -100
+- Sigue la cámara en X/Y, se redimensiona automáticamente
+- Colores controlados por `MazeTheme.backgroundColorA/B`
+
+### Convenciones de sprites
+- Todos los sprites usan material `Sprite-Unlit-Default` (sin luces 2D)
+- Escala normalizada: `targetWorldSize / sprite.bounds.size.x`
+- `ShapeFactory.GetUnlitMaterial()` es público — usar en cualquier SpriteRenderer creado por código
 
 ---
 

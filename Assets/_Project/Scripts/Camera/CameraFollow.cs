@@ -13,8 +13,9 @@ namespace Shrink.Camera
         // Config
         // ──────────────────────────────────────────────────────────────────────
 
-        [SerializeField] private float smoothSpeed     = 6f;
+        [SerializeField] private float smoothSpeed      = 6f;
         [SerializeField] private float orthographicSize = 7f;
+
 
         // ──────────────────────────────────────────────────────────────────────
         // Estado
@@ -49,8 +50,23 @@ namespace Shrink.Camera
         {
             if (_target == null) return;
 
-            Vector3 desired  = new Vector3(_target.position.x, _target.position.y, transform.position.z);
-            transform.position = Vector3.Lerp(transform.position, desired, smoothSpeed * Time.deltaTime);
+            Vector3 desired    = new Vector3(_target.position.x, _target.position.y, transform.position.z);
+            Vector3 smoothed   = Vector3.Lerp(transform.position, desired, smoothSpeed * Time.deltaTime);
+            transform.position = SnapToPixel(smoothed);
+        }
+
+        /// <summary>
+        /// Redondea la posición de cámara al screen pixel más cercano.
+        /// Usa la densidad real (screen pixels / world unit) para evitar
+        /// shimmer de texturas durante el movimiento.
+        /// </summary>
+        private Vector3 SnapToPixel(Vector3 pos)
+        {
+            float screenPixelsPerUnit = Screen.height / (_cam.orthographicSize * 2f);
+            return new Vector3(
+                Mathf.Round(pos.x * screenPixelsPerUnit) / screenPixelsPerUnit,
+                Mathf.Round(pos.y * screenPixelsPerUnit) / screenPixelsPerUnit,
+                pos.z);
         }
 
         // ──────────────────────────────────────────────────────────────────────

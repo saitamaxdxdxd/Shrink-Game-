@@ -100,6 +100,7 @@ namespace Shrink.Player
                     return true;
 
                 case CellType.SPIKE:
+                    _renderer.PlaySpikeAt(cell);
                     Events.GameEvents.RaiseLevelFail();
                     return true;
 
@@ -137,7 +138,7 @@ namespace Shrink.Player
                 float loss = Mathf.Min(EffectiveSizePerStep, _sphere.CurrentSize - SphereController.MinSize);
                 if (loss <= 0f) return;
 
-                _renderer.SpawnCrumb(cell, loss, _sphere.BaseColor);
+                _renderer.SpawnCrumb(cell, loss, _sphere.BaseColor, _sphere.VisualFraction);
                 _sphere.ApplyDelta(-loss);
             }
         }

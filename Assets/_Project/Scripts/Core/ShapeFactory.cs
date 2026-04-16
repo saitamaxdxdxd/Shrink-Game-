@@ -61,18 +61,32 @@ namespace Shrink.Core
         /// <summary>
         /// Crea un GameObject 2D con SpriteRenderer listo para usar.
         /// </summary>
+        private static Material _unlitMaterial;
+
+        /// <summary>
+        /// Crea un GameObject 2D con SpriteRenderer usando Sprite-Unlit-Default.
+        /// Evita artefactos visuales del shader lit en escenas sin luces 2D.
+        /// </summary>
         public static GameObject CreateSprite(string name, Sprite sprite, Color color,
                                               Transform parent = null, int sortingOrder = 0)
         {
             var go = new GameObject(name);
             if (parent != null) go.transform.SetParent(parent, false);
 
-            var sr         = go.AddComponent<SpriteRenderer>();
-            sr.sprite       = sprite;
-            sr.color        = color;
-            sr.sortingOrder = sortingOrder;
+            var sr          = go.AddComponent<SpriteRenderer>();
+            sr.sprite        = sprite;
+            sr.color         = color;
+            sr.sortingOrder  = sortingOrder;
+            sr.sharedMaterial = GetUnlitMaterial();
 
             return go;
+        }
+
+        public static Material GetUnlitMaterial()
+        {
+            if (_unlitMaterial != null) return _unlitMaterial;
+            _unlitMaterial = new Material(Shader.Find("Universal Render Pipeline/2D/Sprite-Unlit-Default"));
+            return _unlitMaterial;
         }
     }
 }

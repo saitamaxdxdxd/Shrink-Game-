@@ -140,8 +140,7 @@ namespace Shrink.Core
             // Modo Infinito — menú y modal bloqueado
             "infinite"               => "INFINITE",
             "infinite_locked"        => "LOCKED",
-            "infinite_locked_desc"   => "{0} / {1} levels — or purchase Infinite Pro",
-            "infinite_locked_buy"    => "UNLOCK — INFINITE PRO",
+            "infinite_locked_desc"   => "Finish World 1 to unlock\n{0}/{1} levels · {2}/{3} ⭐",
             // Modo Infinito — HUD y RUN OVER
             "infinite_hud_maze"      => "MAZE {0}",
             "run_over"               => "RUN OVER",
@@ -166,6 +165,8 @@ namespace Shrink.Core
             "daily_failed"           => "Better luck tomorrow!",
             "daily_completed"        => "Completed today",
             "notif_daily_body"       => "A new daily maze is waiting!",
+            "multiplayer_soon"       => "COMING SOON",
+            "multiplayer_soon_desc"  => "Multiplayer is on its way.\nVersus · Endless PvP",
             _               => key,
         };
 
@@ -206,8 +207,7 @@ namespace Shrink.Core
             "add_time"      => "AÑADIR TIEMPO",
             "infinite"               => "INFINITO",
             "infinite_locked"        => "BLOQUEADO",
-            "infinite_locked_desc"   => "{0} / {1} niveles — o compra Infinito Pro",
-            "infinite_locked_buy"    => "DESBLOQUEAR — INFINITO PRO",
+            "infinite_locked_desc"   => "Termina el Mundo 1 para desbloquear\n{0}/{1} niveles · {2}/{3} ⭐",
             "infinite_hud_maze"      => "LABERINTO {0}",
             "run_over"               => "FIN DEL RUN",
             "run_mazes"              => "LABERINTOS",
@@ -230,6 +230,8 @@ namespace Shrink.Core
             "daily_failed"           => "¡Mejor suerte mañana!",
             "daily_completed"        => "Ya completado hoy",
             "notif_daily_body"       => "¡Un nuevo laberinto diario te espera!",
+            "multiplayer_soon"       => "PRÓXIMAMENTE",
+            "multiplayer_soon_desc"  => "El multijugador está en camino.\nVersus · Endless PvP",
             _               => EN(key),
         };
 
@@ -269,8 +271,7 @@ namespace Shrink.Core
             "add_time"      => "ADICIONAR TEMPO",
             "infinite"               => "INFINITO",
             "infinite_locked"        => "BLOQUEADO",
-            "infinite_locked_desc"   => "{0} / {1} níveis — ou compre Infinito Pro",
-            "infinite_locked_buy"    => "DESBLOQUEAR — INFINITO PRO",
+            "infinite_locked_desc"   => "Termine o Mundo 1 para desbloquear\n{0}/{1} níveis · {2}/{3} ⭐",
             "infinite_hud_maze"      => "LABIRINTO {0}",
             "run_over"               => "FIM DO RUN",
             "run_mazes"              => "LABIRINTOS",
@@ -287,6 +288,8 @@ namespace Shrink.Core
             "daily_failed"           => "Tente novamente amanhã!",
             "daily_completed"        => "Concluído hoje",
             "notif_daily_body"       => "Um novo labirinto diário está esperando!",
+            "multiplayer_soon"       => "EM BREVE",
+            "multiplayer_soon_desc"  => "O multijogador está a caminho.\nVersus · Endless PvP",
             _               => EN(key),
         };
 
@@ -326,8 +329,7 @@ namespace Shrink.Core
             "add_time"      => "ZEIT HINZUFÜGEN",
             "infinite"               => "UNENDLICH",
             "infinite_locked"        => "GESPERRT",
-            "infinite_locked_desc"   => "{0} / {1} Level — oder kaufe Infinite Pro",
-            "infinite_locked_buy"    => "FREISCHALTEN — INFINITE PRO",
+            "infinite_locked_desc"   => "Schließe Welt 1 ab, um freizuschalten\n{0}/{1} Level · {2}/{3} ⭐",
             "infinite_hud_maze"      => "LEVEL {0}",
             "run_over"               => "RUN VORBEI",
             "run_mazes"              => "LEVELS",
@@ -344,6 +346,8 @@ namespace Shrink.Core
             "daily_failed"           => "Morgen klappt's besser!",
             "daily_completed"        => "Heute abgeschlossen",
             "notif_daily_body"       => "Ein neues Tages-Labyrinth wartet auf dich!",
+            "multiplayer_soon"       => "DEMNÄCHST",
+            "multiplayer_soon_desc"  => "Mehrspieler kommt bald.\nVersus · Endless PvP",
             _               => EN(key),
         };
 
@@ -383,8 +387,7 @@ namespace Shrink.Core
             "add_time"      => "AJOUTER TEMPS",
             "infinite"               => "INFINI",
             "infinite_locked"        => "VERROUILLÉ",
-            "infinite_locked_desc"   => "{0} / {1} niveaux — ou achetez Infinite Pro",
-            "infinite_locked_buy"    => "DÉBLOQUER — INFINITE PRO",
+            "infinite_locked_desc"   => "Termine le Monde 1 pour débloquer\n{0}/{1} niveaux · {2}/{3} ⭐",
             "infinite_hud_maze"      => "LABYRINTHE {0}",
             "run_over"               => "FIN DU RUN",
             "run_mazes"              => "LABYRINTHES",
@@ -401,6 +404,8 @@ namespace Shrink.Core
             "daily_failed"           => "Bonne chance demain !",
             "daily_completed"        => "Complété aujourd'hui",
             "notif_daily_body"       => "Un nouveau labyrinthe quotidien t'attend !",
+            "multiplayer_soon"       => "BIENTÔT DISPONIBLE",
+            "multiplayer_soon_desc"  => "Le multijoueur arrive bientôt.\nVersus · Endless PvP",
             _               => EN(key),
         };
     }

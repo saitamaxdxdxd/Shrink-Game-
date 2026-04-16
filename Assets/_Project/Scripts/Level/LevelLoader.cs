@@ -6,6 +6,7 @@ using Shrink.Movement;
 using Shrink.Player;
 using Shrink.UI;
 using UnityEngine;
+using Camera = UnityEngine.Camera;
 
 namespace Shrink.Level
 {
@@ -22,6 +23,13 @@ namespace Shrink.Level
 
         [Header("Prefabs")]
         [SerializeField] private GameObject _playerPrefab;
+
+        [Header("Skin del jugador")]
+        [SerializeField] private PlayerSkin _playerSkin;
+
+
+        [Header("Fondo")]
+        [SerializeField] private Shrink.UI.GameSceneBackground _background;
 
         [Header("UI")]
         [SerializeField] private HUDController       _hud;
@@ -325,9 +333,15 @@ namespace Shrink.Level
             ApplyManualOverrides(mazeData, levelData);
 
             // ── Maze ──────────────────────────────────────────────────────────
-            var mazeGo = new GameObject("Maze");
-            _renderer  = mazeGo.AddComponent<MazeRenderer>();
+            _renderer = new GameObject("Maze").AddComponent<MazeRenderer>();
+            _renderer.SetTheme(levelData.Theme);
             _renderer.Render(mazeData);
+
+            if (_background != null && levelData.Theme != null)
+                _background.ApplyTheme(
+                    levelData.Theme.backgroundColorA,
+                    levelData.Theme.backgroundColorB,
+                    levelData.Theme.backgroundSpeed);
             _renderer.SpawnStars(levelData.StarCount, levelData.StarSizeBonus, seed, levelData.ManualStarCells);
 
             // ── Player ────────────────────────────────────────────────────────
@@ -342,7 +356,8 @@ namespace Shrink.Level
             _shrink   = playerGo.GetComponent<ShrinkMechanic>();
             _movement = playerGo.GetComponent<PlayerMovement>();
 
-            _sphere.Initialize(_renderer, mazeData.StartCell);
+            _sphere.Initialize(_renderer, mazeData.StartCell, _playerSkin);
+            _renderer.SetPlayerSkin(_playerSkin);
             _shrink.Initialize(_renderer, levelData.DifficultyFactor);
             _movement.Initialize(_renderer, moveTimeSlow, moveTimeFast);
             if (_dpad != null)

@@ -51,6 +51,10 @@ namespace Shrink.Level
         [SerializeField] private bool  hasTimer  = false;
         [SerializeField] private float timeLimit = 120f;
 
+        [Header("Tema visual")]
+        [Tooltip("Tema visual del mundo (sprites, decoraciones, estrella). Crear en Assets → Shrink → MazeTheme.")]
+        [SerializeField] private MazeTheme theme;
+
         [Header("Overrides manuales (editor visual)")]
         [SerializeField] private List<CellOverride> manualOverrides    = new();
         [SerializeField] private List<Vector2Int>   manualStarCells    = new();
@@ -107,6 +111,8 @@ namespace Shrink.Level
 
         /// <summary>Segundos disponibles (solo relevante si HasTimer es true).</summary>
         public float      TimeLimit        => timeLimit;
+
+        public MazeTheme Theme => theme;
 
         /// <summary>Overrides manuales de tipo de celda aplicados tras la generación procedural.</summary>
         public List<CellOverride> ManualOverrides => manualOverrides;

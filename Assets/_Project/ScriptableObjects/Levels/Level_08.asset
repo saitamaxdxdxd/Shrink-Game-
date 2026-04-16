@@ -28,8 +28,10 @@ MonoBehaviour:
   starSizeBonus: 0.05
   patrolEnemyCount: 0
   trailEnemyCount: 0
+  chaserEnemyCount: 0
   hasTimer: 1
   timeLimit: 35
+  theme: {fileID: 11400000, guid: 81fe72ecc75f64f2c8b9a312560535d7, type: 2}
   manualOverrides:
   - cell: {x: 9, y: 13}
     type: 1
@@ -53,6 +55,8 @@ MonoBehaviour:
     type: 1
   - cell: {x: 5, y: 10}
     type: 8
+  - cell: {x: 9, y: 14}
+    type: 1
   manualStarCells:
   - {x: 7, y: 18}
   - {x: 2, y: 2}

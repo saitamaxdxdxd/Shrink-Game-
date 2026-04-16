@@ -18,6 +18,9 @@ namespace Shrink.Maze
 
         [SerializeField] private float cellSize = 1f;
 
+        private MazeTheme  _theme;
+        private PlayerSkin _playerSkin;
+
         [Header("Colores")]
         [SerializeField] private Color colorWall       = new Color(0.13f, 0.13f, 0.15f);
         [SerializeField] private Color colorFloor      = new Color(0.92f, 0.92f, 0.94f);
@@ -56,16 +59,30 @@ namespace Shrink.Maze
 
         private Transform _wallParent;
         private Transform _floorParent;
+        private Transform _decorParent;
         private Transform _crumbParent;
         private Transform _starParent;
         private Transform _trapParent;
+        private Transform _spikeParent;
 
-        /// <summary>Tiles de trampa activos indexados por celda.</summary>
+        /// <summary>Tiles de trampa DRAIN activos indexados por celda (dot overlay).</summary>
         private readonly Dictionary<Vector2Int, GameObject> _trapTiles = new();
+
+        /// <summary>Visuales de TRAP_ONESHOT activos indexados por celda.</summary>
+        private readonly Dictionary<Vector2Int, TrapOneshotVisual> _trapOneshotVisuals = new();
+
+        /// <summary>Visuales de spike activos indexados por celda.</summary>
+        private readonly Dictionary<Vector2Int, SpikeVisual> _spikeVisuals = new();
 
         // ──────────────────────────────────────────────────────────────────────
         // API pública
         // ──────────────────────────────────────────────────────────────────────
+
+        /// <summary>Asignar tema visual antes de llamar a Render. Null = cuadrados sólidos.</summary>
+        public void SetTheme(MazeTheme theme) => _theme = theme;
+
+        /// <summary>Asignar la skin del jugador para los visuales de migaja.</summary>
+        public void SetPlayerSkin(PlayerSkin skin) => _playerSkin = skin;
 
         /// <summary>
         /// Limpia la escena anterior y renderiza el nuevo MazeData.
@@ -77,10 +94,13 @@ namespace Shrink.Maze
 
             _wallParent  = CreateParent("Walls");
             _floorParent = CreateParent("Floors");
+            _decorParent = CreateParent("Decor");
             _crumbParent = CreateParent("Crumbs");
             _starParent  = CreateParent("Stars");
             _trapParent  = CreateParent("Traps");
+            _spikeParent = CreateParent("Spikes");
             _trapTiles.Clear();
+            _spikeVisuals.Clear();
 
             Sprite square = ShapeFactory.GetSquare();
 
@@ -92,12 +112,20 @@ namespace Shrink.Maze
 
                 if (ct == CellType.WALL)
                 {
-                    CreateTile($"W{x}_{y}", square, colorWall, _wallParent, pos, cellSize, 0);
+                    Sprite ws = ResolveWallSprite(x, y, data, square);
+                    Color  wc = (_theme != null && ws != square) ? Color.white : colorWall;
+                    CreateTile($"W{x}_{y}", ws, wc, _wallParent, pos, cellSize, 2);
                     continue;
                 }
 
-                // Suelo base
-                CreateTile($"F{x}_{y}", square, colorFloor, _floorParent, pos, cellSize, 0);
+                // Suelo base — patrón ajedrez si hay dos sprites
+                Sprite floorA = _theme != null ? _theme.floorA : null;
+                Sprite floorB = _theme != null ? _theme.floorB : null;
+                Sprite floorSpr = ((x + y) % 2 == 0 || floorB == null)
+                    ? ResolveSprite(floorA, square)
+                    : floorB;
+                Color fc = floorA != null ? Color.white : colorFloor;
+                CreateTile($"F{x}_{y}", floorSpr, fc, _floorParent, pos, cellSize, 0);
 
                 // Overlays según tipo
                 switch (ct)
@@ -131,24 +159,16 @@ namespace Shrink.Maze
                         break;
 
                     case CellType.TRAP_ONESHOT:
-                        CreateTile($"TO{x}_{y}", square, colorTrapOneshot, _floorParent, pos, cellSize * 0.85f, 1);
-                        RegisterTrap(new Vector2Int(x, y),
-                            ShapeFactory.CreateSprite($"TODia_{x}_{y}",
-                                ShapeFactory.GetSquare(), colorTrapOneshot * 1.4f, _trapParent, 2),
-                            pos, cellSize * 0.30f, rotate45: true);
+                        SpawnTrapOneshotAt(new Vector2Int(x, y), pos, square);
                         break;
 
                     case CellType.SPIKE:
-                        CreateTile($"SP{x}_{y}", square, colorSpike, _floorParent, pos, cellSize * 0.85f, 1);
-                        // Cruz de picos: dos rectángulos perpendiculares en blanco
-                        var spGo = new GameObject($"SPIcon_{x}_{y}");
-                        spGo.transform.SetParent(_trapParent);
-                        spGo.transform.position = pos;
-                        CreateSpikeBar(spGo.transform, pos, cellSize, 0f);
-                        CreateSpikeBar(spGo.transform, pos, cellSize, 90f);
+                        SpawnSpikeAt(new Vector2Int(x, y), pos, square);
                         break;
                 }
             }
+
+            SpawnDecorations(data);
         }
 
         /// <summary>
@@ -265,14 +285,114 @@ namespace Shrink.Maze
         {
             if (Stars.ContainsKey(cell)) return;
             Vector3 pos = CellToWorld(cell);
-            var go = ShapeFactory.CreateSprite($"Star_{cell.x}_{cell.y}",
-                         ShapeFactory.GetSquare(), colorStar, _starParent, sortingOrder: 3);
-            go.transform.position   = pos;
-            go.transform.localScale = Vector3.one * cellSize * 0.30f;
-            go.transform.rotation   = Quaternion.Euler(0f, 0f, 45f);
-            var star = go.AddComponent<Star>();
+
+            GameObject go;
+            float targetFraction = _theme != null ? _theme.starScale : 0.55f;
+            int   sortOrder      = _theme != null ? _theme.starSortingOrder : 3;
+
+            if (_theme != null && _theme.starIdle != null && _theme.starIdle.IsValid)
+            {
+                go = ShapeFactory.CreateSprite($"Star_{cell.x}_{cell.y}",
+                         _theme.starIdle.First, Color.white, _starParent, sortingOrder: sortOrder);
+                go.transform.position = pos;
+                var sr = go.GetComponent<SpriteRenderer>();
+                float native = sr != null && sr.sprite != null ? sr.sprite.bounds.size.x : 0f;
+                go.transform.localScale = Vector3.one * (native > 0f ? cellSize * targetFraction / native : cellSize * targetFraction);
+            }
+            else
+            {
+                go = ShapeFactory.CreateSprite($"Star_{cell.x}_{cell.y}",
+                         ShapeFactory.GetSquare(), colorStar, _starParent, sortingOrder: sortOrder);
+                go.transform.position   = pos;
+                go.transform.localScale = Vector3.one * cellSize * targetFraction;
+                go.transform.rotation   = Quaternion.Euler(0f, 0f, 45f);
+            }
+
+            go.name = $"Star_{cell.x}_{cell.y}";
+            var star = go.GetComponent<Star>() ?? go.AddComponent<Star>();
             star.Initialize(cell, sizeBonus);
+            star.StartAnimation(_theme);
             Stars[cell] = star;
+        }
+
+        private void SpawnSpikeAt(Vector2Int cell, Vector3 pos, Sprite square)
+        {
+            bool hasThemeSprite = _theme != null && _theme.spikeIdle != null && _theme.spikeIdle.IsValid;
+            float targetFraction = _theme != null ? _theme.spikeScale : 0.85f;
+            int   sortOrder      = _theme != null ? _theme.spikeSortingOrder : 1;
+
+            GameObject go;
+            if (hasThemeSprite)
+            {
+                go = ShapeFactory.CreateSprite($"SP{cell.x}_{cell.y}",
+                         _theme.spikeIdle.First, Color.white, _spikeParent, sortingOrder: sortOrder);
+                go.transform.position = pos;
+                var sr = go.GetComponent<SpriteRenderer>();
+                float native = sr != null && sr.sprite != null ? sr.sprite.bounds.size.x : 0f;
+                go.transform.localScale = Vector3.one * (native > 0f
+                    ? cellSize * targetFraction / native
+                    : cellSize * targetFraction);
+            }
+            else
+            {
+                // Fallback procedural: cuadrado rojo + cruz blanca
+                CreateTile($"SP{cell.x}_{cell.y}", square, colorSpike, _floorParent, pos, cellSize * 0.85f, 1);
+                var iconGo = new GameObject($"SPIcon_{cell.x}_{cell.y}");
+                iconGo.transform.SetParent(_spikeParent);
+                iconGo.transform.position = pos;
+                CreateSpikeBar(iconGo.transform, pos, cellSize, 0f);
+                CreateSpikeBar(iconGo.transform, pos, cellSize, 90f);
+                return; // Sin SpikeVisual en modo procedural
+            }
+
+            var spike = go.AddComponent<SpikeVisual>();
+            spike.Initialize(cell);
+            spike.StartAnimation(_theme);
+            _spikeVisuals[cell] = spike;
+        }
+
+        private void SpawnTrapOneshotAt(Vector2Int cell, Vector3 pos, Sprite fallback)
+        {
+            bool  hasAnim        = _theme != null && _theme.trapOneshotIdle != null && _theme.trapOneshotIdle.IsValid;
+            float targetFraction = _theme != null ? _theme.trapOneshotScale        : 0.85f;
+            int   sortOrder      = _theme != null ? _theme.trapOneshotSortingOrder : 1;
+
+            GameObject go;
+            if (hasAnim)
+            {
+                go = ShapeFactory.CreateSprite($"TO{cell.x}_{cell.y}",
+                         _theme.trapOneshotIdle.First, Color.white, _trapParent, sortingOrder: sortOrder);
+                go.transform.position = pos;
+                var sr     = go.GetComponent<SpriteRenderer>();
+                float native = sr != null && sr.sprite != null ? sr.sprite.bounds.size.x : 0f;
+                go.transform.localScale = Vector3.one * (native > 0f
+                    ? cellSize * targetFraction / native
+                    : cellSize * targetFraction);
+            }
+            else
+            {
+                // Fallback procedural: rombo naranja
+                go = ShapeFactory.CreateSprite($"TO{cell.x}_{cell.y}",
+                         fallback, colorTrapOneshot, _trapParent, sortingOrder: sortOrder);
+                go.transform.position   = pos;
+                go.transform.localScale = Vector3.one * cellSize * targetFraction;
+                go.transform.rotation   = Quaternion.Euler(0f, 0f, 45f);
+            }
+
+            var trap = go.AddComponent<TrapOneshotVisual>();
+            trap.Initialize(cell, () => ConvertTrapToWall(cell));
+            trap.StartAnimation(_theme);
+            _trapOneshotVisuals[cell] = trap;
+        }
+
+        /// <summary>
+        /// Dispara la animación de trigger del spike en la celda indicada.
+        /// Llamar desde ShrinkMechanic cuando el jugador pisa un SPIKE.
+        /// </summary>
+        public void PlaySpikeAt(Vector2Int cell)
+        {
+            if (_spikeVisuals.TryGetValue(cell, out SpikeVisual spike))
+                spike.PlayTrigger();
         }
 
         /// <summary>
@@ -284,7 +404,7 @@ namespace Shrink.Maze
 
             float bonus = star.SizeBonus;
             Stars.Remove(cell);
-            Destroy(star.gameObject);
+            star.PlayCollectAndDestroy(_theme);
 
             CollectedStars++;
             Events.GameEvents.RaiseStarCollected(CollectedStars, TotalStars);
@@ -294,18 +414,34 @@ namespace Shrink.Maze
         /// <summary>
         /// Deposita una migaja visual en la celda indicada.
         /// </summary>
-        public void SpawnCrumb(Vector2Int cell, float sizeStored, Color color)
+        /// <param name="playerSize">Tamaño actual del jugador (0.15–1.0). La migaja escala proporcionalmente.</param>
+        public void SpawnCrumb(Vector2Int cell, float sizeStored, Color color, float playerVisualFraction = 0.85f)
         {
             if (Crumbs.ContainsKey(cell)) return;
 
-            Vector3 pos = CellToWorld(cell);
-            var go      = ShapeFactory.CreateSprite($"Crumb_{cell.x}_{cell.y}",
-                              ShapeFactory.GetCircle(), color, _crumbParent, sortingOrder: 2);
-            go.transform.position   = pos;
-            go.transform.localScale = Vector3.one * cellSize * 0.25f;
+            Vector3 pos      = CellToWorld(cell);
+            Sprite  crumbSpr = PickCrumbSprite(cell);
+            Color   crumbCol = crumbSpr != null ? Color.white : color;
+
+            var go = ShapeFactory.CreateSprite($"Crumb_{cell.x}_{cell.y}",
+                         crumbSpr ?? ShapeFactory.GetCircle(), crumbCol, _crumbParent, sortingOrder: 2);
+            go.transform.position = pos;
+
+            // Crumb siempre ~47% del player visible: playerVisualFraction ya es fracción de cellSize
+            float targetSize = playerVisualFraction * cellSize * 0.47f;
+            if (crumbSpr != null)
+            {
+                float native = crumbSpr.bounds.size.x;
+                go.transform.localScale = Vector3.one * (native > 0f ? targetSize / native : targetSize);
+            }
+            else
+            {
+                go.transform.localScale = Vector3.one * targetSize;
+            }
 
             var crumb = go.AddComponent<Crumb>();
             crumb.Initialize(cell, sizeStored);
+            crumb.StartAnimation(_playerSkin);
             Crumbs[cell] = crumb;
             CrumbOrder.Add(cell);
         }
@@ -321,7 +457,7 @@ namespace Shrink.Maze
             float stored = crumb.SizeStored;
             Crumbs.Remove(cell);
             CrumbOrder.Remove(cell);
-            Destroy(crumb.gameObject);
+            crumb.PlayAbsorbAndDestroy(_playerSkin);
             return stored;
         }
 
@@ -338,27 +474,26 @@ namespace Shrink.Maze
         }
 
         /// <summary>
-        /// Activa la trampa ONESHOT en la celda: destruye su visual y la convierte en WALL.
-        /// Llamar desde ShrinkMechanic al pisar una celda TRAP_ONESHOT.
+        /// Activa la trampa ONESHOT: convierte la celda a WALL en datos de inmediato,
+        /// luego dispara la animación de trigger en el visual. Al completarla,
+        /// el visual se destruye y aparece el tile de muro.
         /// </summary>
         public void ActivateTrap(Vector2Int cell)
         {
-            if (!_trapTiles.TryGetValue(cell, out GameObject tile)) return;
+            if (!_trapOneshotVisuals.TryGetValue(cell, out TrapOneshotVisual visual)) return;
 
-            _trapTiles.Remove(cell);
-            Destroy(tile);
-            Data.Grid[cell.x, cell.y] = CellType.WALL;
+            _trapOneshotVisuals.Remove(cell);
+            Data.Grid[cell.x, cell.y] = CellType.WALL; // gameplay inmediato
 
-            // Destruir overlay naranja y suelo base (de lo contrario el suelo blanco queda visible)
-            var floorTile = _floorParent.Find($"TO{cell.x}_{cell.y}");
-            if (floorTile != null) Destroy(floorTile.gameObject);
+            // El visual reproduce el trigger y llama al callback al terminar
+            visual.PlayTriggerAndComplete();
+        }
 
-            var baseTile = _floorParent.Find($"F{cell.x}_{cell.y}");
-            if (baseTile != null) Destroy(baseTile.gameObject);
-
-            // Crear tile de muro en su lugar
-            CreateTile($"W{cell.x}_{cell.y}_trap", ShapeFactory.GetSquare(),
-                       colorWall, _wallParent, CellToWorld(cell), cellSize, 0);
+        private void ConvertTrapToWall(Vector2Int cell)
+        {
+            // El trapVisual se queda en escena mostrando el último frame del trigger,
+            // sobrepuesto sobre el floor base que ya estaba debajo. No hay nada que destruir.
+            // La celda ya es WALL en datos (set en ActivateTrap).
         }
 
         /// <summary>
@@ -449,13 +584,17 @@ namespace Shrink.Maze
         {
             if (_wallParent  != null) Destroy(_wallParent.gameObject);
             if (_floorParent != null) Destroy(_floorParent.gameObject);
+            if (_decorParent != null) Destroy(_decorParent.gameObject);
             if (_crumbParent != null) Destroy(_crumbParent.gameObject);
             if (_starParent  != null) Destroy(_starParent.gameObject);
             if (_trapParent  != null) Destroy(_trapParent.gameObject);
+            if (_spikeParent != null) Destroy(_spikeParent.gameObject);
             Crumbs.Clear();
             CrumbOrder.Clear();
             Stars.Clear();
             _trapTiles.Clear();
+            _trapOneshotVisuals.Clear();
+            _spikeVisuals.Clear();
             CollectedStars = 0;
             TotalStars     = 0;
             Data = null;
@@ -486,8 +625,139 @@ namespace Shrink.Maze
                                 Transform parent, Vector3 pos, float size, int order)
         {
             var go = ShapeFactory.CreateSprite(name, sprite, color, parent, order);
-            go.transform.position   = pos;
-            go.transform.localScale = Vector3.one * size;
+            go.transform.position = pos;
+
+            // Escala para que el sprite ocupe exactamente 'size' unidades world,
+            // independientemente de sus dimensiones en píxeles y PPU.
+            float nativeSize = (sprite != null && sprite.bounds.size.x > 0f)
+                ? sprite.bounds.size.x
+                : 1f;
+            go.transform.localScale = Vector3.one * (size / nativeSize);
+        }
+
+        /// <summary>
+        /// Devuelve el sprite asignado en Inspector o, si es null, el fallback procedural.
+        /// </summary>
+        private Sprite PickCrumbSprite(Vector2Int cell)
+        {
+            var sprites = _playerSkin?.crumbSprites;
+            if (sprites == null || sprites.Length == 0) return null;
+            int idx = Mathf.Abs(cell.x * 73856093 ^ cell.y * 19349663) % sprites.Length;
+            return sprites[idx];
+        }
+
+        private Sprite ResolveSprite(Sprite assigned, Sprite fallback) =>
+            assigned != null ? assigned : fallback;
+
+        /// <summary>
+        /// Elige el sprite de wall por bitmask de vecinos suelo (N=8 E=4 S=2 W=1).
+        /// Las celdas del borde del mapa usan sprites de borde dedicados.
+        /// </summary>
+        private Sprite ResolveWallSprite(int x, int y, MazeData data, Sprite fallback)
+        {
+            if (_theme == null) return fallback;
+
+            // ── Bordes del mapa (prioridad máxima) ──────────────────────────────
+            bool isB = y == 0;
+            bool isT = y == data.Height - 1;
+            bool isL = x == 0;
+            bool isR = x == data.Width  - 1;
+
+            // Esquinas (dos bordes a la vez)
+            if (isB && isL) return _theme.wallMapCornerBL ?? _theme.wallMapBorderBottom ?? WallTileFallback(0, fallback);
+            if (isB && isR) return _theme.wallMapCornerBR ?? _theme.wallMapBorderBottom ?? WallTileFallback(0, fallback);
+            if (isT && isL) return _theme.wallMapCornerTL ?? _theme.wallMapBorderTop    ?? _theme.wallMapBorderBottom ?? WallTileFallback(0, fallback);
+            if (isT && isR) return _theme.wallMapCornerTR ?? _theme.wallMapBorderTop    ?? _theme.wallMapBorderBottom ?? WallTileFallback(0, fallback);
+
+            // Bordes simples
+            if (isB) return _theme.wallMapBorderBottom ?? WallTileFallback(0, fallback);
+            if (isT)
+            {
+                // Borde superior con barranca: el vecino sur (y-1) es suelo → cara visible al jugador
+                bool southIsFloor = data.Grid[x, y - 1] != CellType.WALL;
+                if (southIsFloor && _theme.wallMapBorderTopEdge != null)
+                    return _theme.wallMapBorderTopEdge;
+                return _theme.wallMapBorderTop ?? _theme.wallMapBorderBottom ?? WallTileFallback(0, fallback);
+            }
+            if (isL) return _theme.wallMapBorderLeft   ?? _theme.wallMapBorderBottom ?? WallTileFallback(0, fallback);
+            if (isR) return _theme.wallMapBorderRight  ?? _theme.wallMapBorderBottom ?? WallTileFallback(0, fallback);
+
+            // ── Bitmask autotile (N=8 E=4 S=2 W=1) ─────────────────────────────
+            int mask = 0;
+            if (data.Grid[x,     y + 1] != CellType.WALL) mask |= 8; // N
+            if (data.Grid[x + 1, y    ] != CellType.WALL) mask |= 4; // E
+            if (data.Grid[x,     y - 1] != CellType.WALL) mask |= 2; // S
+            if (data.Grid[x - 1, y    ] != CellType.WALL) mask |= 1; // W
+
+            // ── Esquinas cóncavas (inner corners) ───────────────────────────────
+            // Cuando los 4 cardinales son pared (mask == 0), revisar los 4 diagonales.
+            // Si el diagonal es suelo, este tile está en la esquina interna de un cuarto.
+            // Los tiles no-borde garantizan que todos los vecinos están en el grid.
+            if (mask == 0)
+            {
+                if (data.Grid[x + 1, y + 1] != CellType.WALL && _theme.wallInnerCornerNE != null)
+                    return _theme.wallInnerCornerNE;
+                if (data.Grid[x - 1, y + 1] != CellType.WALL && _theme.wallInnerCornerNW != null)
+                    return _theme.wallInnerCornerNW;
+                if (data.Grid[x + 1, y - 1] != CellType.WALL && _theme.wallInnerCornerSE != null)
+                    return _theme.wallInnerCornerSE;
+                if (data.Grid[x - 1, y - 1] != CellType.WALL && _theme.wallInnerCornerSW != null)
+                    return _theme.wallInnerCornerSW;
+            }
+
+            return WallTileFallback(mask, fallback);
+        }
+
+        private Sprite WallTileFallback(int mask, Sprite fallback)
+        {
+            if (_theme == null) return fallback;
+            Sprite themed = _theme.GetWallTile(mask);
+            return themed != null ? themed : fallback;
+        }
+
+        /// <summary>
+        /// Coloca prefabs de decoración (rocas, hierbas) en celdas de suelo elegibles.
+        /// Usa la semilla del MazeData para reproducibilidad.
+        /// </summary>
+        private void SpawnDecorations(MazeData data)
+        {
+            if (_theme == null || _theme.decorPrefabs == null || _theme.decorPrefabs.Length == 0) return;
+            if (_theme.decorDensity <= 0f) return;
+
+            var rng = new System.Random(data.Seed ^ 0xDEC0);
+
+            for (int x = 0; x < data.Width;  x++)
+            for (int y = 0; y < data.Height; y++)
+            {
+                CellType ct = data.Grid[x, y];
+
+                // Solo celdas de suelo sin overlay especial
+                if (ct == CellType.WALL     || ct == CellType.START    || ct == CellType.EXIT  ||
+                    ct == CellType.DOOR     || ct == CellType.NARROW_06 || ct == CellType.NARROW_04 ||
+                    ct == CellType.TRAP_DRAIN || ct == CellType.TRAP_ONESHOT || ct == CellType.SPIKE)
+                    continue;
+
+                if (rng.NextDouble() > _theme.decorDensity) continue;
+
+                var prefab = _theme.decorPrefabs[rng.Next(_theme.decorPrefabs.Length)];
+                if (prefab == null) continue;
+
+                var go = Instantiate(prefab, _decorParent);
+                go.transform.position = CellToWorld(new Vector2Int(x, y));
+
+                // Escalar para que quepa en decorScale * cellSize independientemente del PPU del sprite
+                var sr = go.GetComponentInChildren<SpriteRenderer>();
+                if (sr != null && sr.sprite != null)
+                {
+                    float native = sr.sprite.bounds.size.x;
+                    if (native > 0f)
+                        go.transform.localScale = Vector3.one * (cellSize * _theme.decorScale / native);
+                }
+                else
+                {
+                    go.transform.localScale = Vector3.one * (cellSize * _theme.decorScale);
+                }
+            }
         }
 
         /// <summary>

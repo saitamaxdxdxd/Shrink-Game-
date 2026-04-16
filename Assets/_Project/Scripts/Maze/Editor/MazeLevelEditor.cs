@@ -214,6 +214,17 @@ namespace Shrink.Maze.Editor
 
             EditorGUILayout.EndVertical();
 
+            // ── Tema visual ───────────────────────────────────────────────────
+            EditorGUILayout.Space(2);
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Tema visual", EditorStyles.boldLabel, GUILayout.Width(90));
+            var themeProp = _serialized.FindProperty("theme");
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.PropertyField(themeProp, GUIContent.none);
+            if (EditorGUI.EndChangeCheck())
+                _serialized.ApplyModifiedProperties();
+            EditorGUILayout.EndHorizontal();
+
             // ── Zoom ──────────────────────────────────────────────────────────
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Zoom", GUILayout.Width(38));

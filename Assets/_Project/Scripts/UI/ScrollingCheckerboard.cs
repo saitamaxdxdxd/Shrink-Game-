@@ -25,8 +25,9 @@ namespace Shrink.UI
         [SerializeField] private float _speedY       =  0.04f;  // unidades UV/s en Y (misma = diagonal 45°)
         [SerializeField] private float _tilingScale  = 12f;     // cuántas veces repite en pantalla
 
-        private RawImage _raw;
-        private Vector2  _offset;
+        private RawImage  _raw;
+        private Vector2   _offset;
+        private Texture2D _tex;
 
         private float _tilingX;
         private float _tilingY;
@@ -34,8 +35,30 @@ namespace Shrink.UI
         private void Awake()
         {
             _raw = GetComponent<RawImage>();
-            _raw.texture       = BuildTexture();
+            _tex = BuildTexture();
+            _raw.texture       = _tex;
             _raw.raycastTarget = false;
+        }
+
+        /// <summary>
+        /// Cambia los colores del tablero en runtime (llamado desde LevelLoader al cargar el tema).
+        /// </summary>
+        public void ApplyTheme(Color colorA, Color colorB, float speed)
+        {
+            _colorA = colorA;
+            _colorB = colorB;
+            _speedX = speed;
+            _speedY = speed;
+
+            // Redibujar textura con los nuevos colores
+            int size = _cellPixels * 2;
+            for (int x = 0; x < size; x++)
+            for (int y = 0; y < size; y++)
+            {
+                bool isA = ((x / _cellPixels) + (y / _cellPixels)) % 2 == 0;
+                _tex.SetPixel(x, y, isA ? _colorA : _colorB);
+            }
+            _tex.Apply();
         }
 
         private void Start()

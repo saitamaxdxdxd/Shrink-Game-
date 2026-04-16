@@ -519,7 +519,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -10
   m_TargetDisplay: 0
 --- !u!224 &58639404
 RectTransform:
@@ -1329,7 +1329,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &511288073
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1393,6 +1393,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 511288072}
   m_CullTransparentMesh: 1
+--- !u!1 &517949312
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 517949314}
+  - component: {fileID: 517949313}
+  m_Layer: 0
+  m_Name: Background
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &517949313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 517949312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1733ccb5645424131a08220271395d23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Shrink.UI.GameSceneBackground
+  _colorA: {r: 0.083481655, g: 0.16177168, b: 0.26415092, a: 1}
+  _colorB: {r: 0.112896055, g: 0.19828574, b: 0.4056604, a: 1}
+  _speed: 0.08
+  _cellPixels: 2
+  _tilingScale: 4
+  _worldZ: 2
+--- !u!4 &517949314
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 517949312}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1405,6 +1455,7 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1530,6 +1581,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91911c2273ee04f798093a3dad84ad83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Shrink.Camera.CameraFollow
+  smoothSpeed: 6
+  orthographicSize: 7
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -3354,6 +3419,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Shrink.Level.LevelLoader
   _playerPrefab: {fileID: 9168289067370305416, guid: fcb69739705f74ffda93a8862efc9fef, type: 3}
+  _playerSkin: {fileID: 11400000, guid: beff1e90e97eb4205bd931012f59cbff, type: 2}
+  _background: {fileID: 0}
   _hud: {fileID: 58639400}
   _pauseMap: {fileID: 58639399}
   _gameResult: {fileID: 58639405}
@@ -6881,7 +6948,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c23200b07ae704465ae2013958135e16, type: 2}
   - {fileID: 11400000, guid: a3bf819e2350c45ca87faf63fd7a9c10, type: 2}
   - {fileID: 11400000, guid: 00e9d4488ca65402291c5d8c8339bae7, type: 2}
-  startLevelIndex: 0
+  startLevelIndex: 6
 --- !u!4 &2130069601
 Transform:
   m_ObjectHideFlags: 0
@@ -6911,27 +6978,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3768312126609472762, guid: fec6a0b20fb664729baabd23046e5950, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.44444445
       objectReference: {fileID: 0}
     - target: {fileID: 3768312126609472762, guid: fec6a0b20fb664729baabd23046e5950, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3768312126609472762, guid: fec6a0b20fb664729baabd23046e5950, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0
+      value: 0.44444445
       objectReference: {fileID: 0}
     - target: {fileID: 3921917331323842605, guid: fec6a0b20fb664729baabd23046e5950, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4077316531729948086, guid: fec6a0b20fb664729baabd23046e5950, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5304920642359829341, guid: fec6a0b20fb664729baabd23046e5950, type: 3}
       propertyPath: m_Name
       value: DPad
+      objectReference: {fileID: 0}
+    - target: {fileID: 5304920642359829341, guid: fec6a0b20fb664729baabd23046e5950, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5694142786439517885, guid: fec6a0b20fb664729baabd23046e5950, type: 3}
       propertyPath: m_AnchorMax.y
@@ -6939,11 +7010,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7139317342214403954, guid: fec6a0b20fb664729baabd23046e5950, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.44444445
       objectReference: {fileID: 0}
     - target: {fileID: 7139317342214403954, guid: fec6a0b20fb664729baabd23046e5950, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8503646992216348603, guid: fec6a0b20fb664729baabd23046e5950, type: 3}
       propertyPath: m_Pivot.x
@@ -7035,6 +7106,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 519420032}
+  - {fileID: 517949314}
   - {fileID: 619394802}
   - {fileID: 2130069601}
   - {fileID: 1120431093}

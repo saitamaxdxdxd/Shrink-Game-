@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 3e05f73634ae843868ac689a0d0e78fe
+guid: 2e6d9bbd15ac44125a5c76379fbf5cd5
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1592044207104762596
-    second: ButtonDPadReset_0
+      213: 4132781926133410755
+    second: ButtonDPadResetIcon 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -165,10 +165,10 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ButtonDPadReset_0
+      name: ButtonDPadResetIcon 1_0
       rect:
         serializedVersion: 2
-        x: 29
+        x: 19
         y: 0
         width: 162
         height: 191
@@ -180,8 +180,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c1d5dc88a3ce7e9e0800000000000000
-      internalID: -1592044207104762596
+      spriteID: 3cb2651f3479a5930800000000000000
+      internalID: 4132781926133410755
       vertices: []
       indices: 
       edges: []
@@ -200,7 +200,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ButtonDPadReset_0: -1592044207104762596
+      ButtonDPadResetIcon 1_0: 4132781926133410755
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

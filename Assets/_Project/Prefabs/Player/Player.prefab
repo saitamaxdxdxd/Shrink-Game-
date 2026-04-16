@@ -49,6 +49,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Shrink.Player.SphereController
   colorAlive: {r: 0, g: 0, b: 1, a: 1}
   colorDanger: {r: 1, g: 0.35, b: 0.2, a: 1}
+  visualSizeAtFull: 0.9
+  visualSizeAtMin: 0.4
 --- !u!114 &4367881003988764879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,7 +127,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0, g: 0, b: 1, a: 1}
