@@ -5,6 +5,9 @@ TextureImporter:
   - first:
       213: 4851809213685780382
     second: Trap1_W1_0
+  - first:
+      213: 2694444406608362309
+    second: Trap1_W1_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -170,8 +173,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 150
-        height: 150
+        width: 140
+        height: 140
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -190,20 +193,20 @@ TextureImporter:
       name: Trap1_W1_1
       rect:
         serializedVersion: 2
-        x: 150
+        x: 140
         y: 0
-        width: 150
-        height: 150
+        width: 140
+        height: 140
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 7a5320b1203a6406fa01c18697f1679f
-      internalID: 1867689851
+      spriteID: 54bfdea79e6946520800000000000000
+      internalID: 2694444406608362309
       vertices: []
       indices: 
       edges: []
@@ -212,7 +215,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 81705c03862e34ad88e2b3cd0928f981
+    spriteID: 3c86f4d15eaf24f22ba0005459b4e502
     internalID: 0
     vertices: []
     indices: 
@@ -222,10 +225,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":2.0,"y":1.0},"gridSpriteSize":{"x":150.0,"y":150.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":2.0,"y":1.0},"gridSpriteSize":{"x":140.0,"y":140.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Trap1_W1_0: 4851809213685780382
-      Trap1_W1_1: 1867689851
+      Trap1_W1_1: 2694444406608362309
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

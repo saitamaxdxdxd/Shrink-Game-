@@ -1,0 +1,858 @@
+fileFormatVersion: 2
+guid: 9c70ef70274884fb699e2234a8feeea3
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 9207076615670348933
+    second: EnemyFollower_W1_0
+  - first:
+      213: 1785600320105889901
+    second: EnemyFollower_W1_1
+  - first:
+      213: 278590249233631277
+    second: EnemyFollower_W1_2
+  - first:
+      213: 4830051029125414479
+    second: EnemyFollower_W1_3
+  - first:
+      213: -2591091736720357904
+    second: EnemyFollower_W1_4
+  - first:
+      213: 3639301796714509275
+    second: EnemyFollower_W1_5
+  - first:
+      213: 7366942517206834215
+    second: EnemyFollower_W1_6
+  - first:
+      213: -3911268683396112709
+    second: EnemyFollower_W1_7
+  - first:
+      213: 2950621104477485829
+    second: EnemyFollower_W1_8
+  - first:
+      213: -279680262470904011
+    second: EnemyFollower_W1_9
+  - first:
+      213: -3795596129544445005
+    second: EnemyFollower_W1_10
+  - first:
+      213: 2733168240869436140
+    second: EnemyFollower_W1_11
+  - first:
+      213: -8635944857249702594
+    second: EnemyFollower_W1_12
+  - first:
+      213: 884786391093628173
+    second: EnemyFollower_W1_13
+  - first:
+      213: 3257583927897001245
+    second: EnemyFollower_W1_14
+  - first:
+      213: 9210987935996512135
+    second: EnemyFollower_W1_15
+  - first:
+      213: -8330110344916521930
+    second: EnemyFollower_W1_16
+  - first:
+      213: 586569114433672922
+    second: EnemyFollower_W1_17
+  - first:
+      213: -8245225005711742111
+    second: EnemyFollower_W1_18
+  - first:
+      213: -1798517494945439865
+    second: EnemyFollower_W1_19
+  - first:
+      213: 3679706566109285874
+    second: EnemyFollower_W1_20
+  - first:
+      213: 4893607785236570272
+    second: EnemyFollower_W1_21
+  - first:
+      213: 5736974627920358211
+    second: EnemyFollower_W1_22
+  - first:
+      213: 5918152597727770675
+    second: EnemyFollower_W1_23
+  - first:
+      213: -7825785150902660315
+    second: EnemyFollower_W1_24
+  - first:
+      213: -6778666269099714722
+    second: EnemyFollower_W1_25
+  - first:
+      213: 6235026490427271447
+    second: EnemyFollower_W1_26
+  - first:
+      213: -1051361406553681370
+    second: EnemyFollower_W1_27
+  - first:
+      213: 6181896498210041284
+    second: EnemyFollower_W1_28
+  - first:
+      213: -5975055463596115495
+    second: EnemyFollower_W1_29
+  - first:
+      213: 8745516531266983516
+    second: EnemyFollower_W1_30
+  - first:
+      213: -4691870472638682124
+    second: EnemyFollower_W1_31
+  - first:
+      213: 2258071610853292553
+    second: EnemyFollower_W1_32
+  - first:
+      213: -9108783314339744967
+    second: EnemyFollower_W1_33
+  - first:
+      213: 6165366193016123400
+    second: EnemyFollower_W1_34
+  - first:
+      213: -621600022482739988
+    second: EnemyFollower_W1_35
+  - first:
+      213: 4812622085394545932
+    second: EnemyFollower_W1_36
+  - first:
+      213: 1108815823213405907
+    second: EnemyFollower_W1_37
+  - first:
+      213: -5025076651222501370
+    second: EnemyFollower_W1_38
+  - first:
+      213: -7111691132606363497
+    second: EnemyFollower_W1_39
+  - first:
+      213: 279317351914377074
+    second: EnemyFollower_W1_40
+  - first:
+      213: 1787901719320178527
+    second: EnemyFollower_W1_41
+  - first:
+      213: 3479787918784890502
+    second: EnemyFollower_W1_42
+  - first:
+      213: 6322151264630583236
+    second: EnemyFollower_W1_43
+  - first:
+      213: -5145840402666056567
+    second: EnemyFollower_W1_44
+  - first:
+      213: -8479980563950407571
+    second: EnemyFollower_W1_45
+  - first:
+      213: 3258325280182786156
+    second: EnemyFollower_W1_46
+  - first:
+      213: 4510760957500965747
+    second: EnemyFollower_W1_47
+  - first:
+      213: -6893187801849466696
+    second: EnemyFollower_W1_48
+  - first:
+      213: -3606106706520748695
+    second: EnemyFollower_W1_49
+  - first:
+      213: 8485605134845632619
+    second: EnemyFollower_W1_50
+  - first:
+      213: 238343765428361570
+    second: EnemyFollower_W1_51
+  - first:
+      213: -7833698078390176888
+    second: EnemyFollower_W1_52
+  - first:
+      213: 2347812589890609881
+    second: EnemyFollower_W1_53
+  - first:
+      213: -4883248277131526898
+    second: EnemyFollower_W1_54
+  - first:
+      213: -6449833285902161064
+    second: EnemyFollower_W1_55
+  - first:
+      213: -1718923505204756879
+    second: EnemyFollower_W1_56
+  - first:
+      213: 6946857201112944043
+    second: EnemyFollower_W1_57
+  - first:
+      213: -3182551708754971594
+    second: EnemyFollower_W1_58
+  - first:
+      213: 1735361967670621454
+    second: EnemyFollower_W1_59
+  - first:
+      213: 1793981453497239535
+    second: EnemyFollower_W1_60
+  - first:
+      213: 973596908403326532
+    second: EnemyFollower_W1_61
+  - first:
+      213: -1295560646380966824
+    second: EnemyFollower_W1_62
+  - first:
+      213: -3754194241233164550
+    second: EnemyFollower_W1_63
+  - first:
+      213: 5864426346952742052
+    second: EnemyFollower_W1_64
+  - first:
+      213: 1825410709795448406
+    second: EnemyFollower_W1_65
+  - first:
+      213: 8235561980684480277
+    second: EnemyFollower_W1_66
+  - first:
+      213: -180194415755025933
+    second: EnemyFollower_W1_67
+  - first:
+      213: 479141294384006147
+    second: EnemyFollower_W1_68
+  - first:
+      213: -8778795306029073207
+    second: EnemyFollower_W1_69
+  - first:
+      213: 4698261077322824597
+    second: EnemyFollower_W1_70
+  - first:
+      213: 7035247980899158434
+    second: EnemyFollower_W1_71
+  - first:
+      213: 3757846527196104005
+    second: EnemyFollower_W1_72
+  - first:
+      213: -4722188436582438319
+    second: EnemyFollower_W1_73
+  - first:
+      213: 1384193692656311169
+    second: EnemyFollower_W1_74
+  - first:
+      213: 2368981387236159556
+    second: EnemyFollower_W1_75
+  - first:
+      213: -7141844754143938327
+    second: EnemyFollower_W1_76
+  - first:
+      213: -5791700695407380488
+    second: EnemyFollower_W1_77
+  - first:
+      213: -3201226258308757150
+    second: EnemyFollower_W1_78
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: VisionOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: tvOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: EnemyFollower_W1_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1170
+        width: 390
+        height: 390
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58c36d8966b16cf70800000000000000
+      internalID: 9207076615670348933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyFollower_W1_1
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 1170
+        width: 390
+        height: 390
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d604cb6d70ab7c810800000000000000
+      internalID: 1785600320105889901
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyFollower_W1_2
+      rect:
+        serializedVersion: 2
+        x: 780
+        y: 1170
+        width: 390
+        height: 390
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d28457b0b50cdd300800000000000000
+      internalID: 278590249233631277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyFollower_W1_3
+      rect:
+        serializedVersion: 2
+        x: 1170
+        y: 1170
+        width: 390
+        height: 390
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4eb70ef1d9c70340800000000000000
+      internalID: 4830051029125414479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyFollower_W1_4
+      rect:
+        serializedVersion: 2
+        x: 1560
+        y: 1170
+        width: 390
+        height: 390
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f5455c2bc79a0cd0800000000000000
+      internalID: -2591091736720357904
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyFollower_W1_5
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 780
+        width: 390
+        height: 390
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd3fb97c3b5618230800000000000000
+      internalID: 3639301796714509275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyFollower_W1_6
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 780
+        width: 390
+        height: 390
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72cd5da0033ac3660800000000000000
+      internalID: 7366942517206834215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyFollower_W1_7
+      rect:
+        serializedVersion: 2
+        x: 780
+        y: 780
+        width: 390
+        height: 390
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bbe9011fad168b9c0800000000000000
+      internalID: -3911268683396112709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyFollower_W1_8
+      rect:
+        serializedVersion: 2
+        x: 1170
+        y: 780
+        width: 390
+        height: 390
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50bb62fe246b2f820800000000000000
+      internalID: 2950621104477485829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyFollower_W1_9
+      rect:
+        serializedVersion: 2
+        x: 1560
+        y: 780
+        width: 390
+        height: 390
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 537dbb878406e1cf0800000000000000
+      internalID: -279680262470904011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyFollower_W1_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 390
+        width: 390
+        height: 390
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b3e7ab1e65535bc0800000000000000
+      internalID: -3795596129544445005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyFollower_W1_11
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 390
+        width: 390
+        height: 390
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ceae66cb80a2ee520800000000000000
+      internalID: 2733168240869436140
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyFollower_W1_12
+      rect:
+        serializedVersion: 2
+        x: 780
+        y: 390
+        width: 390
+        height: 390
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3d15c358e5f62880800000000000000
+      internalID: -8635944857249702594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyFollower_W1_13
+      rect:
+        serializedVersion: 2
+        x: 1170
+        y: 390
+        width: 390
+        height: 390
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0d4c3fe884674c00800000000000000
+      internalID: 884786391093628173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyFollower_W1_14
+      rect:
+        serializedVersion: 2
+        x: 1560
+        y: 390
+        width: 390
+        height: 390
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1d8250b253453d20800000000000000
+      internalID: 3257583927897001245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyFollower_W1_15
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 390
+        height: 390
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7870b73d9b004df70800000000000000
+      internalID: 9210987935996512135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyFollower_W1_16
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 0
+        width: 390
+        height: 390
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63ca17fa6c0856c80800000000000000
+      internalID: -8330110344916521930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyFollower_W1_17
+      rect:
+        serializedVersion: 2
+        x: 780
+        y: 0
+        width: 390
+        height: 390
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad6d8067089e32800800000000000000
+      internalID: 586569114433672922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyFollower_W1_18
+      rect:
+        serializedVersion: 2
+        x: 1170
+        y: 0
+        width: 390
+        height: 390
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16b2269da83139d80800000000000000
+      internalID: -8245225005711742111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 12c5eb8a4031b4eed9192438f8ada8fb
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":5.0,"y":4.0},"gridSpriteSize":{"x":390.0,"y":390.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      EnemyFollower_W1_0: 9207076615670348933
+      EnemyFollower_W1_1: 1785600320105889901
+      EnemyFollower_W1_10: -3795596129544445005
+      EnemyFollower_W1_11: 2733168240869436140
+      EnemyFollower_W1_12: -8635944857249702594
+      EnemyFollower_W1_13: 884786391093628173
+      EnemyFollower_W1_14: 3257583927897001245
+      EnemyFollower_W1_15: 9210987935996512135
+      EnemyFollower_W1_16: -8330110344916521930
+      EnemyFollower_W1_17: 586569114433672922
+      EnemyFollower_W1_18: -8245225005711742111
+      EnemyFollower_W1_2: 278590249233631277
+      EnemyFollower_W1_3: 4830051029125414479
+      EnemyFollower_W1_4: -2591091736720357904
+      EnemyFollower_W1_5: 3639301796714509275
+      EnemyFollower_W1_6: 7366942517206834215
+      EnemyFollower_W1_7: -3911268683396112709
+      EnemyFollower_W1_8: 2950621104477485829
+      EnemyFollower_W1_9: -279680262470904011
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

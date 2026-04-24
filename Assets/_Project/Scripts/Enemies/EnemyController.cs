@@ -28,7 +28,7 @@ namespace Shrink.Enemies
 
         protected MazeRenderer     _renderer;
         protected SphereController _player;
-        private   bool             _active;
+        protected bool             _active;
 
         // ──────────────────────────────────────────────────────────────────────
         // Inicialización
@@ -77,17 +77,26 @@ namespace Shrink.Enemies
         // Detección de colisión con el jugador
         // ──────────────────────────────────────────────────────────────────────
 
-        private bool _wasKiller = false;
+        protected bool _wasKiller = false;
+        protected bool _attacking = false;
 
         private void Update()
         {
-            if (!_active || !_player.IsAlive) return;
+            if (!_active || !_player.IsAlive || _attacking) return;
             if (CurrentCell == _player.CurrentCell)
-            {
-                _active    = false;
-                _wasKiller = true;
-                GameEvents.RaiseLevelFail();
-            }
+                OnPlayerContact();
+        }
+
+        /// <summary>
+        /// Llamado cuando el enemigo coincide en celda con el jugador.
+        /// La base mata instantáneamente. Subclases pueden override para
+        /// intercalar una animación con ventana de escape.
+        /// </summary>
+        protected virtual void OnPlayerContact()
+        {
+            _active    = false;
+            _wasKiller = true;
+            GameEvents.RaiseLevelFail();
         }
 
         // ──────────────────────────────────────────────────────────────────────
@@ -100,6 +109,7 @@ namespace Shrink.Enemies
             {
                 yield return new WaitForSeconds(moveInterval);
                 if (!_active) break;
+                if (_attacking) continue;
 
                 Vector2Int next = ChooseNextCell();
                 if (next == CurrentCell) continue;
@@ -132,7 +142,7 @@ namespace Shrink.Enemies
         // ──────────────────────────────────────────────────────────────────────
 
         /// <summary>Devuelve true si el enemigo puede entrar a la celda (no es WALL).</summary>
-        protected bool CanEnter(Vector2Int cell)
+        protected virtual bool CanEnter(Vector2Int cell)
         {
             if (!_renderer.Data.InBounds(cell.x, cell.y)) return false;
             CellType ct = _renderer.Data.Grid[cell.x, cell.y];
@@ -156,7 +166,7 @@ namespace Shrink.Enemies
             transform.position = to;
         }
 
-        private void BuildVisual()
+        protected virtual void BuildVisual()
         {
             var sr = gameObject.AddComponent<SpriteRenderer>();
             sr.sprite       = Core.ShapeFactory.GetCircle();

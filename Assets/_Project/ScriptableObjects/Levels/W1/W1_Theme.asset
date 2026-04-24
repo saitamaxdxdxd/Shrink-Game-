@@ -43,10 +43,38 @@ MonoBehaviour:
   wallMapCornerBR: {fileID: 1311243886, guid: 2b57f32b5f1334472be9193a7a34130c, type: 3}
   wallMapCornerTL: {fileID: -2062477220394410363, guid: 2b57f32b5f1334472be9193a7a34130c, type: 3}
   wallMapCornerTR: {fileID: -1450756510, guid: 2b57f32b5f1334472be9193a7a34130c, type: 3}
+  trapDrainIdle:
+    frames:
+    - {fileID: 3633560772621447757, guid: 969b7f97c7898451080102b19be088f3, type: 3}
+    fps: 18
+    loop: 1
+  trapDrainOccasional:
+  - name: Blink
+    frames:
+    - {fileID: -6508838327357619245, guid: 969b7f97c7898451080102b19be088f3, type: 3}
+    fps: 12
+    minInterval: 2
+    maxInterval: 5
+  trapDrainTrigger:
+    frames:
+    - {fileID: 6360418944715998839, guid: 969b7f97c7898451080102b19be088f3, type: 3}
+    - {fileID: -683762417194790450, guid: 969b7f97c7898451080102b19be088f3, type: 3}
+    - {fileID: -1472558790475002272, guid: 969b7f97c7898451080102b19be088f3, type: 3}
+    - {fileID: -6535390210624575140, guid: 969b7f97c7898451080102b19be088f3, type: 3}
+    - {fileID: 2365047284852442804, guid: 969b7f97c7898451080102b19be088f3, type: 3}
+    - {fileID: 8191752792588468671, guid: 969b7f97c7898451080102b19be088f3, type: 3}
+    fps: 14
+    loop: 1
+  trapDrainMotion:
+    effect: 0
+    speed: 1
+    amplitude: 0.08
+  trapDrainScale: 0.85
+  trapDrainSortingOrder: 1
   trapOneshotIdle:
     frames:
     - {fileID: 4851809213685780382, guid: 846910324e5a541fd9a33b1029875ee3, type: 3}
-    - {fileID: 1867689851, guid: 846910324e5a541fd9a33b1029875ee3, type: 3}
+    - {fileID: 2694444406608362309, guid: 846910324e5a541fd9a33b1029875ee3, type: 3}
     fps: 2
     loop: 1
   trapOneshotOccasional: []
@@ -110,6 +138,38 @@ MonoBehaviour:
     amplitude: 0.08
   spikeScale: 0.85
   spikeSortingOrder: 1
+  chaserIdle:
+    frames:
+    - {fileID: 1785600320105889901, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 278590249233631277, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 4830051029125414479, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: -2591091736720357904, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 3639301796714509275, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    fps: 18
+    loop: 1
+  chaserAttack:
+    frames:
+    - {fileID: 7366942517206834215, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: -3911268683396112709, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 2950621104477485829, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: -279680262470904011, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: -3795596129544445005, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 2733168240869436140, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: -8635944857249702594, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 884786391093628173, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 3257583927897001245, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 9210987935996512135, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: -8330110344916521930, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 586569114433672922, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    fps: 18
+    loop: 1
+  chaserMotion:
+    effect: 0
+    speed: 1
+    amplitude: 0.08
+  chaserKillFrame: 6
+  chaserScale: 1
+  chaserSortingOrder: 4
   decorPrefabs:
   - {fileID: 5077536323985845860, guid: 06a477712b4a24d06949bad8a460eabb, type: 3}
   - {fileID: 5077536323985845860, guid: 76263cd0fe7e8415f922482365c4ba02, type: 3}
@@ -123,8 +183,23 @@ MonoBehaviour:
   - {fileID: 5077536323985845860, guid: 65f2895d11806484cbaa417cc2f1cd0d, type: 3}
   - {fileID: 5077536323985845860, guid: 2e60e92b42b6b446b911a192af9b9694, type: 3}
   - {fileID: 5077536323985845860, guid: 602e35181bf414d64a755d40a63254c5, type: 3}
+  - {fileID: 5077536323985845860, guid: 602e35181bf414d64a755d40a63254c5, type: 3}
   decorDensity: 0.05
   decorScale: 0.75
+  wallDecorSprites:
+  - {fileID: -6345565271895188921, guid: e407c65bec8b94e9f8d57147e32239ed, type: 3}
+  - {fileID: -6166645456620657349, guid: e407c65bec8b94e9f8d57147e32239ed, type: 3}
+  - {fileID: 8807308921136674930, guid: e407c65bec8b94e9f8d57147e32239ed, type: 3}
+  - {fileID: 3481708086283574404, guid: e407c65bec8b94e9f8d57147e32239ed, type: 3}
+  - {fileID: -2778131958936966519, guid: e407c65bec8b94e9f8d57147e32239ed, type: 3}
+  - {fileID: 4814999568709208064, guid: e407c65bec8b94e9f8d57147e32239ed, type: 3}
+  - {fileID: 891961592127321189, guid: e407c65bec8b94e9f8d57147e32239ed, type: 3}
+  - {fileID: 6747432981534801767, guid: e407c65bec8b94e9f8d57147e32239ed, type: 3}
+  - {fileID: -1389991285197846713, guid: e407c65bec8b94e9f8d57147e32239ed, type: 3}
+  wallDecorDensity: 0.3
+  wallDecorScale: 0.3
+  wallDecorSortingOrder: 3
+  wallDecorOffsetY: 0.25
   backgroundColorA: {r: 0.88, g: 0.88, b: 0.9, a: 1}
   backgroundColorB: {r: 0.96, g: 0.96, b: 0.98, a: 1}
   backgroundSpeed: 0.04

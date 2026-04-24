@@ -91,6 +91,7 @@ namespace Shrink.Player
 
                 case CellType.TRAP_DRAIN:
                     _sphere.ApplyDelta(-trapDrainCost);
+                    _renderer.PlayTrapDrainAt(cell);
                     Events.GameEvents.RaiseTrapActivated(cell, CellType.TRAP_DRAIN);
                     return true;
 

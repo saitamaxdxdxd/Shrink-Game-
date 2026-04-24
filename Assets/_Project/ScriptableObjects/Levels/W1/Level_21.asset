@@ -31,6 +31,7 @@ MonoBehaviour:
   chaserEnemyCount: 0
   hasTimer: 1
   timeLimit: 180
+  theme: {fileID: 11400000, guid: 81fe72ecc75f64f2c8b9a312560535d7, type: 2}
   manualOverrides:
   - cell: {x: 8, y: 16}
     type: 1

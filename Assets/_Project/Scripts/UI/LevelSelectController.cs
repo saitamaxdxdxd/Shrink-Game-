@@ -32,9 +32,9 @@ namespace Shrink.UI
 
         private static readonly WorldDef[] Worlds = new WorldDef[]
         {
-            new WorldDef { startIndex = 0,  count = 15, number = 1, requiresPaid = false },
-            new WorldDef { startIndex = 15, count = 15, number = 2, requiresPaid = true  },
-            new WorldDef { startIndex = 30, count = 15, number = 3, requiresPaid = true  },
+            new WorldDef { startIndex = 0,  count = 25, number = 1, requiresPaid = false },
+            new WorldDef { startIndex = 25, count = 15, number = 2, requiresPaid = true  },
+            new WorldDef { startIndex = 40, count = 15, number = 3, requiresPaid = true  },
         };
 
         private const int SlotsPerPage = 6;

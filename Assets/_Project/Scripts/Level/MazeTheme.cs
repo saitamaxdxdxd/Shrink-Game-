@@ -124,6 +124,25 @@ namespace Shrink.Level
         [Tooltip("Esquina superior-derecha (x==Width-1, y==Height-1). Null = wallMapBorderTop.")]
         public Sprite wallMapCornerTR;
 
+        [Header("Trampa DRAIN — idle (loop)")]
+        [Tooltip("Frames del loop idle de la trampa drain. Si está vacío se usa el cuadrado rojo procedural.")]
+        public AnimClip trapDrainIdle;
+
+        [Header("Trampa DRAIN — animaciones ocasionales")]
+        public OccasionalAnim[] trapDrainOccasional;
+
+        [Header("Trampa DRAIN — al pisarla (vuelve al idle al terminar)")]
+        [Tooltip("Se reproduce cada vez que el jugador pisa la trampa, luego retoma el idle.")]
+        public AnimClip trapDrainTrigger;
+
+        [Header("Trampa DRAIN — movimiento procedural")]
+        public MotionPreset trapDrainMotion;
+
+        [Header("Trampa DRAIN — tamaño y orden")]
+        [Range(0.2f, 1.0f)]
+        public float trapDrainScale = 0.85f;
+        public int trapDrainSortingOrder = 1;
+
         [Header("Trampa ONESHOT — idle (loop)")]
         [Tooltip("Frames del loop idle de la trampa. Si está vacío se usa el rombo naranja procedural.")]
         public AnimClip trapOneshotIdle;
@@ -170,7 +189,34 @@ namespace Shrink.Level
         [Tooltip("Sorting order del SpriteRenderer. 1 = sobre el suelo, debajo del jugador (5).")]
         public int spikeSortingOrder = 1;
 
-        [Header("Decoraciones")]
+        [Header("Perseguidor — idle (bajo tierra, en movimiento)")]
+        [Tooltip("Frames del loop mientras el perseguidor se acerca al jugador. " +
+                 "Si está vacío se usa el círculo azul procedural.")]
+        public AnimClip chaserIdle;
+
+        [Header("Perseguidor — ataque (sale de la tierra al intersectar al jugador)")]
+        [Tooltip("Se reproduce una vez al intersectar al jugador (mole emerge). " +
+                 "Luego el nivel falla; el último frame queda visible.")]
+        public AnimClip chaserAttack;
+
+        [Header("Perseguidor — movimiento procedural")]
+        [Tooltip("Movimiento encima de la animación (Breathe, Levitate, Vibrate). None = estático.")]
+        public MotionPreset chaserMotion;
+
+        [Header("Perseguidor — kill frame")]
+        [Tooltip("Frame (0-basado) del clip chaserAttack en el que se registra la muerte si el jugador " +
+                 "sigue en la misma celda. Los frames anteriores son la ventana de escape. " +
+                 "-1 = último frame del clip.")]
+        public int chaserKillFrame = -1;
+
+        [Header("Perseguidor — tamaño y orden")]
+        [Tooltip("Fracción del tamaño de celda que ocupa el perseguidor.")]
+        [Range(0.2f, 1.2f)]
+        public float chaserScale = 0.80f;
+        [Tooltip("Sorting order. 4 = delante de walls (2) y decors (3), detrás del jugador (5).")]
+        public int chaserSortingOrder = 4;
+
+        [Header("Decoraciones de suelo")]
         [Tooltip("Prefabs de objetos decorativos (rocas, hierbas, etc). Deben tener SpriteRenderer.")]
         public GameObject[] decorPrefabs;
         [Tooltip("Fracción de celdas de suelo que reciben una decoración (0 = ninguna, 0.15 = 15%).")]
@@ -180,6 +226,23 @@ namespace Shrink.Level
                  "Se calcula automáticamente desde el SpriteRenderer del prefab.")]
         [Range(0.1f, 1.5f)]
         public float decorScale = 0.75f;
+
+        [Header("Decoraciones de pared")]
+        [Tooltip("Sprites que se colocan sobre cualquier celda WALL del maze. " +
+                 "Ideal para musgos, grietas, ornamentos dispersos por el techo.")]
+        public Sprite[] wallDecorSprites;
+        [Tooltip("Fracción de walls elegibles que reciben una decoración (0 = ninguna, 0.2 = 20%).")]
+        [Range(0f, 0.4f)]
+        public float wallDecorDensity = 0.15f;
+        [Tooltip("Tamaño de cada wall decor relativo a una celda.")]
+        [Range(0.1f, 1.5f)]
+        public float wallDecorScale = 0.75f;
+        [Tooltip("Sorting order del wall decor. 3 = encima de la pared (2), debajo del jugador (5).")]
+        public int wallDecorSortingOrder = 3;
+        [Tooltip("Desplazamiento vertical dentro de la celda de pared, en fracción de cellSize. " +
+                 "0 = centro de la celda; -0.25 = un cuarto hacia abajo (borde visible al jugador).")]
+        [Range(-0.5f, 0.5f)]
+        public float wallDecorOffsetY = -0.2f;
 
         [Header("Fondo")]
         public Color backgroundColorA = new Color(0.88f, 0.88f, 0.90f);

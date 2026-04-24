@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 24b0d6ff7b3b344cea940a774f84d651, type: 3}
-  m_Name: Level_22
+  m_Name: Level_24
   m_EditorClassIdentifier: Assembly-CSharp::Shrink.Level.LevelData
-  levelNumber: 22
+  levelNumber: 24
   mazeWidth: 35
   mazeHeight: 20
-  mazeStyle: 1
-  seed: 11
+  mazeStyle: 2
+  seed: 13
   difficultyFactor: 0.9
-  doorCount: 2
+  doorCount: 3
   narrow06Count: 3
   narrow04Count: 2
   trapOneshotCount: 3
@@ -28,8 +28,10 @@ MonoBehaviour:
   starSizeBonus: 0.05
   patrolEnemyCount: 0
   trailEnemyCount: 0
+  chaserEnemyCount: 0
   hasTimer: 1
-  timeLimit: 170
+  timeLimit: 150
+  theme: {fileID: 11400000, guid: 81fe72ecc75f64f2c8b9a312560535d7, type: 2}
   manualOverrides: []
   manualStarCells: []
   manualEnemySpawns: []

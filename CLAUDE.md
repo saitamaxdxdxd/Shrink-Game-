@@ -59,7 +59,7 @@ Prefabs/Player.prefab       (SphereController + ShrinkMechanic + PlayerMovement)
 | E   | Editor visual de niveles       | ✅ Completo    | Window → Shrink → Level Editor                                  |
 | 9   | Modo Infinito                  | ✅ Completo    | InfiniteGameManager + InfiniteHUDController + InfiniteScene     |
 | UGS | Auth + CloudSave + Leaderboard | ✅ Completo    | UGS anónimo, sync GameData, tabla `infinite_leaderboard`        |
-| V   | Sistema Visual                 | 🔧 En progreso | MazeTheme autotile completo (inner corners, border edge), TrapOneshotVisual, sorting orders definidos |
+| V   | Sistema Visual                 | 🔧 En progreso | MazeTheme autotile + wall decors + ChaserEnemy animado + TrapDrainVisual completo                      |
 | M   | Modo Multijugador              | 🔧 En progreso | Photon Fusion 2 Shared Mode — ver sección Multijugador          |
 | F   | Mecánicas futuras              | ⬜ Backlog     | Enemigos adicionales, trampas avanzadas, celdas especiales      |
 
@@ -270,30 +270,43 @@ Agrupa todos los assets visuales de un mundo. Crear en Assets → Shrink → Maz
 
 **Paredes — borde del mapa:** `wallMapBorderBottom`, `wallMapBorderTop`, `wallMapBorderTopEdge` (borde superior cuyo vecino sur es suelo — cara visible al jugador), `wallMapBorderLeft`, `wallMapBorderRight`, `wallMapCornerBL/BR/TL/TR`
 
+**Trampa DRAIN:** `trapDrainIdle` (AnimClip loop), `trapDrainOccasional[]`, `trapDrainTrigger` (AnimClip — se reproduce al pisar y vuelve al idle), `trapDrainMotion` (MotionPreset), `trapDrainScale`, `trapDrainSortingOrder`. Componente: `TrapDrainVisual`. Floor base del maze visible debajo (sin cuadrado rojo adicional).
+
 **Trampa ONESHOT:** `trapOneshotIdle` (AnimClip loop), `trapOneshotOccasional[]` (OccasionalAnim[]), `trapOneshotTrigger` (AnimClip one-shot al pisarla — se queda en el último frame; el floor base queda visible debajo), `trapOneshotMotion` (MotionPreset), `trapOneshotScale`, `trapOneshotSortingOrder`
 
 **Spike:** `spikeIdle` (AnimClip), `spikeOccasional[]`, `spikeTrigger` (AnimClip), `spikeMotion`, `spikeScale`, `spikeSortingOrder`
 
 **Estrella:** `starIdle` (AnimClip), `starCollect` (AnimClip), `starMotion`, `starScale`, `starSortingOrder`
 
-**Decoraciones:** `decorPrefabs[]`, `decorDensity` (0–0.4), `decorScale` (default 0.75)
+**Decoraciones de suelo:** `decorPrefabs[]` (GameObject), `decorDensity` (0–0.4), `decorScale` (default 0.75)
+
+**Decoraciones de pared:** `wallDecorSprites[]` (Sprite[]) — se colocan en cualquier celda WALL del maze. `wallDecorDensity`, `wallDecorScale`, `wallDecorSortingOrder` (default 3), `wallDecorOffsetY` (fracción de celda, default -0.2).
+
+**Perseguidor (ChaserEnemy):** `chaserIdle` (AnimClip loop — underground), `chaserAttack` (AnimClip one-shot al atrapar — el topo emerge), `chaserKillFrame` (int, 0-based dentro de chaserAttack — frame donde muere el jugador si sigue en la celda; -1 = último frame), `chaserMotion` (MotionPreset), `chaserScale`, `chaserSortingOrder` (default 4). Si el jugador escapa antes del kill frame, el clip se reproduce en reversa y el chaser retoma la persecución.
 
 **Fondo:** `backgroundColorA/B`, `backgroundSpeed`
 
 **LevelData** referencia un `MazeTheme` via campo `theme`.
-**MazeRenderer**: `SetTheme(theme)` antes de `Render()`. Sprites se escalan automáticamente a `cellSize` via `sprite.bounds.size.x`.
+**MazeRenderer**: `SetTheme(theme)` / `Theme` (getter) antes de `Render()`. Sprites se escalan automáticamente a `cellSize` via `sprite.bounds.size.x`.
 
 **Sorting orders en MazeRenderer:**
 | Order | Elementos |
 |---|---|
 | `0` | Floor base |
-| `1` | Overlays de floor: door, narrow, start, exit, trap drain base |
+| `1` | Overlays de floor: door, narrow, start, exit |
 | `2` | Walls |
-| `2` | Trap drain dot, crumbs |
-| SO configurable | Trap oneshot, spike, estrella (default 1 / 1 / 6) |
+| `2` | Crumbs |
+| `3` | Wall decors (configurable) |
+| `4` | ChaserEnemy (configurable) |
+| SO configurable | Trap drain, trap oneshot, spike, estrella (default 1 / 1 / 1 / 6) |
 | `5` | Player |
 
-**Componentes visuales de celda:** `SpikeVisual`, `TrapOneshotVisual` — mismo patrón: `Initialize(cell, ...)` + `StartAnimation(theme)`. `TrapOneshotVisual` recibe un `Action onTriggerComplete` que MazeRenderer usa para limpiar el floor base al completar el trigger. El GO del visual queda en escena mostrando el último frame.
+**Componentes visuales de celda:** `SpikeVisual`, `TrapOneshotVisual`, `TrapDrainVisual` — patrón: `Initialize(cell, ...)` + `StartAnimation(theme)`. `TrapOneshotVisual` recibe `Action onTriggerComplete`. `TrapDrainVisual` vuelve al idle tras el trigger (trampa permanente). El chaser usa coroutines propias en `ChaserEnemy`.
+
+**Mundos — LevelSelectController:**
+- Mundo 1: índices 0–24 (25 niveles, gratis)
+- Mundo 2: índices 25–39 (15 niveles, `full_game`)
+- Mundo 3: índices 40–54 (15 niveles, `full_game`)
 
 ### PlayerSkin (ScriptableObject)
 Assets visuales del jugador. Crear en Assets → Shrink → PlayerSkin.

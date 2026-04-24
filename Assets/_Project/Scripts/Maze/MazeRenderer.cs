@@ -65,8 +65,11 @@ namespace Shrink.Maze
         private Transform _trapParent;
         private Transform _spikeParent;
 
-        /// <summary>Tiles de trampa DRAIN activos indexados por celda (dot overlay).</summary>
+        /// <summary>Tiles de trampa DRAIN activos indexados por celda (dot overlay, fallback).</summary>
         private readonly Dictionary<Vector2Int, GameObject> _trapTiles = new();
+
+        /// <summary>Visuales de TRAP_DRAIN activos indexados por celda.</summary>
+        private readonly Dictionary<Vector2Int, TrapDrainVisual> _trapDrainVisuals = new();
 
         /// <summary>Visuales de TRAP_ONESHOT activos indexados por celda.</summary>
         private readonly Dictionary<Vector2Int, TrapOneshotVisual> _trapOneshotVisuals = new();
@@ -80,6 +83,7 @@ namespace Shrink.Maze
 
         /// <summary>Asignar tema visual antes de llamar a Render. Null = cuadrados sólidos.</summary>
         public void SetTheme(MazeTheme theme) => _theme = theme;
+        public MazeTheme Theme => _theme;
 
         /// <summary>Asignar la skin del jugador para los visuales de migaja.</summary>
         public void SetPlayerSkin(PlayerSkin skin) => _playerSkin = skin;
@@ -151,11 +155,7 @@ namespace Shrink.Maze
                         break;
 
                     case CellType.TRAP_DRAIN:
-                        CreateTile($"TD{x}_{y}", square, colorTrapDrain, _floorParent, pos, cellSize * 0.85f, 1);
-                        RegisterTrap(new Vector2Int(x, y),
-                            ShapeFactory.CreateSprite($"TDot_{x}_{y}",
-                                ShapeFactory.GetCircle(), colorTrapDrain * 1.4f, _trapParent, 2),
-                            pos, cellSize * 0.35f);
+                        SpawnTrapDrainAt(new Vector2Int(x, y), pos, square);
                         break;
 
                     case CellType.TRAP_ONESHOT:
@@ -169,6 +169,7 @@ namespace Shrink.Maze
             }
 
             SpawnDecorations(data);
+            SpawnWallDecorations(data);
         }
 
         /// <summary>
@@ -349,6 +350,49 @@ namespace Shrink.Maze
             spike.Initialize(cell);
             spike.StartAnimation(_theme);
             _spikeVisuals[cell] = spike;
+        }
+
+        private void SpawnTrapDrainAt(Vector2Int cell, Vector3 pos, Sprite fallback)
+        {
+            bool  hasAnim   = _theme != null && _theme.trapDrainIdle != null && _theme.trapDrainIdle.IsValid;
+            float scale     = _theme != null ? _theme.trapDrainScale        : 0.85f;
+            int   sortOrder = _theme != null ? _theme.trapDrainSortingOrder : 1;
+
+            GameObject go;
+            if (hasAnim)
+            {
+                go = ShapeFactory.CreateSprite($"TDV_{cell.x}_{cell.y}",
+                         _theme.trapDrainIdle.First, Color.white, _trapParent, sortingOrder: sortOrder);
+                go.transform.position = pos;
+                var sr = go.GetComponent<SpriteRenderer>();
+                float native = sr != null && sr.sprite != null ? sr.sprite.bounds.size.x : 0f;
+                go.transform.localScale = Vector3.one * (native > 0f
+                    ? cellSize * scale / native
+                    : cellSize * scale);
+            }
+            else
+            {
+                // Fallback: punto circular rojo
+                go = ShapeFactory.CreateSprite($"TDot_{cell.x}_{cell.y}",
+                         ShapeFactory.GetCircle(), colorTrapDrain * 1.4f, _trapParent, sortingOrder: sortOrder);
+                go.transform.position   = pos;
+                go.transform.localScale = Vector3.one * (cellSize * 0.35f);
+            }
+
+            var visual = go.AddComponent<TrapDrainVisual>();
+            visual.Initialize(cell);
+            visual.StartAnimation(_theme);
+            _trapDrainVisuals[cell] = visual;
+        }
+
+        /// <summary>
+        /// Dispara la animación de trigger del TRAP_DRAIN en la celda indicada.
+        /// Llamar desde ShrinkMechanic cuando el jugador pisa la trampa.
+        /// </summary>
+        public void PlayTrapDrainAt(Vector2Int cell)
+        {
+            if (_trapDrainVisuals.TryGetValue(cell, out TrapDrainVisual visual))
+                visual.PlayTrigger();
         }
 
         private void SpawnTrapOneshotAt(Vector2Int cell, Vector3 pos, Sprite fallback)
@@ -593,6 +637,7 @@ namespace Shrink.Maze
             CrumbOrder.Clear();
             Stars.Clear();
             _trapTiles.Clear();
+            _trapDrainVisuals.Clear();
             _trapOneshotVisuals.Clear();
             _spikeVisuals.Clear();
             CollectedStars = 0;
@@ -757,6 +802,42 @@ namespace Shrink.Maze
                 {
                     go.transform.localScale = Vector3.one * (cellSize * _theme.decorScale);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Coloca prefabs de decoración sobre celdas WALL cuyo vecino sur es suelo
+        /// (la cara del muro visible al jugador desde abajo).
+        /// Usa semilla diferente a SpawnDecorations para evitar correlación visual.
+        /// </summary>
+        private void SpawnWallDecorations(MazeData data)
+        {
+            if (_theme == null || _theme.wallDecorSprites == null || _theme.wallDecorSprites.Length == 0) return;
+            if (_theme.wallDecorDensity <= 0f) return;
+
+            var rng = new System.Random(data.Seed ^ 0xA11);
+
+            for (int x = 0; x < data.Width;  x++)
+            for (int y = 0; y < data.Height; y++)
+            {
+                if (data.Grid[x, y] != CellType.WALL) continue;
+
+                if (rng.NextDouble() > _theme.wallDecorDensity) continue;
+
+                var spr = _theme.wallDecorSprites[rng.Next(_theme.wallDecorSprites.Length)];
+                if (spr == null) continue;
+
+                Vector3 pos = CellToWorld(new Vector2Int(x, y));
+                pos.y += _theme.wallDecorOffsetY * cellSize;
+
+                var go = ShapeFactory.CreateSprite($"WD_{x}_{y}", spr, Color.white,
+                             _decorParent, _theme.wallDecorSortingOrder);
+                go.transform.position = pos;
+
+                float native = spr.bounds.size.x;
+                go.transform.localScale = native > 0f
+                    ? Vector3.one * (cellSize * _theme.wallDecorScale / native)
+                    : Vector3.one * (cellSize * _theme.wallDecorScale);
             }
         }
 
