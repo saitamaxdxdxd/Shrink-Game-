@@ -134,7 +134,15 @@ namespace Shrink.Core
                 return;
             }
 
-            LoadCurrentLevel();
+            SceneLoader.RunWithCurtain(LoadCurrentLevel);
+        }
+
+        /// <summary>
+        /// Reinicia el nivel actual con cortina.
+        /// </summary>
+        public void RestartLevelWithCurtain()
+        {
+            SceneLoader.RunWithCurtain(RestartLevel);
         }
 
         // ──────────────────────────────────────────────────────────────────────

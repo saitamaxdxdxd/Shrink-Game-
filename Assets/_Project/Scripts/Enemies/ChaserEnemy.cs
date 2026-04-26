@@ -12,7 +12,7 @@ namespace Shrink.Enemies
     /// Enemigo que persigue al jugador directamente usando BFS.
     /// Más rápido que el TrailEnemy y no depende de las migajas —
     /// el jugador debe moverse constantemente para sobrevivir.
-    /// Visualmente usa los assets de MazeTheme (chaserIdle / chaserAttack).
+    /// Visualmente usa los assets de MazeTheme (chaserIdle / chaserAttack / chaserRetreat).
     /// </summary>
     public class ChaserEnemy : EnemyController
     {
@@ -107,7 +107,11 @@ namespace Shrink.Enemies
                         yield break;
                     }
                     // Jugador escapó antes del kill frame → retroceder
-                    yield return StartCoroutine(RetreatReverse(frames, i, interval));
+                    bool hasRetreat = theme.chaserRetreat != null && theme.chaserRetreat.IsValid;
+                    if (hasRetreat)
+                        yield return StartCoroutine(AnimateOneShot(theme.chaserRetreat));
+                    else
+                        yield return StartCoroutine(RetreatReverse(frames, i, interval));
                     goto Resume;
                 }
 
@@ -147,6 +151,16 @@ namespace Shrink.Enemies
             while (true)
             {
                 _sr.sprite = clip.frames[frame++ % clip.frames.Length];
+                yield return new WaitForSeconds(interval);
+            }
+        }
+
+        private IEnumerator AnimateOneShot(AnimClip clip)
+        {
+            float interval = 1f / Mathf.Max(clip.fps, 1f);
+            foreach (Sprite frame in clip.frames)
+            {
+                _sr.sprite = frame;
                 yield return new WaitForSeconds(interval);
             }
         }

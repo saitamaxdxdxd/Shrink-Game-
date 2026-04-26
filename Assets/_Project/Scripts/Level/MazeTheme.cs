@@ -199,6 +199,11 @@ namespace Shrink.Level
                  "Luego el nivel falla; el último frame queda visible.")]
         public AnimClip chaserAttack;
 
+        [Header("Perseguidor — retroceso (el jugador escapó antes del kill frame)")]
+        [Tooltip("Se reproduce una vez cuando el jugador escapa antes del kill frame. " +
+                 "Si no está asignado, se reproduce chaserAttack en reversa como fallback.")]
+        public AnimClip chaserRetreat;
+
         [Header("Perseguidor — movimiento procedural")]
         [Tooltip("Movimiento encima de la animación (Breathe, Levitate, Vibrate). None = estático.")]
         public MotionPreset chaserMotion;
@@ -215,6 +220,25 @@ namespace Shrink.Level
         public float chaserScale = 0.80f;
         [Tooltip("Sorting order. 4 = delante de walls (2) y decors (3), detrás del jugador (5).")]
         public int chaserSortingOrder = 4;
+
+        [Header("Patrullero — idle (en movimiento)")]
+        [Tooltip("Frames del loop mientras el patrullero se desplaza. Si está vacío se usa el círculo naranja procedural.")]
+        public AnimClip patrolIdle;
+
+        [Header("Patrullero — animaciones ocasionales")]
+        [Tooltip("Se elige una al azar a intervalos irregulares (destellos, parpadeos, etc.).")]
+        public OccasionalAnim[] patrolOccasional;
+
+        [Header("Patrullero — movimiento procedural")]
+        [Tooltip("Movimiento encima de la animación (Breathe, Levitate, Vibrate). None = estático.")]
+        public MotionPreset patrolMotion;
+
+        [Header("Patrullero — tamaño y orden")]
+        [Tooltip("Fracción del tamaño de celda que ocupa el patrullero.")]
+        [Range(0.2f, 1.2f)]
+        public float patrolScale = 0.70f;
+        [Tooltip("Sorting order. 4 = delante de walls (2) y decors (3), detrás del jugador (5).")]
+        public int patrolSortingOrder = 4;
 
         [Header("Decoraciones de suelo")]
         [Tooltip("Prefabs de objetos decorativos (rocas, hierbas, etc). Deben tener SpriteRenderer.")]

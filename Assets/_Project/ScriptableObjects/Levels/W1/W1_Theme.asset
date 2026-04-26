@@ -140,28 +140,37 @@ MonoBehaviour:
   spikeSortingOrder: 1
   chaserIdle:
     frames:
-    - {fileID: 1785600320105889901, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
-    - {fileID: 278590249233631277, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
-    - {fileID: 4830051029125414479, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
-    - {fileID: -2591091736720357904, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
-    - {fileID: 3639301796714509275, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: -3756819242494445548, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 8241078219824887566, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: -1479488322809139107, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 5290681715501473216, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 4870774690043830241, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 6168853160992287385, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
     fps: 18
     loop: 1
   chaserAttack:
     frames:
-    - {fileID: 7366942517206834215, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
-    - {fileID: -3911268683396112709, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
-    - {fileID: 2950621104477485829, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
-    - {fileID: -279680262470904011, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
-    - {fileID: -3795596129544445005, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
-    - {fileID: 2733168240869436140, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
-    - {fileID: -8635944857249702594, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
-    - {fileID: 884786391093628173, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
-    - {fileID: 3257583927897001245, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
-    - {fileID: 9210987935996512135, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
-    - {fileID: -8330110344916521930, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
-    - {fileID: 586569114433672922, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 6787914843784376621, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: -7132049501835358835, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: -2116820835503258753, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 7970290511597272900, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 5836617045100980755, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 7310135267127825844, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 6104417749663570618, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 2621033123562828785, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: -5411583612045844366, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 5255491967101573920, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
     fps: 18
+    loop: 1
+  chaserRetreat:
+    frames:
+    - {fileID: -5197982554622666404, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: -3175463087521858623, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 2092222740468212122, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 4449193063970309169, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 4080415162425267842, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    - {fileID: 5450096611508864309, guid: 9c70ef70274884fb699e2234a8feeea3, type: 3}
+    fps: 12
     loop: 1
   chaserMotion:
     effect: 0
@@ -170,6 +179,32 @@ MonoBehaviour:
   chaserKillFrame: 6
   chaserScale: 1
   chaserSortingOrder: 4
+  patrolIdle:
+    frames:
+    - {fileID: -6126022450388123328, guid: 09d6c6ddc347e46a798718bbbf930f3d, type: 3}
+    - {fileID: 2241487183670991780, guid: 09d6c6ddc347e46a798718bbbf930f3d, type: 3}
+    - {fileID: 35390838477630947, guid: 09d6c6ddc347e46a798718bbbf930f3d, type: 3}
+    - {fileID: -7545669838719876247, guid: 09d6c6ddc347e46a798718bbbf930f3d, type: 3}
+    - {fileID: 4733821222281523294, guid: 09d6c6ddc347e46a798718bbbf930f3d, type: 3}
+    - {fileID: 7062318417500633410, guid: 09d6c6ddc347e46a798718bbbf930f3d, type: 3}
+    - {fileID: -893553697991307078, guid: 09d6c6ddc347e46a798718bbbf930f3d, type: 3}
+    - {fileID: -7309126065320423507, guid: 09d6c6ddc347e46a798718bbbf930f3d, type: 3}
+    - {fileID: 1952584443664966601, guid: 09d6c6ddc347e46a798718bbbf930f3d, type: 3}
+    - {fileID: 5637855354947024696, guid: 09d6c6ddc347e46a798718bbbf930f3d, type: 3}
+    - {fileID: -4245738862185803234, guid: 09d6c6ddc347e46a798718bbbf930f3d, type: 3}
+    - {fileID: -5895996121355649187, guid: 09d6c6ddc347e46a798718bbbf930f3d, type: 3}
+    - {fileID: -2619520574120313170, guid: 09d6c6ddc347e46a798718bbbf930f3d, type: 3}
+    - {fileID: -2631150437384016853, guid: 09d6c6ddc347e46a798718bbbf930f3d, type: 3}
+    - {fileID: -2512242256464728394, guid: 09d6c6ddc347e46a798718bbbf930f3d, type: 3}
+    fps: 18
+    loop: 1
+  patrolOccasional: []
+  patrolMotion:
+    effect: 0
+    speed: 1
+    amplitude: 0.08
+  patrolScale: 1
+  patrolSortingOrder: 4
   decorPrefabs:
   - {fileID: 5077536323985845860, guid: 06a477712b4a24d06949bad8a460eabb, type: 3}
   - {fileID: 5077536323985845860, guid: 76263cd0fe7e8415f922482365c4ba02, type: 3}
